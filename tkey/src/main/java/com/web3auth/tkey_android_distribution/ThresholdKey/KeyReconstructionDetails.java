@@ -1,0 +1,78 @@
+package com.web3auth.tkey_android_distribution.ThresholdKey;
+
+import com.web3auth.tkey_android_distribution.RuntimeError;
+
+import java.util.ArrayList;
+
+public final class KeyReconstructionDetails {
+    private static native String jniKeyReconstructionDetailsGetPrivateKey(RuntimeError error);
+
+    private static native int jniKeyReconstructionDetailsGetSeedPhraseLen(RuntimeError error);
+
+    private static native String jniKeyReconstructionDetailsGetSeedPhraseAt(int index, RuntimeError error);
+
+    private static native int jniKeyReconstructionDetailsGetAllKeysLen(RuntimeError error);
+
+    private static native String jniKeyReconstructionDetailsGetAllKeysAt(int index, RuntimeError error);
+
+    private static native void jniKeyReconstructionDetailsFree();
+
+    private final long pointer;
+
+    public KeyReconstructionDetails(long ptr) {
+        pointer = ptr;
+    }
+
+    public long getPointer() {
+        return pointer;
+    }
+
+    public String getKey() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        String key = jniKeyReconstructionDetailsGetPrivateKey(error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return key;
+    }
+
+    public ArrayList<String> getSeedPhrase() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        int len = jniKeyReconstructionDetailsGetSeedPhraseLen(error);
+        if (error.code != 0) {
+            throw error;
+        }
+        ArrayList<String> list = new ArrayList();
+        for (int i = 0; i < len; i++) {
+            String key = jniKeyReconstructionDetailsGetSeedPhraseAt(i, error);
+            if (error.code != 0) {
+                throw error;
+            }
+            list.add(key);
+        }
+        return list;
+    }
+
+    public ArrayList<String> getAllKeys() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        int len = jniKeyReconstructionDetailsGetAllKeysLen(error);
+        if (error.code != 0) {
+            throw error;
+        }
+        ArrayList<String> list = new ArrayList();
+        for (int i = 0; i < len; i++) {
+            String key = jniKeyReconstructionDetailsGetAllKeysAt(i, error);
+            if (error.code != 0) {
+                throw error;
+            }
+            list.add(key);
+        }
+        return list;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        jniKeyReconstructionDetailsFree();
+    }
+}

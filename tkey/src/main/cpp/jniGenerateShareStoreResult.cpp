@@ -1,0 +1,44 @@
+#include <jni.h>
+#include <android/log.h>
+#include <tkey.h>
+#include <string>
+#include <cmath>
+#include <android/log.h>
+#include "common/jniCommon.cpp"
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareIndex(
+        JNIEnv *env, jobject jthis, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    long pObject = GetPointerField(env, jthis);
+    GenerateShareStoreResult *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);
+    char *pResult = generate_new_share_store_result_get_shares_index(pStore,error_ptr);
+    setErrorCode(env, error, errorCode);
+    jstring result = env->NewStringUTF(pResult);
+    string_free(pResult);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareStoreMap(
+        JNIEnv *env, jobject jthis, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    long pObject = GetPointerField(env, jthis);
+    GenerateShareStoreResult *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);
+    ShareStoreMap *pResult = generate_new_share_store_result_get_share_store_map(pStore,error_ptr);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pResult);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultFree(
+        JNIEnv *env, jobject jthis) {
+    long pObject = GetPointerField(env, jthis);
+    GenerateShareStoreResult *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);
+    generate_share_store_result_free(pStore);
+}
