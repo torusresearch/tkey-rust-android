@@ -299,7 +299,44 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
                                                                                         jboolean enable_logging,
                                                                                         jboolean manual_sync,
                                                                                         jthrowable error) {
-    // TODO: implement jniThresholdKey()
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    Metadata* pMetadata = nullptr;
+    if (metadata != NULL) {
+        long pObject = GetPointerField(env, metadata);
+        pMetadata = reinterpret_cast<Metadata *>(pObject);
+    }
+
+    ShareStorePolyIDShareIndexMap* pShares = nullptr;
+    if (shares != NULL) {
+        long pObject = GetPointerField(env, shares);
+        pShares = reinterpret_cast<ShareStorePolyIDShareIndexMap *>(pObject);
+    }
+
+    ServiceProvider* pServiceProvider = nullptr;
+    if (service_provider != NULL) {
+        long pObject = GetPointerField(env, service_provider);
+        pServiceProvider = reinterpret_cast<ServiceProvider *>(pObject);
+    }
+
+    LocalMetadataTransitions* pTransitions = nullptr;
+    if (local_transitions != NULL) {
+        long pObject = GetPointerField(env, local_transitions);
+        pTransitions = reinterpret_cast<LocalMetadataTransitions *>(pObject);
+    }
+
+    Metadata* pCloudMetadata = nullptr;
+    if (last_fetched_cloud_metadata!= NULL) {
+        long pObject = GetPointerField(env, last_fetched_cloud_metadata);
+        pCloudMetadata = reinterpret_cast<Metadata *>(pObject);
+    }
+
+    long pObject = GetPointerField(env, storage_layer);
+    FFIStorageLayer* pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
+
+    FFIThresholdKey* pThreshold = threshold_key(pMetadata, pShares, pStorage, pServiceProvider, pTransitions, pCloudMetadata, enable_logging, manual_sync, error_ptr);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pThreshold);
 }
 
 extern "C"
@@ -307,5 +344,27 @@ JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
         JNIEnv *env, jobject jthis, jstring share, jobject input, jboolean never_initialized_new_key,
         jboolean include_local_metadata_transitions, jstring curve_n, jthrowable error) {
-    // TODO: implement jniThresholdKeyInitialize()
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    long pObject = GetPointerField(env, jthis);
+    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char* pShare = nullptr;
+    if (share != NULL) {
+        pShare = env->GetStringUTFChars(share, JNI_FALSE);
+    }
+    ShareStore* pInput = nullptr;
+    if (input != NULL) {
+        long lInput = GetPointerField(env, input);
+        pInput = reinterpret_cast<ShareStore *>(lInput);
+    }
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    KeyDetails* pDetails = threshold_key_initialize(pThreshold,const_cast<char*>(pShare),pInput,never_initialized_new_key,include_local_metadata_transitions,const_cast<char*>(pCurve),error_ptr);
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+    if (pShare != nullptr) {
+        env->ReleaseStringUTFChars(share, pShare);
+    }
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pDetails);
+
+
 }
