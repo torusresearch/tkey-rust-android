@@ -25,7 +25,7 @@ char *network_callback(char *url, char *data, int *error) {
     jclass error_class = jniEnv->FindClass("com/web3auth/tkey_android_distribution/RuntimeError");
     jmethodID constructor = jniEnv->GetMethodID(error_class, "<init>", "()V");
     jobject jerror = jniEnv->NewObject(error_class, constructor);
-    auto result = (jstring)jniEnv->CallObjectMethod(
+    auto result = (jstring) jniEnv->CallObjectMethod(
             callbackHandler,
             networkInterface,
             jurl, jdata, jerror);
@@ -65,8 +65,8 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStora
     networkInterface = getMethodId(env, jthis, network_interface_method_name,
                                    network_interface_method_signature);
     auto *storage = storage_layer(enable_logging, const_cast<char *>(pHost),
-                                             server_time_offset,
-                                             network_callback, error_ptr);
+                                  server_time_offset,
+                                  network_callback, error_ptr);
     env->ReleaseStringUTFChars(host_url, pHost);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(storage);

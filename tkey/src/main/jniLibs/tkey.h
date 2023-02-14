@@ -83,7 +83,8 @@ char *share_store_map_get_keys(struct ShareStoreMap *map, int *error_code);
 struct ShareStore *
 share_store_map_get_value_by_key(struct ShareStoreMap *map, char *key, int *error_code);
 void share_store_map_free(struct ShareStoreMap *ptr);
-char *share_store_poly_id_index_map_get_keys(struct ShareStorePolyIDShareIndexMap *map, int *error_code);
+char *
+share_store_poly_id_index_map_get_keys(struct ShareStorePolyIDShareIndexMap *map, int *error_code);
 struct ShareStoreMap *
 share_store_poly_id_index_map_get_value_by_key(struct ShareStorePolyIDShareIndexMap *map, char *key,
                                                int *error_code);
@@ -126,7 +127,8 @@ struct Polynomial *
 threshold_key_reconstruct_latest_poly(struct FFIThresholdKey *threshold_key, char *curve_n,
                                       int *error_code);
 struct Metadata *
-threshold_key_get_last_fetched_cloud_metadata(struct FFIThresholdKey *threshold_key, int *error_code);
+threshold_key_get_last_fetched_cloud_metadata(struct FFIThresholdKey *threshold_key,
+                                              int *error_code);
 void threshold_key_sync_local_metadata_transitions(struct FFIThresholdKey *, char *curve_n,
                                                    int *error_code);
 // share description
