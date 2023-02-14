@@ -23,8 +23,7 @@ public final class StorageLayer {
 
     public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError, NoSuchMethodException {
         RuntimeError error = new RuntimeError();
-        Method methodInfo = this.getClass().getMethod("networkInterface", String.class, String.class, RuntimeError.class);
-        long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, methodInfo.getName(), "(Ljava/lang/String;Ljava/lang/String;Lcom.web3auth.tkey_android_distribution.RuntimeError;)Ljava/lang/String;", error);
+        long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, "networkInterface", "(Ljava/lang/String;Ljava/lang/String;Lcom/web3auth/tkey_android_distribution/RuntimeError;)Ljava/lang/String;", error);
         if (error.code != 0) {
             throw error;
         }

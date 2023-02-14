@@ -12,7 +12,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *) {
 jobject callbackHandler = nullptr;
 jmethodID networkInterface;
 
-/*
 jmethodID getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring methodSignature) {
     jclass jClass = jniEnv->GetObjectClass(jThis);
     const char *method = jniEnv->GetStringUTFChars(methodName, JNI_FALSE);
@@ -22,7 +21,6 @@ jmethodID getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring
     jniEnv->ReleaseStringUTFChars(methodName, method);
     return methodId;
 }
-*/
 
 char* network_callback(char* url, char *data, int* error) {
     JNIEnv *jniEnv;
@@ -74,7 +72,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStora
         callbackHandler = env->NewGlobalRef(jthis);
     }
     const char *pHost = env->GetStringUTFChars(host_url, JNI_FALSE);
-    //networkInterface = getMethodId(env,jthis,network_interface_method_name, network_interface_method_signature);
+    networkInterface = getMethodId(env,jthis,network_interface_method_name, network_interface_method_signature);
     FFIStorageLayer* storage = storage_layer(enable_logging, const_cast<char *>(pHost), server_time_offset,
                                              network_callback, error_ptr);
     env->ReleaseStringUTFChars(host_url,pHost);
