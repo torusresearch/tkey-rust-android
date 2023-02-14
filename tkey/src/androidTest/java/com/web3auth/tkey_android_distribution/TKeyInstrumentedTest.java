@@ -48,7 +48,7 @@ public class TKeyInstrumentedTest {
     public void basic_threshold_key_tests() {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us/", 2);
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
             ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
