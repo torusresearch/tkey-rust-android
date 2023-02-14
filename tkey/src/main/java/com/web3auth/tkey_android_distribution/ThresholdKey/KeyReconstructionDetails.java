@@ -38,7 +38,7 @@ public final class KeyReconstructionDetails {
         if (error.code != 0) {
             throw error;
         }
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < len; i++) {
             String key = jniKeyReconstructionDetailsGetSeedPhraseAt(i, error);
             if (error.code != 0) {
@@ -55,7 +55,7 @@ public final class KeyReconstructionDetails {
         if (error.code != 0) {
             throw error;
         }
-        ArrayList<String> list = new ArrayList();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < len; i++) {
             String key = jniKeyReconstructionDetailsGetAllKeysAt(i, error);
             if (error.code != 0) {

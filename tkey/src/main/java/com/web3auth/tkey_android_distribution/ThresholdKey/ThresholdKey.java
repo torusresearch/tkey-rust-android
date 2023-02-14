@@ -45,7 +45,7 @@ public final class ThresholdKey {
 
     private native void jniThresholdKeySyncLocalMetadataTransitions(String curveN, RuntimeError error);
 
-    private native String jniThresholdKeyFree();
+    private native void jniThresholdKeyFree();
 
     public long getPointer() {
         return pointer;

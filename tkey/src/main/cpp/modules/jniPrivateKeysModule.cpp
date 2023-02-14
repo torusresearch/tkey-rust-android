@@ -5,15 +5,15 @@
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleSetPrivateKey(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring key, jstring format,
         jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     const char *pKey = nullptr;
-    if (key != NULL) {
+    if (key != nullptr) {
         pKey = env->GetStringUTFChars(key, JNI_FALSE);
     }
     const char *pFormat = env->GetStringUTFChars(format, JNI_FALSE);
@@ -33,10 +33,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKey(
-        JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     char *pResult = private_keys_get_private_keys(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
@@ -48,10 +48,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKeyAccounts(
-        JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     char *pResult = private_keys_get_accounts(pointer, error_ptr);
     setErrorCode(env, error, errorCode);

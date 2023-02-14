@@ -9,7 +9,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    KeyPoint *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
+    auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
     const char *pFormat = env->GetStringUTFChars(format, JNI_FALSE);
     char *pResult = point_encode(pKeyPoint, const_cast<char *>(pFormat), error_ptr);
     env->ReleaseStringUTFChars(format, pFormat);
@@ -26,7 +26,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    KeyPoint *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
+    auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
     char *pX = point_get_x(pKeyPoint, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pX);
@@ -41,7 +41,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    KeyPoint *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
+    auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
     char *pY = point_get_y(pKeyPoint, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pY);
@@ -54,6 +54,6 @@ JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKeyPointFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
-    KeyPoint *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
+    auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
     point_free(pKeyPoint);
 }

@@ -29,11 +29,13 @@ inline jlong GetPointerField(JNIEnv *jEnv, jobject jThis) {
     return lObject;
 }
 
+/* Deliberately kept
 inline void SetPointerField(JNIEnv *jEnv, jobject jThis, jlong jPointer) {
     jclass cls = jEnv->GetObjectClass(jThis);
     jfieldID fid = jEnv->GetFieldID(cls, "pointer", "J");
     jEnv->SetLongField(jThis, fid, jPointer);
 }
+*/
 
 inline jboolean setErrorCode(JNIEnv *jEnv, jobject error, jint value) {
     jclass errorClass = jEnv->GetObjectClass(error);

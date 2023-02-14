@@ -7,7 +7,7 @@ JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStoreMap_jniShareStoreMapFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
-    ShareStoreMap *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
+    auto *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
     share_store_map_free(pMap);
 }
 
@@ -18,7 +18,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStoreMap_jniShar
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    ShareStoreMap *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
+    auto *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
     char *pResult = share_store_map_get_keys(pMap, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
@@ -33,9 +33,9 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStoreMap_jniShar
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    ShareStoreMap *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
+    auto *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
-    ShareStore *pResult = share_store_map_get_value_by_key(pMap, const_cast<char *>(pKey),
+    auto *pResult = share_store_map_get_value_by_key(pMap, const_cast<char *>(pKey),
                                                            error_ptr);
     env->ReleaseStringUTFChars(key, pKey);
     setErrorCode(env, error, errorCode);

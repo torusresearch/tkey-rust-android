@@ -9,7 +9,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     Metadata *pResult = threshold_key_get_metadata(pThreshold, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
@@ -22,7 +22,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     KeyReconstructionDetails *pResult = threshold_key_reconstruct(pThreshold,
                                                                   const_cast<char *>(pCurve),
@@ -39,7 +39,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     GenerateShareStoreResult *pResult = threshold_key_generate_share(pThreshold,
                                                                      const_cast<char *>(pCurve),
@@ -57,7 +57,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pIndex = env->GetStringUTFChars(share_index, JNI_FALSE);
     threshold_key_delete_share(pThreshold, const_cast<char *>(pIndex), const_cast<char *>(pCurve),
@@ -74,7 +74,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     KeyDetails *pResult = threshold_key_get_key_details(pThreshold, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
@@ -89,11 +89,11 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pIndex = env->GetStringUTFChars(share_index, JNI_FALSE);
     const char *pShareType = nullptr;
-    if (share_type != NULL) {
+    if (share_type != nullptr) {
         pShareType = env->GetStringUTFChars(share_type, JNI_FALSE);
     }
     char *pResult = threshold_key_output_share(pThreshold, const_cast<char *>(pIndex),
@@ -119,11 +119,11 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pIndex = env->GetStringUTFChars(share_index, JNI_FALSE);
     const char *pPolyId = nullptr;
-    if (poly_id != NULL) {
+    if (poly_id != nullptr) {
         pPolyId = env->GetStringUTFChars(poly_id, JNI_FALSE);
     }
     ShareStore *pResult = threshold_key_output_share_store(pThreshold, const_cast<char *>(pIndex),
@@ -146,7 +146,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     ShareStore *pResult = threshold_key_share_to_share_store(pThreshold, const_cast<char *>(pShare),
@@ -166,11 +166,11 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pShareType = nullptr;
-    if (share_type != NULL) {
+    if (share_type != nullptr) {
         pShareType = env->GetStringUTFChars(share_type, JNI_FALSE);
     }
     threshold_key_input_share(pThreshold, const_cast<char *>(pShare),
@@ -191,8 +191,8 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    ShareStore *pShareStore = reinterpret_cast<ShareStore *>(GetPointerField(env, share));
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pShareStore = reinterpret_cast<ShareStore *>(GetPointerField(env, share));
     threshold_key_input_share_store(pThreshold, pShareStore, error_ptr);
     setErrorCode(env, error, errorCode);
 }
@@ -204,7 +204,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     char *pResult = threshold_key_get_shares_indexes(pThreshold, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
@@ -219,8 +219,8 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    Metadata *pResult = threshold_key_get_last_fetched_cloud_metadata(pThreshold, error_ptr);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pResult = threshold_key_get_last_fetched_cloud_metadata(pThreshold, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
@@ -232,8 +232,8 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    LocalMetadataTransitions *pResult = threshold_key_get_local_metadata_transitions(pThreshold,
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pResult = threshold_key_get_local_metadata_transitions(pThreshold,
                                                                                      error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
@@ -246,7 +246,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pModule = env->GetStringUTFChars(module_name, JNI_FALSE);
     char *pResult = threshold_key_get_tkey_store(pThreshold, const_cast<char *>(pModule),
                                                  error_ptr);
@@ -265,7 +265,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pModule = env->GetStringUTFChars(module_name, JNI_FALSE);
     const char *pId = env->GetStringUTFChars(id, JNI_FALSE);
     char *pResult = threshold_key_get_tkey_store_item(pThreshold, const_cast<char *>(pModule),
@@ -285,7 +285,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
     threshold_key_sync_local_metadata_transitions(pThreshold, const_cast<char *>(pCurve),
                                                   error_ptr);
@@ -294,18 +294,18 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
 }
 
 extern "C"
-JNIEXPORT jstring JNICALL
+JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThresholdKeyFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     threshold_key_free(pThreshold);
 }
 
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThresholdKey(JNIEnv *env,
-                                                                                        jobject jthis,
+                                                                                        __attribute__((unused)) jobject jthis,
                                                                                         jobject metadata,
                                                                                         jobject shares,
                                                                                         jobject storage_layer,
@@ -318,37 +318,37 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     Metadata *pMetadata = nullptr;
-    if (metadata != NULL) {
-        long pObject = GetPointerField(env, metadata);
+    if (metadata != nullptr) {
+        jlong pObject = GetPointerField(env, metadata);
         pMetadata = reinterpret_cast<Metadata *>(pObject);
     }
 
     ShareStorePolyIDShareIndexMap *pShares = nullptr;
-    if (shares != NULL) {
-        long pObject = GetPointerField(env, shares);
+    if (shares != nullptr) {
+        jlong pObject = GetPointerField(env, shares);
         pShares = reinterpret_cast<ShareStorePolyIDShareIndexMap *>(pObject);
     }
 
     ServiceProvider *pServiceProvider = nullptr;
-    if (service_provider != NULL) {
-        long pObject = GetPointerField(env, service_provider);
+    if (service_provider != nullptr) {
+        jlong pObject = GetPointerField(env, service_provider);
         pServiceProvider = reinterpret_cast<ServiceProvider *>(pObject);
     }
 
     LocalMetadataTransitions *pTransitions = nullptr;
-    if (local_transitions != NULL) {
-        long pObject = GetPointerField(env, local_transitions);
+    if (local_transitions != nullptr) {
+        jlong pObject = GetPointerField(env, local_transitions);
         pTransitions = reinterpret_cast<LocalMetadataTransitions *>(pObject);
     }
 
     Metadata *pCloudMetadata = nullptr;
-    if (last_fetched_cloud_metadata != NULL) {
-        long pObject = GetPointerField(env, last_fetched_cloud_metadata);
+    if (last_fetched_cloud_metadata != nullptr) {
+        jlong pObject = GetPointerField(env, last_fetched_cloud_metadata);
         pCloudMetadata = reinterpret_cast<Metadata *>(pObject);
     }
 
-    long pObject = GetPointerField(env, storage_layer);
-    FFIStorageLayer *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
+    jlong pObject = GetPointerField(env, storage_layer);
+    auto *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
 
     FFIThresholdKey *pThreshold = threshold_key(pMetadata, pShares, pStorage, pServiceProvider,
                                                 pTransitions, pCloudMetadata, enable_logging,
@@ -366,13 +366,13 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
-    FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     const char *pShare = nullptr;
-    if (share != NULL) {
+    if (share != nullptr) {
         pShare = env->GetStringUTFChars(share, JNI_FALSE);
     }
     ShareStore *pInput = nullptr;
-    if (input != NULL) {
+    if (input != nullptr) {
         jlong lInput = GetPointerField(env, input);
         pInput = reinterpret_cast<ShareStore *>(lInput);
     }

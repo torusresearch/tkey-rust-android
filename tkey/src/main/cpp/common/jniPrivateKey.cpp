@@ -5,7 +5,7 @@
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_PrivateKey_jniGeneratePrivateKey(
-        JNIEnv *env, jclass jclazz, jstring curve, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass jclazz, jstring curve, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     const char *pCurve = env->GetStringUTFChars(curve, JNI_FALSE);

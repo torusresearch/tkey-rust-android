@@ -7,7 +7,7 @@ public final class PrivateKey {
     private static native String jniGeneratePrivateKey(String curve, RuntimeError error);
 
     public String hex;
-    private static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
+    final static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
     public PrivateKey(String key) {
         hex = key;

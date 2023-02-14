@@ -25,10 +25,10 @@ char *network_callback(char *url, char *data, int *error) {
     jclass error_class = jniEnv->FindClass("com/web3auth/tkey_android_distribution/RuntimeError");
     jmethodID constructor = jniEnv->GetMethodID(error_class, "<init>", "()V");
     jobject jerror = jniEnv->NewObject(error_class, constructor);
-    jstring result = static_cast<jstring>(jniEnv->CallObjectMethod(
+    auto result = (jstring)jniEnv->CallObjectMethod(
             callbackHandler,
             networkInterface,
-            jurl, jdata, jerror));
+            jurl, jdata, jerror);
     jclass cls = jniEnv->GetObjectClass(jerror);
     jfieldID fid = jniEnv->GetFieldID(cls, "code", "I");
     jint error_field = jniEnv->GetIntField(jerror, fid);
@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStorageLayerFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
-    FFIStorageLayer *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
+    auto *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
     env->DeleteGlobalRef(callbackHandler);
     storage_layer_free(pStorage);
 }
@@ -64,7 +64,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStora
     const char *pHost = env->GetStringUTFChars(host_url, JNI_FALSE);
     networkInterface = getMethodId(env, jthis, network_interface_method_name,
                                    network_interface_method_signature);
-    FFIStorageLayer *storage = storage_layer(enable_logging, const_cast<char *>(pHost),
+    auto *storage = storage_layer(enable_logging, const_cast<char *>(pHost),
                                              server_time_offset,
                                              network_callback, error_ptr);
     env->ReleaseStringUTFChars(host_url, pHost);

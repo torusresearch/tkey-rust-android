@@ -7,13 +7,9 @@ public final class ServiceProvider {
 
     private native long jniServiceProvider(boolean enableLogging, String postboxKey, String curveN, RuntimeError error);
 
-    private static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
+    final static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
     final long pointer;
-
-    public ServiceProvider(long ptr) {
-        pointer = ptr;
-    }
 
     public ServiceProvider(boolean enableLogging, String postboxKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();

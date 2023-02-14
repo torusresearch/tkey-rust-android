@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public final class StorageLayer {
@@ -20,7 +21,7 @@ public final class StorageLayer {
 
     final long pointer;
 
-    public String networkInterface(String url, String data, RuntimeError error) {
+    private String networkInterface(String url, String data, RuntimeError error) {
         try {
             URL uri = new URL(url);
             HttpURLConnection con = (HttpURLConnection) uri.openConnection();
@@ -32,7 +33,7 @@ public final class StorageLayer {
             con.setDoOutput(true);
             String form_data_string;
             if (last.equalsIgnoreCase("bulk_set_stream")) {
-                ArrayList<String> form_data = new ArrayList<String>();
+                ArrayList<String> form_data = new ArrayList<>();
                 con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 JSONArray jsonArray = new JSONArray(data);
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -48,13 +49,13 @@ public final class StorageLayer {
                 form_data_string = data;
             }
             try (OutputStream os = con.getOutputStream()) {
-                byte[] input = form_data_string.getBytes("utf-8");
+                byte[] input = form_data_string.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);
             }
             try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), "utf-8"))) {
+                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
                 StringBuilder response = new StringBuilder();
-                String responseLine = null;
+                String responseLine;
                 while ((responseLine = br.readLine()) != null) {
                     response.append(responseLine.trim());
                 }
@@ -62,14 +63,10 @@ public final class StorageLayer {
                 return response.toString();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
             error.code = -1;
             return "";
         }
-    }
-
-    public StorageLayer(long ptr) {
-        pointer = ptr;
     }
 
     public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError {

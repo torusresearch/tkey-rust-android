@@ -5,13 +5,13 @@
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleGenerateShareStoreResult(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring questions, jstring answer,
         jstring curveN,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     const char *pQuestions = env->GetStringUTFChars(questions, JNI_FALSE);
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
@@ -31,12 +31,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleInputShare(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring answer, jstring curveN,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
@@ -53,13 +53,13 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleChangeQuestionAndAnswer(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring questions, jstring answer,
         jstring curveN,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     const char *pQuestions = env->GetStringUTFChars(questions, JNI_FALSE);
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
@@ -79,12 +79,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
 extern "C"
 JNIEXPORT jboolean JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleStoreAnswer(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring answer, jstring curveN,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
@@ -101,11 +101,11 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleGetAnswer(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     char *pResult =
             security_question_get_answer(pointer, error_ptr);
@@ -118,11 +118,11 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuestionModule_jniSecurityQuestionModuleGetQuestions(
-        JNIEnv *env, jclass clazz, jobject threshold_key,
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                                    threshold_key));
     char *pResult =
             security_question_get_questions(pointer, error_ptr);
