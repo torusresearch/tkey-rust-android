@@ -6,7 +6,7 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 import com.web3auth.tkey_android_distribution.ThresholdKey.Common.ShareStore;
 
 public final class ThresholdKey {
-    private final long pointer;
+    final long pointer;
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
     private native long jniThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storageLayer, @Nullable ServiceProvider serviceProvider, @Nullable LocalMetadataTransitions localTransitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, RuntimeError error);
@@ -46,10 +46,6 @@ public final class ThresholdKey {
     private native void jniThresholdKeySyncLocalMetadataTransitions(String curveN, RuntimeError error);
 
     private native void jniThresholdKeyFree();
-
-    public long getPointer() {
-        return pointer;
-    }
 
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync) throws RuntimeError {
         RuntimeError error = new RuntimeError();

@@ -32,7 +32,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    int result = (int)key_details_get_threshold(pDetails, error_ptr);
+    int result = (int) key_details_get_threshold(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -58,7 +58,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    int result = (int)key_details_get_total_shares(pDetails, error_ptr);
+    int result = (int) key_details_get_total_shares(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }

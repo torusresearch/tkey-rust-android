@@ -12,7 +12,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pQuestions = env->GetStringUTFChars(questions, JNI_FALSE);
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
@@ -37,7 +37,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
     bool result =
@@ -60,7 +60,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pQuestions = env->GetStringUTFChars(questions, JNI_FALSE);
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
@@ -85,7 +85,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pAnswer = env->GetStringUTFChars(answer, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
     bool result =
@@ -106,7 +106,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     char *pResult =
             security_question_get_answer(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
@@ -123,7 +123,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SecurityQuest
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     char *pResult =
             security_question_get_questions(pointer, error_ptr);
     setErrorCode(env, error, errorCode);

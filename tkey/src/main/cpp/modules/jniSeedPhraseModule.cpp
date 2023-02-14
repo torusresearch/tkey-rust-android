@@ -11,7 +11,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pPhrase = nullptr;
     if (phrase != nullptr) {
         pPhrase = env->GetStringUTFChars(phrase, JNI_FALSE);
@@ -37,7 +37,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pOld = env->GetStringUTFChars(old_phrase, JNI_FALSE);
     const char *pNew = env->GetStringUTFChars(new_phrase, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
@@ -54,11 +54,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleGetSeedPhrases(
-        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     char *pResult = seed_phrase_get_seed_phrases(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
@@ -74,7 +75,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pPhrase = env->GetStringUTFChars(phrase, JNI_FALSE);
     seed_phrase_delete_seed_phrase(pointer,
                                    const_cast<char *>(pPhrase), error_ptr);

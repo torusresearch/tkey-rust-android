@@ -11,7 +11,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pKey = nullptr;
     if (key != nullptr) {
         pKey = env->GetStringUTFChars(key, JNI_FALSE);
@@ -33,11 +33,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKey(
-        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     char *pResult = private_keys_get_private_keys(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
@@ -48,11 +49,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKeyAccounts(
-        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key, jthrowable error) {
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     char *pResult = private_keys_get_accounts(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);

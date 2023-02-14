@@ -234,7 +234,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
     jlong pObject = GetPointerField(env, jthis);
     auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
     auto *pResult = threshold_key_get_local_metadata_transitions(pThreshold,
-                                                                                     error_ptr);
+                                                                 error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }

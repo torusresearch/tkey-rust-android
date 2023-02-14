@@ -36,7 +36,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStoreMap_jniShar
     auto *pMap = reinterpret_cast<ShareStoreMap *>(pObject);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
     auto *pResult = share_store_map_get_value_by_key(pMap, const_cast<char *>(pKey),
-                                                           error_ptr);
+                                                     error_ptr);
     env->ReleaseStringUTFChars(key, pKey);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);

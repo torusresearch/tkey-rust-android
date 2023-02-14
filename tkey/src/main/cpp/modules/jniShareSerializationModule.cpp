@@ -12,7 +12,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != nullptr) {
@@ -38,7 +38,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
     int errorCode = 0;
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
-                                                                                   threshold_key));
+                                                                        threshold_key));
     const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != NULL) {
