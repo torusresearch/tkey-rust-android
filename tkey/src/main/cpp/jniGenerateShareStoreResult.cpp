@@ -14,7 +14,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreRes
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     GenerateShareStoreResult *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);
-    char *pResult = generate_new_share_store_result_get_shares_index(pStore,error_ptr);
+    char *pResult = generate_new_share_store_result_get_shares_index(pStore, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -29,7 +29,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreRes
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     GenerateShareStoreResult *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);
-    ShareStoreMap *pResult = generate_new_share_store_result_get_share_store_map(pStore,error_ptr);
+    ShareStoreMap *pResult = generate_new_share_store_result_get_share_store_map(pStore, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }

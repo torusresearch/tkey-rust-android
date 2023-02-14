@@ -10,7 +10,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyReconstructionDetails *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);
-    char *pResult = key_reconstruction_get_private_key(pDetails,error_ptr);
+    char *pResult = key_reconstruction_get_private_key(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -25,7 +25,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyReconstructionDetails *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);
-    int result = key_reconstruction_get_seed_phrase_len(pDetails,error_ptr);
+    int result = key_reconstruction_get_seed_phrase_len(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -38,7 +38,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyReconstructionDetails *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);
-    char *pResult = key_reconstruction_get_seed_phrase_at(pDetails, index,error_ptr);
+    char *pResult = key_reconstruction_get_seed_phrase_at(pDetails, index, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -53,7 +53,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyReconstructionDetails *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);
-    int result = key_reconstruction_get_all_keys_len(pDetails,error_ptr);
+    int result = key_reconstruction_get_all_keys_len(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -66,7 +66,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyReconstructionDetails *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);
-    char *pResult = key_reconstruction_get_all_keys_at(pDetails, index,error_ptr);
+    char *pResult = key_reconstruction_get_all_keys_at(pDetails, index, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);

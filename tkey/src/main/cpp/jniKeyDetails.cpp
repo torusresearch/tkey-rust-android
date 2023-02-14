@@ -4,7 +4,8 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsFree(JNIEnv *env, jobject jthis) {
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsFree(JNIEnv *env,
+                                                                                        jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pDetails = reinterpret_cast<KeyDetails *>(pObject);
     key_details_free(pDetails);
@@ -18,7 +19,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    KeyPoint *pResult = key_details_get_pub_key_point(pDetails,error_ptr);
+    KeyPoint *pResult = key_details_get_pub_key_point(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
@@ -31,7 +32,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    int result = key_details_get_threshold(pDetails,error_ptr);
+    int result = key_details_get_threshold(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -44,7 +45,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    int result = key_details_get_required_shares(pDetails,error_ptr);
+    int result = key_details_get_required_shares(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -57,7 +58,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pDetails = reinterpret_cast<KeyDetails *>(pObject);
-    int result = key_details_get_total_shares(pDetails,error_ptr);
+    int result = key_details_get_total_shares(pDetails, error_ptr);
     setErrorCode(env, error, errorCode);
     return result;
 }
@@ -70,7 +71,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     KeyDetails *pStore = reinterpret_cast<KeyDetails *>(pObject);
-    char *pResult = key_details_get_share_descriptions(pStore,error_ptr);
+    char *pResult = key_details_get_share_descriptions(pStore, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);

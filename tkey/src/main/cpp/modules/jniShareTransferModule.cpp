@@ -10,15 +10,16 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pAgent = env->GetStringUTFChars(agent, JNI_FALSE);
     const char *pIndexes = env->GetStringUTFChars(indexes, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    char * pResult =
+    char *pResult =
             share_transfer_request_new_share(pointer,
-                                                 const_cast<char *>(pAgent),
-                                                 const_cast<char *>(pIndexes),
-                                                 const_cast<char *>(pCurve),error_ptr);
+                                             const_cast<char *>(pAgent),
+                                             const_cast<char *>(pIndexes),
+                                             const_cast<char *>(pCurve), error_ptr);
     setErrorCode(env, error, errorCode);
     env->ReleaseStringUTFChars(agent, pAgent);
     env->ReleaseStringUTFChars(indexes, pIndexes);
@@ -36,14 +37,15 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
     const char *pCustom = env->GetStringUTFChars(custom_info, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     share_transfer_add_custom_info_to_request(pointer,
-                                             const_cast<char *>(pEnc),
-                                             const_cast<char *>(pCustom),
-                                             const_cast<char *>(pCurve),error_ptr);
+                                              const_cast<char *>(pEnc),
+                                              const_cast<char *>(pCustom),
+                                              const_cast<char *>(pCurve), error_ptr);
     setErrorCode(env, error, errorCode);
     env->ReleaseStringUTFChars(custom_info, pCustom);
     env->ReleaseStringUTFChars(enc_pub_key_x, pEnc);
@@ -56,9 +58,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    char * pResult =
-            share_transfer_look_for_request(pointer,error_ptr);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    char *pResult =
+            share_transfer_look_for_request(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -73,14 +76,15 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
-    ShareStore *pStore = reinterpret_cast<ShareStore*>(GetPointerField(env,share_store));
+    ShareStore *pStore = reinterpret_cast<ShareStore *>(GetPointerField(env, share_store));
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     share_transfer_approve_request(pointer,
-                                              const_cast<char *>(pEnc),
-                                              pStore,
-                                              const_cast<char *>(pCurve),error_ptr);
+                                   const_cast<char *>(pEnc),
+                                   pStore,
+                                   const_cast<char *>(pCurve), error_ptr);
     setErrorCode(env, error, errorCode);
     env->ReleaseStringUTFChars(enc_pub_key_x, pEnc);
     env->ReleaseStringUTFChars(curve_n, pCurve);
@@ -94,14 +98,15 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
     const char *pIndexes = env->GetStringUTFChars(indexes, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     share_transfer_approve_request_with_share_indexes(pointer,
-                                              const_cast<char *>(pEnc),
-                                              const_cast<char *>(pIndexes),
-                                              const_cast<char *>(pCurve),error_ptr);
+                                                      const_cast<char *>(pEnc),
+                                                      const_cast<char *>(pIndexes),
+                                                      const_cast<char *>(pCurve), error_ptr);
     setErrorCode(env, error, errorCode);
     env->ReleaseStringUTFChars(indexes, pIndexes);
     env->ReleaseStringUTFChars(enc_pub_key_x, pEnc);
@@ -114,9 +119,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    ShareTransferStore* result =
-            share_transfer_get_store(pointer,error_ptr);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    ShareTransferStore *result =
+            share_transfer_get_store(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(result);
 }
@@ -128,10 +134,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jobject share_store, jstring curveN, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    ShareTransferStore* pStore = reinterpret_cast<ShareTransferStore*>(GetPointerField(env,share_store));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    ShareTransferStore *pStore = reinterpret_cast<ShareTransferStore *>(GetPointerField(env,
+                                                                                        share_store));
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
-    bool result = share_transfer_set_store(pointer,pStore, const_cast<char*>(pCurve),error_ptr);
+    bool result = share_transfer_set_store(pointer, pStore, const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
     return result;
@@ -144,10 +152,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jstring enc_pub_key_x, jstring curveN, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
-    bool result = share_transfer_delete_store(pointer,const_cast<char*>(pEnc), const_cast<char*>(pCurve),error_ptr);
+    bool result = share_transfer_delete_store(pointer, const_cast<char *>(pEnc),
+                                              const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(enc_pub_key_x, pEnc);
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
@@ -160,9 +170,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    char * pResult =
-            share_transfer_get_current_encryption_key(pointer,error_ptr);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    char *pResult =
+            share_transfer_get_current_encryption_key(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -175,8 +186,9 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         JNIEnv *env, jclass clazz, jobject threshold_key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    share_transfer_cleanup_request(pointer,error_ptr);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    share_transfer_cleanup_request(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
 }
 extern "C"
@@ -186,10 +198,13 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
         jboolean delete_on_completion, jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    ShareStore* result = share_transfer_request_status_check(pointer,const_cast<char*>(pEnc),delete_on_completion, const_cast<char*>(pCurve),error_ptr);
+    ShareStore *result = share_transfer_request_status_check(pointer, const_cast<char *>(pEnc),
+                                                             delete_on_completion,
+                                                             const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(enc_pub_key_x, pEnc);
     env->ReleaseStringUTFChars(curve_n, pCurve);
     setErrorCode(env, error, errorCode);

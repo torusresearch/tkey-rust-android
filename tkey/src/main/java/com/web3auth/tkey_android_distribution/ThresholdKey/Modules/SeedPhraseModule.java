@@ -9,11 +9,11 @@ public final class SeedPhraseModule {
     private SeedPhraseModule() {
     }
 
-    private static native void jniSeedPhraseModuleSetSeedPhrase(ThresholdKey  thresholdKey, String format, String phrase, int wallets, String curveN, RuntimeError error);
+    private static native void jniSeedPhraseModuleSetSeedPhrase(ThresholdKey thresholdKey, String format, String phrase, int wallets, String curveN, RuntimeError error);
 
-    private static native void jniSeedPhraseModuleChangePhrase(ThresholdKey  thresholdKey, String oldPhrase, String newPhrase, String curveN, RuntimeError error);
+    private static native void jniSeedPhraseModuleChangePhrase(ThresholdKey thresholdKey, String oldPhrase, String newPhrase, String curveN, RuntimeError error);
 
-    private static native String jniSeedPhraseModuleGetSeedPhrases(ThresholdKey  thresholdKey, RuntimeError error);
+    private static native String jniSeedPhraseModuleGetSeedPhrases(ThresholdKey thresholdKey, RuntimeError error);
 
     private static native void jniSeedPhraseModuleDeletePhrase(ThresholdKey thresholdKey, @Nullable String phrase, RuntimeError error);
 

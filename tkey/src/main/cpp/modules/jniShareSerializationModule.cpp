@@ -11,13 +11,15 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    const char * pShare = env->GetStringUTFChars(share, JNI_FALSE);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != NULL) {
         pFormat = env->GetStringUTFChars(format, JNI_FALSE);
     }
-    char *pResult = share_serialization_serialize_share(pointer,const_cast<char*>(pShare), const_cast<char*>(pFormat), error_ptr);
+    char *pResult = share_serialization_serialize_share(pointer, const_cast<char *>(pShare),
+                                                        const_cast<char *>(pFormat), error_ptr);
     if (pFormat != nullptr) {
         env->ReleaseStringUTFChars(format, pFormat);
     }
@@ -35,13 +37,15 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
-    const char * pShare = env->GetStringUTFChars(share, JNI_FALSE);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                                   threshold_key));
+    const char *pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != NULL) {
         pFormat = env->GetStringUTFChars(format, JNI_FALSE);
     }
-    char *pResult = share_serialization_serialize_share(pointer,const_cast<char*>(pShare), const_cast<char*>(pFormat), error_ptr);
+    char *pResult = share_serialization_serialize_share(pointer, const_cast<char *>(pShare),
+                                                        const_cast<char *>(pFormat), error_ptr);
     if (pFormat != nullptr) {
         env->ReleaseStringUTFChars(format, pFormat);
     }

@@ -4,7 +4,8 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataFree(JNIEnv *env, jobject jthis) {
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataFree(JNIEnv *env,
+                                                                                    jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     Metadata *pMeta = reinterpret_cast<Metadata *>(pObject);
     metadata_free(pMeta);
@@ -17,7 +18,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataF
     int errorCode = 0;
     int *error_ptr = &errorCode;
     const char *pJson = env->GetStringUTFChars(json, JNI_FALSE);
-    Metadata *pResult = metadata_from_json(const_cast<char*>(pJson), error_ptr);
+    Metadata *pResult = metadata_from_json(const_cast<char *>(pJson), error_ptr);
     env->ReleaseStringUTFChars(json, pJson);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
@@ -25,7 +26,9 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataF
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataToJson(JNIEnv *env, jobject jthis, jthrowable error) {
+Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Metadata_jniMetadataToJson(JNIEnv *env,
+                                                                                      jobject jthis,
+                                                                                      jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);

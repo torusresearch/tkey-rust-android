@@ -11,7 +11,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndex
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     ShareStorePolyIDShareIndexMap *pMap = reinterpret_cast<ShareStorePolyIDShareIndexMap *>(pObject);
-    char *pResult = share_store_poly_id_index_map_get_keys(pMap,error_ptr);
+    char *pResult = share_store_poly_id_index_map_get_keys(pMap, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
@@ -27,8 +27,10 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndex
     jlong pObject = GetPointerField(env, jthis);
     ShareStorePolyIDShareIndexMap *pMap = reinterpret_cast<ShareStorePolyIDShareIndexMap *>(pObject);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
-    ShareStoreMap* pResult = share_store_poly_id_index_map_get_value_by_key(pMap, const_cast<char*>(pKey),error_ptr);
-    env->ReleaseStringUTFChars(key,pKey);
+    ShareStoreMap *pResult = share_store_poly_id_index_map_get_value_by_key(pMap,
+                                                                            const_cast<char *>(pKey),
+                                                                            error_ptr);
+    env->ReleaseStringUTFChars(key, pKey);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }

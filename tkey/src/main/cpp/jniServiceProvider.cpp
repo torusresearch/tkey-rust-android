@@ -20,7 +20,8 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ServiceProvider_jniSe
     int *error_ptr = &errorCode;
     const char *pPostbox = env->GetStringUTFChars(postbox_key, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    ServiceProvider* pResult = service_provider(enable_logging, const_cast<char*>(pPostbox),const_cast<char*>(pCurve),error_ptr);
+    ServiceProvider *pResult = service_provider(enable_logging, const_cast<char *>(pPostbox),
+                                                const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(postbox_key, pPostbox);
     env->ReleaseStringUTFChars(curve_n, pCurve);
     setErrorCode(env, error, errorCode);

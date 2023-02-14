@@ -11,7 +11,8 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,     LOG_TAG, __VA_ARGS__)
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,    LOG_TAG, __VA_ARGS__)
 
-inline jmethodID getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring methodSignature) {
+inline jmethodID
+getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring methodSignature) {
     jclass jClass = jniEnv->GetObjectClass(jThis);
     const char *method = jniEnv->GetStringUTFChars(methodName, JNI_FALSE);
     const char *signature = jniEnv->GetStringUTFChars(methodSignature, JNI_FALSE);
