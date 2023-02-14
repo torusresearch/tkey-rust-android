@@ -31,7 +31,7 @@ public final class ThresholdKey {
 
     private native void jniThresholdKeyInputShare(String share, String shareType, String curveN, RuntimeError error);
 
-    private native void jniThresholdKeyInputShareStore(long share, RuntimeError error);
+    private native void jniThresholdKeyInputShareStore(ShareStore share, RuntimeError error);
 
     private native String jniThresholdKeyGetShareIndexes(RuntimeError error);
 
@@ -150,7 +150,7 @@ public final class ThresholdKey {
 
     public void inputShareStore(ShareStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniThresholdKeyInputShareStore(store.getPointer(), error);
+        jniThresholdKeyInputShareStore(store, error);
         if (error.code != 0) {
             throw error;
         }

@@ -17,14 +17,10 @@ public final class ShareStoreMap {
 
     private native void jniShareStoreMapFree();
 
-    private final long pointer;
+    final long pointer;
 
     public ShareStoreMap(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public ArrayList<Pair<String, ShareStore>> getShareStores() throws RuntimeError, JSONException {

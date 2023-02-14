@@ -6,12 +6,12 @@
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleSerializeShare(
-        JNIEnv *env, jclass clazz, jlong threshold_key,
+        JNIEnv *env, jclass clazz, jobject threshold_key,
         jstring share, jstring format,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(threshold_key);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
     const char * pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != NULL) {
@@ -30,12 +30,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleDeserializeShare(
-        JNIEnv *env, jclass clazz, jlong threshold_key,
+        JNIEnv *env, jclass clazz, jobject threshold_key,
         jstring share, jstring format,
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(threshold_key);
+    FFIThresholdKey *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,threshold_key));
     const char * pShare = env->GetStringUTFChars(share, JNI_FALSE);
     const char *pFormat = nullptr;
     if (format != NULL) {

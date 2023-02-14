@@ -9,14 +9,10 @@ public final class GenerateShareStoreResult {
 
     private native void jniGenerateShareStoreResultFree();
 
-    private final long pointer;
+    final long pointer;
 
     public GenerateShareStoreResult(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public String getIndex() throws RuntimeError {

@@ -12,16 +12,6 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *) {
 jobject callbackHandler = nullptr;
 jmethodID networkInterface;
 
-jmethodID getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring methodSignature) {
-    jclass jClass = jniEnv->GetObjectClass(jThis);
-    const char *method = jniEnv->GetStringUTFChars(methodName, JNI_FALSE);
-    const char *signature = jniEnv->GetStringUTFChars(methodSignature, JNI_FALSE);
-    jmethodID methodId = jniEnv->GetMethodID(jClass, method, signature);
-    jniEnv->ReleaseStringUTFChars(methodSignature, signature);
-    jniEnv->ReleaseStringUTFChars(methodName, method);
-    return methodId;
-}
-
 char* network_callback(char* url, char *data, int* error) {
     JNIEnv *jniEnv;
     if (g_vm->GetEnv((void **) &jniEnv, JNI_VERSION_1_6) != JNI_OK || callbackHandler == nullptr) {

@@ -175,12 +175,12 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThres
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ThresholdKey_jniThresholdKeyInputShareStore(
-        JNIEnv *env, jobject jthis, jlong share, jthrowable error) {
+        JNIEnv *env, jobject jthis, jobject share, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     FFIThresholdKey *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    ShareStore *pShareStore = reinterpret_cast<ShareStore *>(share);
+    ShareStore *pShareStore = reinterpret_cast<ShareStore *>(GetPointerField(env,share));
     threshold_key_input_share_store(pThreshold, pShareStore, error_ptr);
     setErrorCode(env, error, errorCode);
 }

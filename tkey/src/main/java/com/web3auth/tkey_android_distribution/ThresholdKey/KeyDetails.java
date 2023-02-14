@@ -16,14 +16,10 @@ public final class KeyDetails {
 
     private native String jniKeyDetailsGetShareDescriptions(RuntimeError error);
 
-    private final long pointer;
+    final long pointer;
 
     public KeyDetails(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public KeyPoint getPPublicKeyPoint() throws RuntimeError {

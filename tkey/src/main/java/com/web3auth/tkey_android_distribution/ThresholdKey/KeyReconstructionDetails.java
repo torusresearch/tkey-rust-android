@@ -17,14 +17,10 @@ public final class KeyReconstructionDetails {
 
     private native void jniKeyReconstructionDetailsFree();
 
-    private final long pointer;
+    final long pointer;
 
     public KeyReconstructionDetails(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public String getKey() throws RuntimeError {

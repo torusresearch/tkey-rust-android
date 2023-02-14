@@ -9,13 +9,13 @@ public final class ShareSerializationModule {
     private ShareSerializationModule() {
     }
 
-    private static native String jniShareSerializationModuleSerializeShare(long thresholdKey, String share, @Nullable String format, RuntimeError error);
+    private static native String jniShareSerializationModuleSerializeShare(ThresholdKey thresholdKey, String share, @Nullable String format, RuntimeError error);
 
-    private static native String jniShareSerializationModuleDeserializeShare(long thresholdKey, String share, @Nullable String format, RuntimeError error);
+    private static native String jniShareSerializationModuleDeserializeShare(ThresholdKey thresholdKey, String share, @Nullable String format, RuntimeError error);
 
     public static String serializeShare(ThresholdKey thresholdKey, String share, @Nullable String format) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniShareSerializationModuleSerializeShare(thresholdKey.getPointer(), share, format, error);
+        String result = jniShareSerializationModuleSerializeShare(thresholdKey, share, format, error);
         if (error.code != 0) {
             throw error;
         }
@@ -24,7 +24,7 @@ public final class ShareSerializationModule {
 
     public static String deserializeShare(ThresholdKey thresholdKey, String share, @Nullable String format) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniShareSerializationModuleDeserializeShare(thresholdKey.getPointer(), share, format, error);
+        String result = jniShareSerializationModuleDeserializeShare(thresholdKey, share, format, error);
         if (error.code != 0) {
             throw error;
         }

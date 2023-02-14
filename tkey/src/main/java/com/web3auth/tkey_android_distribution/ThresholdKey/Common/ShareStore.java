@@ -15,7 +15,7 @@ public final class ShareStore {
 
     private native void jniShareStoreFree();
 
-    private final long pointer;
+    final long pointer;
 
     public ShareStore(long ptr) {
         pointer = ptr;
@@ -28,10 +28,6 @@ public final class ShareStore {
             throw error;
         }
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public String toJsonString() throws RuntimeError {

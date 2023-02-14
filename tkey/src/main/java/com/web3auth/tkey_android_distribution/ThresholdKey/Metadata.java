@@ -9,7 +9,7 @@ public final class Metadata {
 
     private native String jniMetadataToJson(RuntimeError error);
 
-    private final long pointer;
+    final long pointer;
 
     public Metadata(long ptr) {
         pointer = ptr;
@@ -22,10 +22,6 @@ public final class Metadata {
             throw error;
         }
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public String export() throws RuntimeError {

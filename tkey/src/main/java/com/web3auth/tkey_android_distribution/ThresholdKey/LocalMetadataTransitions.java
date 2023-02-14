@@ -5,14 +5,10 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 public final class LocalMetadataTransitions {
     private native void jniLocalMetadataTransitionsFree();
 
-    private final long pointer;
+    final long pointer;
 
     public LocalMetadataTransitions(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     @Override

@@ -17,7 +17,7 @@ public final class StorageLayer {
 
     private native void jniStorageLayerFree();
 
-    private final long pointer;
+    final long pointer;
 
     public String networkInterface(String url, String data, RuntimeError error) {
         try {
@@ -79,10 +79,6 @@ public final class StorageLayer {
             throw error;
         }
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     @Override

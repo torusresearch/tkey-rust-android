@@ -9,17 +9,17 @@ public final class SeedPhraseModule {
     private SeedPhraseModule() {
     }
 
-    private static native void jniSeedPhraseModuleSetSeedPhrase(long thresholdKey, String format, String phrase, int wallets, String curveN, RuntimeError error);
+    private static native void jniSeedPhraseModuleSetSeedPhrase(ThresholdKey  thresholdKey, String format, String phrase, int wallets, String curveN, RuntimeError error);
 
-    private static native void jniSeedPhraseModuleChangePhrase(long thresholdKey, String oldPhrase, String newPhrase, String curveN, RuntimeError error);
+    private static native void jniSeedPhraseModuleChangePhrase(ThresholdKey  thresholdKey, String oldPhrase, String newPhrase, String curveN, RuntimeError error);
 
-    private static native String jniSeedPhraseModuleGetSeedPhrases(long thresholdKey, RuntimeError error);
+    private static native String jniSeedPhraseModuleGetSeedPhrases(ThresholdKey  thresholdKey, RuntimeError error);
 
-    private static native void jniSeedPhraseModuleDeletePhrase(long thresholdKey, @Nullable String phrase, RuntimeError error);
+    private static native void jniSeedPhraseModuleDeletePhrase(ThresholdKey thresholdKey, @Nullable String phrase, RuntimeError error);
 
     public static void setSeedPhrase(ThresholdKey thresholdKey, String format, @Nullable String phrase, int wallets) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSeedPhraseModuleSetSeedPhrase(thresholdKey.getPointer(), format, phrase, wallets, thresholdKey.curveN, error);
+        jniSeedPhraseModuleSetSeedPhrase(thresholdKey, format, phrase, wallets, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -27,7 +27,7 @@ public final class SeedPhraseModule {
 
     public static void changePhrase(ThresholdKey thresholdKey, String oldPhrase, String newPhrase) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSeedPhraseModuleChangePhrase(thresholdKey.getPointer(), oldPhrase, newPhrase, thresholdKey.curveN, error);
+        jniSeedPhraseModuleChangePhrase(thresholdKey, oldPhrase, newPhrase, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -35,7 +35,7 @@ public final class SeedPhraseModule {
 
     public static String getPhrases(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSeedPhraseModuleGetSeedPhrases(thresholdKey.getPointer(), error);
+        String result = jniSeedPhraseModuleGetSeedPhrases(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -44,7 +44,7 @@ public final class SeedPhraseModule {
 
     public static void deletePhrase(ThresholdKey thresholdKey, String phrase) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSeedPhraseModuleDeletePhrase(thresholdKey.getPointer(), phrase, error);
+        jniSeedPhraseModuleDeletePhrase(thresholdKey, phrase, error);
         if (error.code != 0) {
             throw error;
         }

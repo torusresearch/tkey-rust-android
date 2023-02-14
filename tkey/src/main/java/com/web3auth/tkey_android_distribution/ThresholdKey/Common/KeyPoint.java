@@ -3,7 +3,7 @@ package com.web3auth.tkey_android_distribution.ThresholdKey.Common;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class KeyPoint {
-    private final long pointer;
+    final long pointer;
 
     private native String jniKeyPointEncode(String format, RuntimeError error);
 
@@ -15,10 +15,6 @@ public final class KeyPoint {
 
     public KeyPoint(long ptr) {
         this.pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public String getX() throws RuntimeError {

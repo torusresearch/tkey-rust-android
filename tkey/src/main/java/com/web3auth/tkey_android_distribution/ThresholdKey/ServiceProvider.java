@@ -9,14 +9,10 @@ public final class ServiceProvider {
 
     private static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
-    private final long pointer;
+    final long pointer;
 
     public ServiceProvider(long ptr) {
         pointer = ptr;
-    }
-
-    public long getPointer() {
-        return pointer;
     }
 
     public ServiceProvider(boolean enableLogging, String postboxKey) throws RuntimeError {

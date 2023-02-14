@@ -8,21 +8,21 @@ public final class SecurityQuestionModule {
     private SecurityQuestionModule() {
     }
 
-    private static native long jniSecurityQuestionModuleGenerateShareStoreResult(long thresholdKey, String questions, String answer, String curveN, RuntimeError error);
+    private static native long jniSecurityQuestionModuleGenerateShareStoreResult(ThresholdKey thresholdKey, String questions, String answer, String curveN, RuntimeError error);
 
-    private static native boolean jniSecurityQuestionModuleInputShare(long thresholdKey, String answer, String curveN, RuntimeError error);
+    private static native boolean jniSecurityQuestionModuleInputShare(ThresholdKey thresholdKey, String answer, String curveN, RuntimeError error);
 
-    private static native boolean jniSecurityQuestionModuleChangeQuestionAndAnswer(long thresholdKey, String questions, String answer, String curveN, RuntimeError error);
+    private static native boolean jniSecurityQuestionModuleChangeQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer, String curveN, RuntimeError error);
 
-    private static native boolean jniSecurityQuestionModuleStoreAnswer(long thresholdKey, String answer, String curveN, RuntimeError error);
+    private static native boolean jniSecurityQuestionModuleStoreAnswer(ThresholdKey thresholdKey, String answer, String curveN, RuntimeError error);
 
-    private static native String jniSecurityQuestionModuleGetAnswer(long thresholdKey, RuntimeError error);
+    private static native String jniSecurityQuestionModuleGetAnswer(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native String jniSecurityQuestionModuleGetQuestions(long thresholdKey, RuntimeError error);
+    private static native String jniSecurityQuestionModuleGetQuestions(ThresholdKey thresholdKey, RuntimeError error);
 
     public static GenerateShareStoreResult generateNewShare(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey.getPointer(), questions, answer, thresholdKey.curveN, error);
+        long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey, questions, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -31,7 +31,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean inputShare(ThresholdKey thresholdKey, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleInputShare(thresholdKey.getPointer(), answer, thresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleInputShare(thresholdKey, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -40,7 +40,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey.getPointer(), questions, answer, thresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey, questions, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -49,7 +49,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean storeAnswer(ThresholdKey thresholdKey, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey.getPointer(), answer, thresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -58,7 +58,7 @@ public final class SecurityQuestionModule {
 
     public static String getAnswer(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSecurityQuestionModuleGetAnswer(thresholdKey.getPointer(), error);
+        String result = jniSecurityQuestionModuleGetAnswer(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -67,7 +67,7 @@ public final class SecurityQuestionModule {
 
     public static String getQuestions(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSecurityQuestionModuleGetQuestions(thresholdKey.getPointer(), error);
+        String result = jniSecurityQuestionModuleGetQuestions(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }

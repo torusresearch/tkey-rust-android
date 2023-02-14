@@ -9,31 +9,31 @@ public final class SharetransferModule {
     private SharetransferModule() {
     }
 
-    private static native String jniSharetransferModuleRequestNewShare(long thresholdKey, String agent, String indexes, String curveN, RuntimeError error);
+    private static native String jniSharetransferModuleRequestNewShare(ThresholdKey thresholdKey, String agent, String indexes, String curveN, RuntimeError error);
 
-    private static native void jniSharetransferModuleAddCustomInfoToRequest(long thresholdKey, String encPubKeyX, String customInfo, String curveN, RuntimeError error);
+    private static native void jniSharetransferModuleAddCustomInfoToRequest(ThresholdKey thresholdKey, String encPubKeyX, String customInfo, String curveN, RuntimeError error);
 
-    private static native String jniSharetransferModuleLookForRequest(long thresholdKey, RuntimeError error);
+    private static native String jniSharetransferModuleLookForRequest(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native void jniSharetransferModuleApproveRequest(long thresholdKey, String encPubKeyX, long shareStore, String curveN, RuntimeError error);
+    private static native void jniSharetransferModuleApproveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore shareStore, String curveN, RuntimeError error);
 
-    private static native void jniSharetransferModuleApproveRequestWithShareIndex(long thresholdKey, String encPubKeyX, String indexes, String curveN, RuntimeError error);
+    private static native void jniSharetransferModuleApproveRequestWithShareIndex(ThresholdKey thresholdKey, String encPubKeyX, String indexes, String curveN, RuntimeError error);
 
-    private static native long jniSharetransferModuleGetStore(long thresholdKey, RuntimeError error);
+    private static native long jniSharetransferModuleGetStore(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native boolean jniSharetransferModuleSetStore(long thresholdKey, long shareStore, String curveN, RuntimeError error);
+    private static native boolean jniSharetransferModuleSetStore(ThresholdKey thresholdKey, ShareTransferStore shareStore, String curveN, RuntimeError error);
 
-    private static native boolean jniSharetransferModuleDeleteStore(long thresholdKey, String encPubKeyX, String curveN, RuntimeError error);
+    private static native boolean jniSharetransferModuleDeleteStore(ThresholdKey thresholdKey, String encPubKeyX, String curveN, RuntimeError error);
 
-    private static native String jniSharetransferModuleGetCurrentEncryptionKey(long thresholdKey, RuntimeError error);
+    private static native String jniSharetransferModuleGetCurrentEncryptionKey(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native long jniSharetransferModuleRequestStatusCheck(long thresholdKey, String encPubKeyX, boolean deleteOnCompletion, String curveN, RuntimeError error);
+    private static native long jniSharetransferModuleRequestStatusCheck(ThresholdKey thresholdKey, String encPubKeyX, boolean deleteOnCompletion, String curveN, RuntimeError error);
 
-    private static native void jniSharetransferModuleCleanupRequest(long thresholdKey, RuntimeError error);
+    private static native void jniSharetransferModuleCleanupRequest(ThresholdKey thresholdKey, RuntimeError error);
 
     public static String requestNewShare(ThresholdKey thresholdKey, String userAgent, String availableShareIndexes) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSharetransferModuleRequestNewShare(thresholdKey.getPointer(), userAgent, availableShareIndexes, thresholdKey.curveN, error);
+        String result = jniSharetransferModuleRequestNewShare(thresholdKey, userAgent, availableShareIndexes, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -42,7 +42,7 @@ public final class SharetransferModule {
 
     public static void addCustomInfoToRequest(ThresholdKey thresholdKey, String encPubKeyX, String customInfo) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleAddCustomInfoToRequest(thresholdKey.getPointer(), encPubKeyX, customInfo, thresholdKey.curveN, error);
+        jniSharetransferModuleAddCustomInfoToRequest(thresholdKey, encPubKeyX, customInfo, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -50,7 +50,7 @@ public final class SharetransferModule {
 
     public static String lookForRequest(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSharetransferModuleLookForRequest(thresholdKey.getPointer(), error);
+        String result = jniSharetransferModuleLookForRequest(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -59,7 +59,7 @@ public final class SharetransferModule {
 
     public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleApproveRequest(thresholdKey.getPointer(), encPubKeyX, store.getPointer(), thresholdKey.curveN, error);
+        jniSharetransferModuleApproveRequest(thresholdKey, encPubKeyX, store, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -67,7 +67,7 @@ public final class SharetransferModule {
 
     public static void approveRequestWithShareIndex(ThresholdKey thresholdKey, String encPubKeyX, String shareIndex) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleApproveRequestWithShareIndex(thresholdKey.getPointer(), encPubKeyX, shareIndex, thresholdKey.curveN, error);
+        jniSharetransferModuleApproveRequestWithShareIndex(thresholdKey, encPubKeyX, shareIndex, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -75,7 +75,7 @@ public final class SharetransferModule {
 
     public static ShareTransferStore getStore(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long result = jniSharetransferModuleGetStore(thresholdKey.getPointer(), error);
+        long result = jniSharetransferModuleGetStore(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -84,7 +84,7 @@ public final class SharetransferModule {
 
     public static Boolean setStore(ThresholdKey thresholdKey, ShareTransferStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        Boolean result = jniSharetransferModuleSetStore(thresholdKey.getPointer(), store.getPointer(), thresholdKey.curveN, error);
+        Boolean result = jniSharetransferModuleSetStore(thresholdKey, store, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -93,7 +93,7 @@ public final class SharetransferModule {
 
     public static Boolean deleteStore(ThresholdKey thresholdKey, String encPubKeyX) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        Boolean result = jniSharetransferModuleDeleteStore(thresholdKey.getPointer(), encPubKeyX, thresholdKey.curveN, error);
+        Boolean result = jniSharetransferModuleDeleteStore(thresholdKey, encPubKeyX, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -102,7 +102,7 @@ public final class SharetransferModule {
 
     public static String getCurrentEncryptionKey(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniSharetransferModuleGetCurrentEncryptionKey(thresholdKey.getPointer(), error);
+        String result = jniSharetransferModuleGetCurrentEncryptionKey(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -111,7 +111,7 @@ public final class SharetransferModule {
 
     public static ShareStore requestStatusCheck(ThresholdKey thresholdKey, String encPubKeyX, Boolean deleteRequestOnCompletion) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long result = jniSharetransferModuleRequestStatusCheck(thresholdKey.getPointer(), encPubKeyX, deleteRequestOnCompletion, thresholdKey.curveN, error);
+        long result = jniSharetransferModuleRequestStatusCheck(thresholdKey, encPubKeyX, deleteRequestOnCompletion, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -120,7 +120,7 @@ public final class SharetransferModule {
 
     public static void cleanupRequest(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleCleanupRequest(thresholdKey.getPointer(), error);
+        jniSharetransferModuleCleanupRequest(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }

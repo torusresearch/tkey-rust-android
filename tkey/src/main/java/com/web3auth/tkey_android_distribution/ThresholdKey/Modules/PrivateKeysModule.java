@@ -14,15 +14,15 @@ public final class PrivateKeysModule {
     private PrivateKeysModule() {
     }
 
-    private static native boolean jniPrivateKeysModuleSetPrivateKey(long thresholdKey, @Nullable String key, String format, String curveN, RuntimeError error);
+    private static native boolean jniPrivateKeysModuleSetPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format, String curveN, RuntimeError error);
 
-    private static native String jniPrivateKeysModuleGetPrivateKey(long thresholdKey, RuntimeError error);
+    private static native String jniPrivateKeysModuleGetPrivateKey(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native String jniPrivateKeysModuleGetPrivateKeyAccounts(long thresholdKey, RuntimeError error);
+    private static native String jniPrivateKeysModuleGetPrivateKeyAccounts(ThresholdKey thresholdKey, RuntimeError error);
 
     public static Boolean setPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey.getPointer(), key, format, thresholdKey.curveN, error);
+        boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey, key, format, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -31,7 +31,7 @@ public final class PrivateKeysModule {
 
     public static String getPrivateKeys(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniPrivateKeysModuleGetPrivateKey(thresholdKey.getPointer(), error);
+        String result = jniPrivateKeysModuleGetPrivateKey(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
@@ -40,7 +40,7 @@ public final class PrivateKeysModule {
 
     public static ArrayList<String> getPrivateKeyAccounts(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
-        String result = jniPrivateKeysModuleGetPrivateKeyAccounts(thresholdKey.getPointer(), error);
+        String result = jniPrivateKeysModuleGetPrivateKeyAccounts(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
