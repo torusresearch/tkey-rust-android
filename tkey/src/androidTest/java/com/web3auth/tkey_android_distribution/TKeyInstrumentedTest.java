@@ -55,8 +55,6 @@ public class TKeyInstrumentedTest {
             KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
         } catch (RuntimeError e) {
             fail();
-        } catch (NoSuchMethodException e) {
-            fail();
         }
     }
 }

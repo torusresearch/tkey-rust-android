@@ -4,7 +4,6 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -73,7 +72,7 @@ public final class StorageLayer {
         pointer = ptr;
     }
 
-    public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError, NoSuchMethodException {
+    public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, "networkInterface", "(Ljava/lang/String;Ljava/lang/String;Lcom/web3auth/tkey_android_distribution/RuntimeError;)Ljava/lang/String;", error);
         if (error.code != 0) {
