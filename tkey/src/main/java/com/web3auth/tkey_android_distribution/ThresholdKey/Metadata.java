@@ -3,11 +3,11 @@ package com.web3auth.tkey_android_distribution.ThresholdKey;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class Metadata {
-    private static native void jniMetadataFree();
+    private native void jniMetadataFree();
 
-    private static native long jniMetadataFromJson(String json, RuntimeError error);
+    private native long jniMetadataFromJson(String json, RuntimeError error);
 
-    private static native String jniMetadataToJson(RuntimeError error);
+    private native String jniMetadataToJson(RuntimeError error);
 
     private final long pointer;
 

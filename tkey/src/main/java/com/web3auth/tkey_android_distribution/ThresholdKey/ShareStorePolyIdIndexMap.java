@@ -11,11 +11,11 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 public final class ShareStorePolyIdIndexMap {
-    private static native String jniShareStorePolyIdIndexMapGetKeys(RuntimeError error);
+    private native String jniShareStorePolyIdIndexMapGetKeys(RuntimeError error);
 
-    private static native long jniShareStorePolyIdIndexMapMapGetValueByKey(String key, RuntimeError error);
+    private native long jniShareStorePolyIdIndexMapMapGetValueByKey(String key, RuntimeError error);
 
-    private static native void jniShareStorePolyIdIndexMapMapFree();
+    private native void jniShareStorePolyIdIndexMapMapFree();
 
     private final long pointer;
 

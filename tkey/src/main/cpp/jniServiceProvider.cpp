@@ -6,14 +6,14 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ServiceProvider_jniServiceProviderFree(
         JNIEnv *env, jobject jthis) {
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ServiceProvider *pProvider = reinterpret_cast<ServiceProvider *>(pObject);
     service_provider_free(pProvider);
 }
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ServiceProvider_jniServiceProvider(
-        JNIEnv *env, jclass clazz, jboolean enable_logging,
+        JNIEnv *env, jobject jthis, jboolean enable_logging,
         jstring postbox_key, jstring curve_n,
         jthrowable error) {
     int errorCode = 0;

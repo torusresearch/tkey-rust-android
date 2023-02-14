@@ -59,7 +59,7 @@ public final class SharetransferModule {
 
     public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleApproveRequest(thresholdKey.getPointer(), encPubKeyX, store.getPointer(), ThresholdKey.curveN, error);
+        jniSharetransferModuleApproveRequest(thresholdKey.getPointer(), encPubKeyX, store.getPointer(), thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -67,7 +67,7 @@ public final class SharetransferModule {
 
     public static void approveRequestWithShareIndex(ThresholdKey thresholdKey, String encPubKeyX, String shareIndex) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSharetransferModuleApproveRequestWithShareIndex(thresholdKey.getPointer(), encPubKeyX, shareIndex, ThresholdKey.curveN, error);
+        jniSharetransferModuleApproveRequestWithShareIndex(thresholdKey.getPointer(), encPubKeyX, shareIndex, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -84,7 +84,7 @@ public final class SharetransferModule {
 
     public static Boolean setStore(ThresholdKey thresholdKey, ShareTransferStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        Boolean result = jniSharetransferModuleSetStore(thresholdKey.getPointer(), store.getPointer(), ThresholdKey.curveN, error);
+        Boolean result = jniSharetransferModuleSetStore(thresholdKey.getPointer(), store.getPointer(), thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -93,7 +93,7 @@ public final class SharetransferModule {
 
     public static Boolean deleteStore(ThresholdKey thresholdKey, String encPubKeyX) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        Boolean result = jniSharetransferModuleDeleteStore(thresholdKey.getPointer(), encPubKeyX, ThresholdKey.curveN, error);
+        Boolean result = jniSharetransferModuleDeleteStore(thresholdKey.getPointer(), encPubKeyX, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -111,7 +111,7 @@ public final class SharetransferModule {
 
     public static ShareStore requestStatusCheck(ThresholdKey thresholdKey, String encPubKeyX, Boolean deleteRequestOnCompletion) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long result = jniSharetransferModuleRequestStatusCheck(thresholdKey.getPointer(), encPubKeyX, deleteRequestOnCompletion, ThresholdKey.curveN, error);
+        long result = jniSharetransferModuleRequestStatusCheck(thresholdKey.getPointer(), encPubKeyX, deleteRequestOnCompletion, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }

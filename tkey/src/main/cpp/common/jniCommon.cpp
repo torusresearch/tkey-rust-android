@@ -11,6 +11,12 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO,     LOG_TAG, __VA_ARGS__)
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG,    LOG_TAG, __VA_ARGS__)
 
+inline jlong GetPointerFieldFromClass(JNIEnv *jEnv, jclass jThis) {
+    jfieldID fid = jEnv->GetFieldID(jThis, "pointer", "J");
+    jlong lObject = jEnv->GetLongField(jThis, fid);
+    return lObject;
+}
+
 inline jlong GetPointerField(JNIEnv *jEnv, jobject jThis) {
     jclass cls = jEnv->GetObjectClass(jThis);
     jfieldID fid = jEnv->GetFieldID(cls, "pointer", "J");

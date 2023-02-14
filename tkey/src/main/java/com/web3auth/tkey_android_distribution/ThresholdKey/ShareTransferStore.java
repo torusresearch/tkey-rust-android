@@ -1,7 +1,7 @@
 package com.web3auth.tkey_android_distribution.ThresholdKey;
 
 public final class ShareTransferStore {
-    private static native void jniShareTransferStoreFree();
+    private native void jniShareTransferStoreFree();
 
     private final long pointer;
 

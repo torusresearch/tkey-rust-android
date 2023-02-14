@@ -11,11 +11,11 @@ import org.json.JSONException;
 import java.util.ArrayList;
 
 public final class ShareStoreMap {
-    private static native String jniShareStoreMapGetKeys(RuntimeError error);
+    private native String jniShareStoreMapGetKeys(RuntimeError error);
 
-    private static native long jniShareStoreMapGetValueByKey(String key, RuntimeError error);
+    private native long jniShareStoreMapGetValueByKey(String key, RuntimeError error);
 
-    private static native void jniShareStoreMapFree();
+    private native void jniShareStoreMapFree();
 
     private final long pointer;
 

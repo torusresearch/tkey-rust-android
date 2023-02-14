@@ -22,7 +22,7 @@ public final class PrivateKeysModule {
 
     public static Boolean setPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey.getPointer(), key, format, ThresholdKey.curveN, error);
+        boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey.getPointer(), key, format, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }

@@ -5,13 +5,13 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 public final class KeyPoint {
     private final long pointer;
 
-    private static native String jniKeyPointEncode(String format, RuntimeError error);
+    private native String jniKeyPointEncode(String format, RuntimeError error);
 
-    private static native String jniKeyPointGetX(RuntimeError error);
+    private native String jniKeyPointGetX(RuntimeError error);
 
-    private static native String jniKeyPointGetY(RuntimeError error);
+    private native String jniKeyPointGetY(RuntimeError error);
 
-    private static native void jniKeyPointFree();
+    private native void jniKeyPointFree();
 
     public KeyPoint(long ptr) {
         this.pointer = ptr;

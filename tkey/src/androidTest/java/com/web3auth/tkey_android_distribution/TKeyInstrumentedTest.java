@@ -11,6 +11,10 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import com.web3auth.tkey_android_distribution.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey_android_distribution.ThresholdKey.KeyDetails;
+import com.web3auth.tkey_android_distribution.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey_android_distribution.ThresholdKey.StorageLayer;
+import com.web3auth.tkey_android_distribution.ThresholdKey.ThresholdKey;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -29,10 +33,30 @@ public class TKeyInstrumentedTest {
     }
 
     @Test
-    public void generate_private_key() throws RuntimeError {
-        PrivateKey key = PrivateKey.generate();
-        assertNotEquals(key.hex.length(), 0);
-        PrivateKey key2 = new PrivateKey(key.hex);
-        assertEquals(key.hex, key2.hex);
+    public void generate_private_key() {
+        try {
+            PrivateKey key = PrivateKey.generate();
+            assertNotEquals(key.hex.length(), 0);
+            PrivateKey key2 = new PrivateKey(key.hex);
+            assertEquals(key.hex, key2.hex);
+        } catch (RuntimeError e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void basic_threshold_key_tests() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us/", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            PrivateKey key = PrivateKey.generate();
+            KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
+        } catch (RuntimeError e) {
+            fail();
+        } catch (NoSuchMethodException e) {
+            fail();
+        }
     }
 }

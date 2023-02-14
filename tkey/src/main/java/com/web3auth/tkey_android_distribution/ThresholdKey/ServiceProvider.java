@@ -3,9 +3,9 @@ package com.web3auth.tkey_android_distribution.ThresholdKey;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class ServiceProvider {
-    private static native void jniServiceProviderFree();
+    private native void jniServiceProviderFree();
 
-    private static native long jniServiceProvider(boolean enableLogging, String postboxKey, String curveN, RuntimeError error);
+    private native long jniServiceProvider(boolean enableLogging, String postboxKey, String curveN, RuntimeError error);
 
     private static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 

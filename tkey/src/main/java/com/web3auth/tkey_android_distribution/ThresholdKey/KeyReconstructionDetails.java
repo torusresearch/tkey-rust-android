@@ -5,17 +5,17 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 import java.util.ArrayList;
 
 public final class KeyReconstructionDetails {
-    private static native String jniKeyReconstructionDetailsGetPrivateKey(RuntimeError error);
+    private native String jniKeyReconstructionDetailsGetPrivateKey(RuntimeError error);
 
-    private static native int jniKeyReconstructionDetailsGetSeedPhraseLen(RuntimeError error);
+    private native int jniKeyReconstructionDetailsGetSeedPhraseLen(RuntimeError error);
 
-    private static native String jniKeyReconstructionDetailsGetSeedPhraseAt(int index, RuntimeError error);
+    private native String jniKeyReconstructionDetailsGetSeedPhraseAt(int index, RuntimeError error);
 
-    private static native int jniKeyReconstructionDetailsGetAllKeysLen(RuntimeError error);
+    private native int jniKeyReconstructionDetailsGetAllKeysLen(RuntimeError error);
 
-    private static native String jniKeyReconstructionDetailsGetAllKeysAt(int index, RuntimeError error);
+    private native String jniKeyReconstructionDetailsGetAllKeysAt(int index, RuntimeError error);
 
-    private static native void jniKeyReconstructionDetailsFree();
+    private native void jniKeyReconstructionDetailsFree();
 
     private final long pointer;
 

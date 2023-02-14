@@ -3,11 +3,11 @@ package com.web3auth.tkey_android_distribution.ThresholdKey;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class GenerateShareStoreResult {
-    private static native String jniGenerateShareStoreResultGetShareIndex(RuntimeError error);
+    private native String jniGenerateShareStoreResultGetShareIndex(RuntimeError error);
 
-    private static native long jniGenerateShareStoreResultGetShareStoreMap(RuntimeError error);
+    private native long jniGenerateShareStoreResultGetShareStoreMap(RuntimeError error);
 
-    private static native void jniGenerateShareStoreResultFree();
+    private native void jniGenerateShareStoreResultFree();
 
     private final long pointer;
 

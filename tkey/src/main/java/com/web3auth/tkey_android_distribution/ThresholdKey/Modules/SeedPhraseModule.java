@@ -19,7 +19,7 @@ public final class SeedPhraseModule {
 
     public static void setSeedPhrase(ThresholdKey thresholdKey, String format, @Nullable String phrase, int wallets) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSeedPhraseModuleSetSeedPhrase(thresholdKey.getPointer(), format, phrase, wallets, ThresholdKey.curveN, error);
+        jniSeedPhraseModuleSetSeedPhrase(thresholdKey.getPointer(), format, phrase, wallets, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -27,7 +27,7 @@ public final class SeedPhraseModule {
 
     public static void changePhrase(ThresholdKey thresholdKey, String oldPhrase, String newPhrase) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniSeedPhraseModuleChangePhrase(thresholdKey.getPointer(), oldPhrase, newPhrase, ThresholdKey.curveN, error);
+        jniSeedPhraseModuleChangePhrase(thresholdKey.getPointer(), oldPhrase, newPhrase, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }

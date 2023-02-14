@@ -4,17 +4,17 @@ import com.web3auth.tkey_android_distribution.RuntimeError;
 import com.web3auth.tkey_android_distribution.ThresholdKey.Common.KeyPoint;
 
 public final class KeyDetails {
-    private static native void jniKeyDetailsFree();
+    private native void jniKeyDetailsFree();
 
-    private static native long jniKeyDetailsGetPublicKeyPoint(RuntimeError error);
+    private native long jniKeyDetailsGetPublicKeyPoint(RuntimeError error);
 
-    private static native int jniKeyDetailsGetThreshold(RuntimeError error);
+    private native int jniKeyDetailsGetThreshold(RuntimeError error);
 
-    private static native int jniKeyDetailsGetRequiredShares(RuntimeError error);
+    private native int jniKeyDetailsGetRequiredShares(RuntimeError error);
 
-    private static native int jniKeyDetailsGetTotalShares(RuntimeError error);
+    private native int jniKeyDetailsGetTotalShares(RuntimeError error);
 
-    private static native String jniKeyDetailsGetShareDescriptions(RuntimeError error);
+    private native String jniKeyDetailsGetShareDescriptions(RuntimeError error);
 
     private final long pointer;
 

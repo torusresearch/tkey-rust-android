@@ -22,7 +22,7 @@ public final class SecurityQuestionModule {
 
     public static GenerateShareStoreResult generateNewShare(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey.getPointer(), questions, answer, ThresholdKey.curveN, error);
+        long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey.getPointer(), questions, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -31,7 +31,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean inputShare(ThresholdKey thresholdKey, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleInputShare(thresholdKey.getPointer(), answer, ThresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleInputShare(thresholdKey.getPointer(), answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -40,7 +40,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey.getPointer(), questions, answer, ThresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey.getPointer(), questions, answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -49,7 +49,7 @@ public final class SecurityQuestionModule {
 
     public static Boolean storeAnswer(ThresholdKey thresholdKey, String answer) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey.getPointer(), answer, ThresholdKey.curveN, error);
+        boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey.getPointer(), answer, thresholdKey.curveN, error);
         if (error.code != 0) {
             throw error;
         }

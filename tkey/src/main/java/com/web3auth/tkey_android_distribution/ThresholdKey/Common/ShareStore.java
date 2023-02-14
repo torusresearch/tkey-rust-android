@@ -3,17 +3,17 @@ package com.web3auth.tkey_android_distribution.ThresholdKey.Common;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class ShareStore {
-    private static native long jniSharestoreFromJson(String json, RuntimeError error);
+    private native long jniSharestoreFromJson(String json, RuntimeError error);
 
-    private static native String jniSharestoreToJson(RuntimeError error);
+    private native String jniSharestoreToJson(RuntimeError error);
 
-    private static native String jniShareStoreGetShare(RuntimeError error);
+    private native String jniShareStoreGetShare(RuntimeError error);
 
-    private static native String jniShareStoreGetShareIndex(RuntimeError error);
+    private native String jniShareStoreGetShareIndex(RuntimeError error);
 
-    private static native String jniShareStoreGetPolynomialId(RuntimeError error);
+    private native String jniShareStoreGetPolynomialId(RuntimeError error);
 
-    private static native void jniShareStoreFree();
+    private native void jniShareStoreFree();
 
     private final long pointer;
 

@@ -6,7 +6,7 @@ extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniShareStoreFree(
         JNIEnv *env, jobject jthis) {
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ShareStore *pointer = reinterpret_cast<ShareStore *>(pObject);
     share_store_free(pointer);
 }
@@ -17,7 +17,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ShareStore *pStore = reinterpret_cast<ShareStore *>(pObject);
     char *pResult = share_store_to_json(pStore,error_ptr);
     setErrorCode(env, error, errorCode);
@@ -32,7 +32,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ShareStore *pStore = reinterpret_cast<ShareStore *>(pObject);
     char *pResult = share_store_get_share(pStore,error_ptr);
     setErrorCode(env, error, errorCode);
@@ -47,7 +47,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ShareStore *pStore = reinterpret_cast<ShareStore *>(pObject);
     char *pResult = share_store_get_share_index(pStore,error_ptr);
     setErrorCode(env, error, errorCode);
@@ -62,7 +62,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    long pObject = GetPointerField(env, jthis);
+    jlong pObject = GetPointerField(env, jthis);
     ShareStore *pStore = reinterpret_cast<ShareStore *>(pObject);
     char *pResult = share_store_get_polynomial_id(pStore,error_ptr);
     setErrorCode(env, error, errorCode);

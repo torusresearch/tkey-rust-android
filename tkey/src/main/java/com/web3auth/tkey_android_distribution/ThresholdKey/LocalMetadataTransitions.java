@@ -3,7 +3,7 @@ package com.web3auth.tkey_android_distribution.ThresholdKey;
 import com.web3auth.tkey_android_distribution.RuntimeError;
 
 public final class LocalMetadataTransitions {
-    private static native void jniLocalMetadataTransitionsFree();
+    private native void jniLocalMetadataTransitionsFree();
 
     private final long pointer;
 
