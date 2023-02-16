@@ -1,5 +1,5 @@
 #include <jni.h>
-#include "tkey.h"
+#include "include/tkey.h"
 #include "jniCommon.cpp"
 
 extern "C"

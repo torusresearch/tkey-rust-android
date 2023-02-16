@@ -47,10 +47,13 @@ android {
 
     prefab {
         "tkey-native" {
-            headers "src/main/jniLibs"
+            headers "src/main/jniLibs/include"
         }
     }
 
+    packagingOptions {
+        exclude("**/libtkey.a")
+    }
 }
 
 dependencies {
