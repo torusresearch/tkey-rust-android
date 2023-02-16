@@ -4,11 +4,6 @@
     package="com.web3auth.tkey_android_distribution">
 
     <application
-        android:allowBackup="true"
-        android:dataExtractionRules="@xml/data_extraction_rules"
-        android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         tools:targetApi="31" />
     <uses-permission android:name="android.permission.INTERNET" />
