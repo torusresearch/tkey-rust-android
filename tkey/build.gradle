@@ -47,7 +47,7 @@ android {
 
     prefab {
         "tkey-native" {
-            headers "src/main/jniLibs/include"
+            headers "libs/include"
         }
     }
 

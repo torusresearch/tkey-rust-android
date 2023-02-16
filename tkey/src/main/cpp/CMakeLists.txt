@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.18.1)
 
 project(tKey)
 
-set(libs_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../jniLibs)
+set(libs_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../libs)
 
 add_library(
         tkey
