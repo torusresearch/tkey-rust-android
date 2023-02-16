@@ -24,7 +24,7 @@ import com.web3auth.tkey_android_distribution.ThresholdKey.ThresholdKey;
 @RunWith(AndroidJUnit4.class)
 public class TKeyInstrumentedTest {
     static {
-        System.loadLibrary("native-lib");
+        System.loadLibrary("tkey-native");
     }
 
     @Test
