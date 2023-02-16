@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_Version_jniVersion(JNIEnv *env,
+Java_com_web3auth_tkey_Version_jniVersion(JNIEnv *env,
                                                                  __attribute__((unused)) jclass clazz,
                                                                  jthrowable error) {
     int errorCode = 0;

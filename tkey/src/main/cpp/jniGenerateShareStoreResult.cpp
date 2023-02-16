@@ -8,7 +8,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareIndex(
+Java_com_web3auth_tkey_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareIndex(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -23,7 +23,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreRes
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareStoreMap(
+Java_com_web3auth_tkey_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultGetShareStoreMap(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -36,7 +36,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreRes
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultFree(
+Java_com_web3auth_tkey_ThresholdKey_GenerateShareStoreResult_jniGenerateShareStoreResultFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pStore = reinterpret_cast<GenerateShareStoreResult *>(pObject);

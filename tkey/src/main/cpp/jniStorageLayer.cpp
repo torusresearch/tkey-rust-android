@@ -22,7 +22,7 @@ char *network_callback(char *url, char *data, int *error) {
     string_free(url);
     jstring jdata = jniEnv->NewStringUTF(data);
     string_free(data);
-    jclass error_class = jniEnv->FindClass("com/web3auth/tkey_android_distribution/RuntimeError");
+    jclass error_class = jniEnv->FindClass("com/web3auth/tkey/RuntimeError");
     jmethodID constructor = jniEnv->GetMethodID(error_class, "<init>", "()V");
     jobject jerror = jniEnv->NewObject(error_class, constructor);
     auto result = (jstring) jniEnv->CallObjectMethod(
@@ -41,7 +41,7 @@ char *network_callback(char *url, char *data, int *error) {
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStorageLayerFree(
+Java_com_web3auth_tkey_ThresholdKey_StorageLayer_jniStorageLayerFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
@@ -51,7 +51,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStora
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_StorageLayer_jniStorageLayer(
+Java_com_web3auth_tkey_ThresholdKey_StorageLayer_jniStorageLayer(
         JNIEnv *env, jobject jthis, jboolean enable_logging,
         jstring host_url, jint server_time_offset,
         jstring network_interface_method_name, jstring network_interface_method_signature,

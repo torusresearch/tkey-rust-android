@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsFree(JNIEnv *env,
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsFree(JNIEnv *env,
                                                                                         jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pDetails = reinterpret_cast<KeyDetails *>(pObject);
@@ -13,7 +13,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsGetPublicKeyPoint(
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsGetPublicKeyPoint(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -26,7 +26,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsGetThreshold(
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsGetThreshold(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -39,7 +39,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsGetRequiredShares(
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsGetRequiredShares(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -52,7 +52,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsGetTotalShares(
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsGetTotalShares(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -65,7 +65,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDeta
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyDetails_jniKeyDetailsGetShareDescriptions(
+Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsGetShareDescriptions(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;

@@ -5,7 +5,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleSerializeShare(
+Java_com_web3auth_tkey_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleSerializeShare(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring share, jstring format,
         jthrowable error) {
@@ -31,7 +31,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializ
 }
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleDeserializeShare(
+Java_com_web3auth_tkey_ThresholdKey_Modules_ShareSerializationModule_jniShareSerializationModuleDeserializeShare(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring share, jstring format,
         jthrowable error) {

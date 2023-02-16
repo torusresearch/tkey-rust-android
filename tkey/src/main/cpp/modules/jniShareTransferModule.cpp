@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleRequestNewShare(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleRequestNewShare(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring agent, jstring indexes,
         jstring curve_n, jthrowable error) {
@@ -31,7 +31,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleAddCustomInfoToRequest(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleAddCustomInfoToRequest(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring enc_pub_key_x, jstring custom_info,
         jstring curve_n, jthrowable error) {
@@ -54,7 +54,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleLookForRequest(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleLookForRequest(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -71,7 +71,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleApproveRequest(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleApproveRequest(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring enc_pub_key_x, jobject share_store,
         jstring curve_n, jthrowable error) {
@@ -93,7 +93,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleApproveRequestWithShareIndex(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleApproveRequestWithShareIndex(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring enc_pub_key_x, jstring indexes,
         jstring curve_n, jthrowable error) {
@@ -116,7 +116,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleGetStore(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleGetStore(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -131,7 +131,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleSetStore(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleSetStore(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jobject share_store, jstring curveN, jthrowable error) {
     int errorCode = 0;
@@ -149,7 +149,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleDeleteStore(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleDeleteStore(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring enc_pub_key_x, jstring curveN, jthrowable error) {
     int errorCode = 0;
@@ -168,7 +168,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleGetCurrentEncryptionKey(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleGetCurrentEncryptionKey(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -185,7 +185,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleCleanupRequest(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleCleanupRequest(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -197,7 +197,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_Sharetransfer
 }
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleRequestStatusCheck(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransferModuleRequestStatusCheck(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring enc_pub_key_x,
         jboolean delete_on_completion, jstring curve_n, jthrowable error) {

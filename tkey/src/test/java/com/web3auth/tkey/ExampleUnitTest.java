@@ -1,4 +1,4 @@
-package com.web3auth.tkey_android_distribution;
+package com.web3auth.tkey;
 
 import org.junit.Test;
 

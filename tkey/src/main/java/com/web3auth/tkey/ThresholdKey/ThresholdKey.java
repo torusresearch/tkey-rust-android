@@ -1,9 +1,9 @@
-package com.web3auth.tkey_android_distribution.ThresholdKey;
+package com.web3auth.tkey.ThresholdKey;
 
 import androidx.annotation.Nullable;
 
-import com.web3auth.tkey_android_distribution.RuntimeError;
-import com.web3auth.tkey_android_distribution.ThresholdKey.Common.ShareStore;
+import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
 public final class ThresholdKey {
     final long pointer;

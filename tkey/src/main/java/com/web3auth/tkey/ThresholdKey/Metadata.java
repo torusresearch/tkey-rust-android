@@ -1,6 +1,6 @@
-package com.web3auth.tkey_android_distribution.ThresholdKey;
+package com.web3auth.tkey.ThresholdKey;
 
-import com.web3auth.tkey_android_distribution.RuntimeError;
+import com.web3auth.tkey.RuntimeError;
 
 public final class Metadata {
     private native void jniMetadataFree();

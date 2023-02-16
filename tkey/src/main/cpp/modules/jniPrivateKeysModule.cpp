@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleSetPrivateKey(
+Java_com_web3auth_tkey_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleSetPrivateKey(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring key, jstring format,
         jstring curve_n, jthrowable error) {
@@ -32,7 +32,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKey(
+Java_com_web3auth_tkey_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKey(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -48,7 +48,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysMo
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKeyAccounts(
+Java_com_web3auth_tkey_ThresholdKey_Modules_PrivateKeysModule_jniPrivateKeysModuleGetPrivateKeyAccounts(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;

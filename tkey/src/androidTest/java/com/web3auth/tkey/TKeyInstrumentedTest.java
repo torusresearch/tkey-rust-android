@@ -1,8 +1,5 @@
-package com.web3auth.tkey_android_distribution;
+package com.web3auth.tkey;
 
-import android.content.Context;
-
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
@@ -10,11 +7,11 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
-import com.web3auth.tkey_android_distribution.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey_android_distribution.ThresholdKey.KeyDetails;
-import com.web3auth.tkey_android_distribution.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey_android_distribution.ThresholdKey.StorageLayer;
-import com.web3auth.tkey_android_distribution.ThresholdKey.ThresholdKey;
+import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.KeyDetails;
+import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
+import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 /**
  * Instrumented test, which will execute on an Android device.

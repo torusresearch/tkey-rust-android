@@ -5,7 +5,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapGetKeys(
+Java_com_web3auth_tkey_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapGetKeys(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -20,7 +20,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndex
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapMapGetValueByKey(
+Java_com_web3auth_tkey_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapMapGetValueByKey(
         JNIEnv *env, jobject jthis, jstring key, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -37,7 +37,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndex
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapMapFree(
+Java_com_web3auth_tkey_ThresholdKey_ShareStorePolyIdIndexMap_jniShareStorePolyIdIndexMapMapFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pMap = reinterpret_cast<ShareStorePolyIDShareIndexMap *>(pObject);

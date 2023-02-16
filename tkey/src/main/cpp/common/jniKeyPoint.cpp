@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKeyPointEncode(
+Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointEncode(
         JNIEnv *env, jobject jthis, jstring format, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -21,7 +21,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKeyPointGetX(
+Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointGetX(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -36,7 +36,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKeyPointGetY(
+Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointGetY(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -51,7 +51,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKe
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_KeyPoint_jniKeyPointFree(
+Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);

@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetPrivateKey(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetPrivateKey(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -19,7 +19,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetSeedPhraseLen(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetSeedPhraseLen(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -32,7 +32,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetSeedPhraseAt(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetSeedPhraseAt(
         JNIEnv *env, jobject jthis, jint index, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -47,7 +47,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetAllKeysLen(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetAllKeysLen(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -60,7 +60,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetAllKeysAt(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsGetAllKeysAt(
         JNIEnv *env, jobject jthis, jint index, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -75,7 +75,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDeta
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsFree(
+Java_com_web3auth_tkey_ThresholdKey_KeyReconstructionDetails_jniKeyReconstructionDetailsFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pDetails = reinterpret_cast<KeyReconstructionDetails *>(pObject);

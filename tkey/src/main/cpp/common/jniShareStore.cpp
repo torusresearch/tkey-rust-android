@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniShareStoreFree(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniShareStoreFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pointer = reinterpret_cast<ShareStore *>(pObject);
@@ -13,7 +13,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniSharestoreToJson(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniSharestoreToJson(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -28,7 +28,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniShareStoreGetShare(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniShareStoreGetShare(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -43,7 +43,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniShareStoreGetShareIndex(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniShareStoreGetShareIndex(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -58,7 +58,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniShareStoreGetPolynomialId(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniShareStoreGetPolynomialId(
         JNIEnv *env, jobject jthis, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
@@ -73,7 +73,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jni
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Common_ShareStore_jniSharestoreFromJson(
+Java_com_web3auth_tkey_ThresholdKey_Common_ShareStore_jniSharestoreFromJson(
         JNIEnv *env, jobject jthis, jstring json, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;

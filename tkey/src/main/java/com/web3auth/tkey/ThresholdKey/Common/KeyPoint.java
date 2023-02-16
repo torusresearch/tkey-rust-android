@@ -1,6 +1,6 @@
-package com.web3auth.tkey_android_distribution.ThresholdKey.Common;
+package com.web3auth.tkey.ThresholdKey.Common;
 
-import com.web3auth.tkey_android_distribution.RuntimeError;
+import com.web3auth.tkey.RuntimeError;
 
 public final class KeyPoint {
     final long pointer;

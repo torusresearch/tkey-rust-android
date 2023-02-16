@@ -1,8 +1,8 @@
-package com.web3auth.tkey_android_distribution.ThresholdKey.Modules;
+package com.web3auth.tkey.ThresholdKey.Modules;
 
-import com.web3auth.tkey_android_distribution.RuntimeError;
-import com.web3auth.tkey_android_distribution.ThresholdKey.GenerateShareStoreResult;
-import com.web3auth.tkey_android_distribution.ThresholdKey.ThresholdKey;
+import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
+import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 public final class SecurityQuestionModule {
     private SecurityQuestionModule() {

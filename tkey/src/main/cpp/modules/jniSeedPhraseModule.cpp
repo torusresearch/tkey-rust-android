@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleSetSeedPhrase(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleSetSeedPhrase(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring format, jstring phrase,
         jint wallets, jstring curve_n, jthrowable error) {
@@ -30,7 +30,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleChangePhrase(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleChangePhrase(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring old_phrase, jstring new_phrase,
         jstring curve_n, jthrowable error) {
@@ -53,7 +53,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleGetSeedPhrases(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleGetSeedPhrases(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jthrowable error) {
     int errorCode = 0;
@@ -69,7 +69,7 @@ Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseMod
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleDeletePhrase(
+Java_com_web3auth_tkey_ThresholdKey_Modules_SeedPhraseModule_jniSeedPhraseModuleDeletePhrase(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring phrase, jthrowable error) {
     int errorCode = 0;

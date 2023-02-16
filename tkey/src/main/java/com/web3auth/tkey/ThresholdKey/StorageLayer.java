@@ -1,6 +1,6 @@
-package com.web3auth.tkey_android_distribution.ThresholdKey;
+package com.web3auth.tkey.ThresholdKey;
 
-import com.web3auth.tkey_android_distribution.RuntimeError;
+import com.web3auth.tkey.RuntimeError;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -71,7 +71,7 @@ public final class StorageLayer {
 
     public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, "networkInterface", "(Ljava/lang/String;Ljava/lang/String;Lcom/web3auth/tkey_android_distribution/RuntimeError;)Ljava/lang/String;", error);
+        long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, "networkInterface", "(Ljava/lang/String;Ljava/lang/String;Lcom/web3auth/tkey/RuntimeError;)Ljava/lang/String;", error);
         if (error.code != 0) {
             throw error;
         }

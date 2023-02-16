@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_1android_1distribution_ThresholdKey_ShareTransferStore_jniShareTransferStoreFree(
+Java_com_web3auth_tkey_ThresholdKey_ShareTransferStore_jniShareTransferStoreFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pStore = reinterpret_cast<ShareTransferStore *>(pObject);
