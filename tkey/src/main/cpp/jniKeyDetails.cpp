@@ -5,7 +5,7 @@
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_ThresholdKey_KeyDetails_jniKeyDetailsFree(JNIEnv *env,
-                                                                                        jobject jthis) {
+                                                                 jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pDetails = reinterpret_cast<KeyDetails *>(pObject);
     key_details_free(pDetails);

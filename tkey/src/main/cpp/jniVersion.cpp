@@ -5,8 +5,8 @@
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_Version_jniVersion(JNIEnv *env,
-                                                                 __attribute__((unused)) jclass clazz,
-                                                                 jthrowable error) {
+                                          __attribute__((unused)) jclass clazz,
+                                          jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     char *pResult = get_version(error_ptr);

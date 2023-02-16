@@ -305,16 +305,16 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyFree(
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKey(JNIEnv *env,
-                                                                                        __attribute__((unused)) jobject jthis,
-                                                                                        jobject metadata,
-                                                                                        jobject shares,
-                                                                                        jobject storage_layer,
-                                                                                        jobject service_provider,
-                                                                                        jobject local_transitions,
-                                                                                        jobject last_fetched_cloud_metadata,
-                                                                                        jboolean enable_logging,
-                                                                                        jboolean manual_sync,
-                                                                                        jthrowable error) {
+                                                                 __attribute__((unused)) jobject jthis,
+                                                                 jobject metadata,
+                                                                 jobject shares,
+                                                                 jobject storage_layer,
+                                                                 jobject service_provider,
+                                                                 jobject local_transitions,
+                                                                 jobject last_fetched_cloud_metadata,
+                                                                 jboolean enable_logging,
+                                                                 jboolean manual_sync,
+                                                                 jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     Metadata *pMetadata = nullptr;
