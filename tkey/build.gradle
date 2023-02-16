@@ -40,20 +40,6 @@ android {
             version '3.18.1'
         }
     }
-
-    buildFeatures {
-        prefabPublishing true
-    }
-
-    prefab {
-        "tkey-native" {
-            headers "libs/include"
-        }
-    }
-
-    packagingOptions {
-        exclude("**/libtkey.a")
-    }
 }
 
 dependencies {
