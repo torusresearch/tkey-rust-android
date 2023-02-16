@@ -5,7 +5,7 @@
 
 cmake_minimum_required(VERSION 3.18.1)
 
-project(TKey)
+project(tKey)
 
 set(libs_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../jniLibs)
 
@@ -24,7 +24,7 @@ set_target_properties(
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 add_library(
-        native-lib SHARED
+        tkey-native SHARED
         common/jniCommon.cpp
         jniGenerateShareStoreResult.cpp
         jniKeyDetails.cpp
@@ -55,11 +55,11 @@ find_library(
 )
 
 target_include_directories(
-        native-lib PRIVATE ${libs_DIR}/
+        tkey-native PRIVATE ${libs_DIR}/
 )
 
 target_link_libraries(
-        native-lib
+        tkey-native
         android
         tkey
         ${log-lib}
