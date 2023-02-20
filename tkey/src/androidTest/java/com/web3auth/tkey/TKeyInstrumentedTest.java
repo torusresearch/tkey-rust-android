@@ -50,6 +50,7 @@ public class TKeyInstrumentedTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
             KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
+            assertNotNull(details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
         } catch (RuntimeError e) {
             fail();
         }

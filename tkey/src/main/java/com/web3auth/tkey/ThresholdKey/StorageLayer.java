@@ -20,53 +20,67 @@ public final class StorageLayer {
     private native void jniStorageLayerFree();
 
     final long pointer;
+    private volatile String networkResponse;
+    private volatile int networkCode;
 
     private String networkInterface(String url, String data, RuntimeError error) {
+        Thread networkThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    URL uri = new URL(url);
+                    HttpURLConnection con = (HttpURLConnection) uri.openConnection();
+                    con.setRequestMethod("POST");
+                    con.setRequestProperty("Access-Control-Allow-Origin", "*");
+                    con.setRequestProperty("Access-Control-Allow-Methods", "GET, POST");
+                    con.setRequestProperty("Access-Control-Allow-Headers", "Content-Type");
+                    String last = url.substring(url.lastIndexOf('/') + 1);
+                    con.setDoOutput(true);
+                    String form_data_string;
+                    if (last.equalsIgnoreCase("bulk_set_stream")) {
+                        ArrayList<String> form_data = new ArrayList<>();
+                        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                        JSONArray jsonArray = new JSONArray(data);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String value = jsonObject.toString();
+                            String encodedValue = URLEncoder.encode(value, "utf-8");
+                            String finalValue = i + "=" + encodedValue;
+                            form_data.add(finalValue);
+                        }
+                        form_data_string = String.join("&", form_data);
+                    } else {
+                        con.setRequestProperty("Content-Type", "application/json");
+                        form_data_string = data;
+                    }
+                    try (OutputStream os = con.getOutputStream()) {
+                        byte[] input = form_data_string.getBytes(StandardCharsets.UTF_8);
+                        os.write(input, 0, input.length);
+                    }
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+                        StringBuilder response = new StringBuilder();
+                        String responseLine;
+                        while ((responseLine = br.readLine()) != null) {
+                            response.append(responseLine.trim());
+                        }
+                        error.code = 0;
+                        networkResponse = response.toString();
+                    }
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    error.code = -1;
+                    networkResponse = "";
+                }
+            }
+        };
+        networkThread.start();
         try {
-            URL uri = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) uri.openConnection();
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Access-Control-Allow-Origin", "*");
-            con.setRequestProperty("Access-Control-Allow-Methods", "GET, POST");
-            con.setRequestProperty("Access-Control-Allow-Headers", "Content-Type");
-            String last = url.substring(url.lastIndexOf('/') + 1);
-            con.setDoOutput(true);
-            String form_data_string;
-            if (last.equalsIgnoreCase("bulk_set_stream")) {
-                ArrayList<String> form_data = new ArrayList<>();
-                con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-                JSONArray jsonArray = new JSONArray(data);
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    String value = jsonObject.toString();
-                    String encodedValue = URLEncoder.encode(value, "utf-8");
-                    String finalValue = i + "=" + encodedValue;
-                    form_data.add(finalValue);
-                }
-                form_data_string = String.join("&", form_data);
-            } else {
-                con.setRequestProperty("Content-Type", "application/json");
-                form_data_string = data;
-            }
-            try (OutputStream os = con.getOutputStream()) {
-                byte[] input = form_data_string.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);
-            }
-            try (BufferedReader br = new BufferedReader(
-                    new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-                StringBuilder response = new StringBuilder();
-                String responseLine;
-                while ((responseLine = br.readLine()) != null) {
-                    response.append(responseLine.trim());
-                }
-                error.code = 0;
-                return response.toString();
-            }
-        } catch (Exception e) {
+            networkThread.join();
+        } catch (InterruptedException e) {
             System.out.println(e.getMessage());
-            error.code = -1;
-            return "";
         }
+        return networkResponse;
     }
 
     public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError {
