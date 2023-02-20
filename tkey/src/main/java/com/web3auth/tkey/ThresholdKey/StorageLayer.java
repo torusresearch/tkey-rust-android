@@ -80,6 +80,8 @@ public final class StorageLayer {
             networkThread.join();
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
+            networkCode = -1;
+            networkResponse = "";
         }
         error.code = networkCode;
         return networkResponse;
