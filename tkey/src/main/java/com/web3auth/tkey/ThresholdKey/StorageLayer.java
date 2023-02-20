@@ -20,6 +20,9 @@ public final class StorageLayer {
     private native void jniStorageLayerFree();
 
     final long pointer;
+
+    @SuppressWarnings("unused") // linter cannot detect that this is called from the JNI
+    final long callback_method_id = 0;
     private volatile String networkResponse;
     private volatile int networkCode;
 

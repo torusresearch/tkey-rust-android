@@ -9,12 +9,9 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *) {
     return JNI_VERSION_1_6;
 }
 
-jobject callbackHandler = nullptr;
-jmethodID networkInterface;
-
-char *network_callback(char *url, char *data, int *error) {
+char *network_callback(char *url, char *data, void *obj_ref, int *error) {
     JNIEnv *jniEnv;
-    if (g_vm->GetEnv((void **) &jniEnv, JNI_VERSION_1_6) != JNI_OK || callbackHandler == nullptr) {
+    if (g_vm->GetEnv((void **) &jniEnv, JNI_VERSION_1_6) != JNI_OK || obj_ref == nullptr) {
         return nullptr;
     }
 
@@ -25,8 +22,12 @@ char *network_callback(char *url, char *data, int *error) {
     jclass error_class = jniEnv->FindClass("com/web3auth/tkey/RuntimeError");
     jmethodID constructor = jniEnv->GetMethodID(error_class, "<init>", "()V");
     jobject jerror = jniEnv->NewObject(error_class, constructor);
+    jobject jparent_ref = reinterpret_cast<jobject>(obj_ref);
+    auto networkInterface = reinterpret_cast<jmethodID>(GetPointerField(jniEnv,
+                                                                        jparent_ref,
+                                                                        "callback_method_id"));
     auto result = (jstring) jniEnv->CallObjectMethod(
-            callbackHandler,
+            jparent_ref,
             networkInterface,
             jurl, jdata, jerror);
     jclass cls = jniEnv->GetObjectClass(jerror);
@@ -45,8 +46,8 @@ Java_com_web3auth_tkey_ThresholdKey_StorageLayer_jniStorageLayerFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
-    env->DeleteGlobalRef(callbackHandler);
-    storage_layer_free(pStorage);
+    auto obj_ref = reinterpret_cast<jobject>(storage_layer_free(pStorage));
+    env->DeleteGlobalRef(obj_ref);
 }
 
 extern "C"
@@ -58,15 +59,14 @@ Java_com_web3auth_tkey_ThresholdKey_StorageLayer_jniStorageLayer(
         jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    if (callbackHandler == nullptr) {
-        callbackHandler = env->NewGlobalRef(jthis);
-    }
+    jobject callbackHandler = env->NewGlobalRef(jthis);
     const char *pHost = env->GetStringUTFChars(host_url, JNI_FALSE);
-    networkInterface = getMethodId(env, jthis, network_interface_method_name,
-                                   network_interface_method_signature);
+    jmethodID networkInterface = getMethodId(env, jthis, network_interface_method_name,
+                                             network_interface_method_signature);
+    SetPointerField(env, jthis, reinterpret_cast<jlong>(networkInterface), "callback_method_id");
     auto *storage = storage_layer(enable_logging, const_cast<char *>(pHost),
                                   server_time_offset,
-                                  network_callback, error_ptr);
+                                  network_callback, callbackHandler, error_ptr);
     env->ReleaseStringUTFChars(host_url, pHost);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(storage);

@@ -11,7 +11,7 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointEncode(
     jlong pObject = GetPointerField(env, jthis);
     auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
     const char *pFormat = env->GetStringUTFChars(format, JNI_FALSE);
-    char *pResult = point_encode(pKeyPoint, const_cast<char *>(pFormat), error_ptr);
+    char *pResult = key_point_encode(pKeyPoint, const_cast<char *>(pFormat), error_ptr);
     env->ReleaseStringUTFChars(format, pFormat);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
@@ -27,7 +27,7 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointGetX(
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
-    char *pX = point_get_x(pKeyPoint, error_ptr);
+    char *pX = key_point_get_x(pKeyPoint, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pX);
     string_free(pX);
@@ -42,7 +42,7 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointGetY(
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
-    char *pY = point_get_y(pKeyPoint, error_ptr);
+    char *pY = key_point_get_y(pKeyPoint, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pY);
     string_free(pY);
@@ -55,5 +55,5 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pKeyPoint = reinterpret_cast<KeyPoint *>(pObject);
-    point_free(pKeyPoint);
+    key_point_free(pKeyPoint);
 }

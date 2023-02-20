@@ -22,20 +22,21 @@ getMethodId(JNIEnv *jniEnv, jobject jThis, jstring methodName, jstring methodSig
     return methodId;
 }
 
-inline jlong GetPointerField(JNIEnv *jEnv, jobject jThis) {
+inline jlong GetPointerField(JNIEnv *jEnv, jobject jThis, const char *fieldId = "pointer") {
     jclass cls = jEnv->GetObjectClass(jThis);
-    jfieldID fid = jEnv->GetFieldID(cls, "pointer", "J");
+    jfieldID fid = jEnv->GetFieldID(cls, fieldId, "J");
     jlong lObject = jEnv->GetLongField(jThis, fid);
     return lObject;
 }
 
-/* Deliberately kept
-inline void SetPointerField(JNIEnv *jEnv, jobject jThis, jlong jPointer) {
+
+inline void
+SetPointerField(JNIEnv *jEnv, jobject jThis, jlong jPointer, const char *fieldId = "pointer") {
     jclass cls = jEnv->GetObjectClass(jThis);
-    jfieldID fid = jEnv->GetFieldID(cls, "pointer", "J");
+    jfieldID fid = jEnv->GetFieldID(cls, fieldId, "J");
     jEnv->SetLongField(jThis, fid, jPointer);
 }
-*/
+
 
 inline jboolean setErrorCode(JNIEnv *jEnv, jobject error, jint value) {
     jclass errorClass = jEnv->GetObjectClass(error);
