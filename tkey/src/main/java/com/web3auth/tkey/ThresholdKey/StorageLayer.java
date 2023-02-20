@@ -64,12 +64,12 @@ public final class StorageLayer {
                         while ((responseLine = br.readLine()) != null) {
                             response.append(responseLine.trim());
                         }
-                        error.code = 0;
+                        networkCode = 0;
                         networkResponse = response.toString();
                     }
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
-                    error.code = -1;
+                    networkCode = -1;
                     networkResponse = "";
                 }
             }
@@ -80,6 +80,7 @@ public final class StorageLayer {
         } catch (InterruptedException e) {
             System.out.println(e.getMessage());
         }
+        error.code = networkCode;
         return networkResponse;
     }
 
