@@ -46,8 +46,11 @@ Java_com_web3auth_tkey_ThresholdKey_StorageLayer_jniStorageLayerFree(
         JNIEnv *env, jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pStorage = reinterpret_cast<FFIStorageLayer *>(pObject);
-    auto obj_ref = reinterpret_cast<jobject>(storage_layer_free(pStorage));
-    env->DeleteGlobalRef(obj_ref);
+    auto instance = storage_layer_free(pStorage);
+    if (instance != nullptr) {
+        auto obj_ref = reinterpret_cast<jobject>(instance);
+        env->DeleteGlobalRef(obj_ref);
+    }
 }
 
 extern "C"
