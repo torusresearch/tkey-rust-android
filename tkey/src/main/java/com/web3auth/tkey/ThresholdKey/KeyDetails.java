@@ -22,7 +22,7 @@ public final class KeyDetails {
         pointer = ptr;
     }
 
-    public KeyPoint getPPublicKeyPoint() throws RuntimeError {
+    public KeyPoint getPublicKeyPoint() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniKeyDetailsGetPublicKeyPoint(error);
         if (error.code != 0) {
