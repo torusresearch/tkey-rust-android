@@ -23,6 +23,7 @@ public final class StorageLayer {
     private volatile String networkResponse;
     private volatile int networkCode;
 
+    @SuppressWarnings("unused") // linter cannot detect that this is called from the JNI
     private String networkInterface(String url, String data, RuntimeError error) {
         Thread networkThread = new Thread() {
             @Override
