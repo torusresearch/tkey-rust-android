@@ -41,4 +41,31 @@ public class tkeyThresholdKeyTest {
             fail();
         }
     }
+
+    @Test
+    public void threshold_key_multi_instance() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            PrivateKey postboxKey2 = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false);
+            PrivateKey key = PrivateKey.generate();
+            PrivateKey key2 = PrivateKey.generate();
+            KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
+            KeyDetails details2 = thresholdKey2.initialize(key2.hex, null, false, false);
+            assertNotNull(details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
+            assertNotNull(details2.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
+            KeyReconstructionDetails reconstruct_details = thresholdKey.reconstruct();
+            KeyReconstructionDetails reconstruct_details2 = thresholdKey2.reconstruct();
+            assertNotEquals(reconstruct_details.getKey().length(), 0);
+            assertNotEquals(reconstruct_details2.getKey().length(), 0);
+            assertNotEquals(reconstruct_details.getKey(), reconstruct_details2.getKey());
+        } catch (RuntimeError e) {
+            fail();
+        }
+    }
 }
