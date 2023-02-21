@@ -17,7 +17,6 @@ import com.web3auth.tkey.ThresholdKey.Modules.SharetransferModule;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
-import com.web3auth.tkey.tkeyGenerateShareStoreResultTest;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public class tkeyShareTransferModuleTest {
             tkeyShareTransferModuleTest.k1 = thresholdKey.reconstruct();
             tkeyShareTransferModuleTest.thresholdKey = thresholdKey;
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
-            thresholdKey.initialize(null, null, true, false);
+            thresholdKey2.initialize(null, null, true, false);
             tkeyShareTransferModuleTest.thresholdKey2 = thresholdKey2;
         } catch (RuntimeError e) {
             fail();
@@ -56,7 +55,7 @@ public class tkeyShareTransferModuleTest {
     @Test
     public void test() {
         try {
-            String request = SharetransferModule.requestNewShare(thresholdKey2,"agent","[]"); //fails here
+            String request = SharetransferModule.requestNewShare(thresholdKey2,"agent","[]");
             ArrayList<String> lookup = SharetransferModule.lookForRequest(thresholdKey);
             String encPubKey = lookup.get(0);
             GenerateShareStoreResult share = thresholdKey.generateNewShare();
@@ -65,7 +64,6 @@ public class tkeyShareTransferModuleTest {
             KeyReconstructionDetails k2 = thresholdKey2.reconstruct();
             assertEquals(k1.getKey(),k2.getKey());
         } catch (RuntimeError | JSONException e) {
-            System.out.println(e);
             fail();
         }
     }
