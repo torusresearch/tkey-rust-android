@@ -24,6 +24,7 @@ public class tkeyKeyDetailsTest {
     static {
         System.loadLibrary("tkey-native");
     }
+
     private static KeyDetails details;
 
     @BeforeClass
@@ -52,7 +53,7 @@ public class tkeyKeyDetailsTest {
     @Test
     public void threshold() {
         try {
-            assertNotEquals(details.getThreshold(),0);
+            assertNotEquals(details.getThreshold(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -70,7 +71,7 @@ public class tkeyKeyDetailsTest {
     @Test
     public void totalShares() {
         try {
-            assertNotEquals(details.getTotalShares(),0);
+            assertNotEquals(details.getTotalShares(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -79,7 +80,7 @@ public class tkeyKeyDetailsTest {
     @Test
     public void shareDescriptions() {
         try {
-            assertNotEquals(details.getShareDescriptions().length(),0);
+            assertNotEquals(details.getShareDescriptions().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }

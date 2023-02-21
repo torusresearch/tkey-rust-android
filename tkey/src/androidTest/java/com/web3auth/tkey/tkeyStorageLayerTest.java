@@ -1,11 +1,13 @@
 package com.web3auth.tkey;
 
-        import androidx.test.ext.junit.runners.AndroidJUnit4;
-        import org.junit.Test;
-        import org.junit.runner.RunWith;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-        import static org.junit.Assert.*;
-        import com.web3auth.tkey.ThresholdKey.StorageLayer;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
+
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -22,7 +24,7 @@ public class tkeyStorageLayerTest {
     public void storage() {
         try {
             String url = "https://metadata.tor.us";
-            new StorageLayer(false,url,2);
+            new StorageLayer(false, url, 2);
         } catch (RuntimeError e) {
             fail();
         }

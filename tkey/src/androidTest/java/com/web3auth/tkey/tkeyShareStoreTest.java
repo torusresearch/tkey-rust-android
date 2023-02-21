@@ -27,6 +27,7 @@ public class tkeyShareStoreTest {
     static {
         System.loadLibrary("tkey-native");
     }
+
     private static ShareStore details;
 
     @BeforeClass
@@ -39,8 +40,8 @@ public class tkeyShareStoreTest {
             PrivateKey key = PrivateKey.generate();
             thresholdKey.initialize(key.hex, null, false, false);
             ArrayList<String> indexes = thresholdKey.getShareIndexes();
-            assertNotEquals(indexes.size(),0);
-            String lastIndex = indexes.get(indexes.size()-1);
+            assertNotEquals(indexes.size(), 0);
+            String lastIndex = indexes.get(indexes.size() - 1);
             tkeyShareStoreTest.details = thresholdKey.outputShareStore(lastIndex, null);
         } catch (RuntimeError | JSONException e) {
             fail();
@@ -50,7 +51,7 @@ public class tkeyShareStoreTest {
     @Test
     public void share() {
         try {
-            assertNotEquals(details.share().length(),0);
+            assertNotEquals(details.share().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -59,7 +60,7 @@ public class tkeyShareStoreTest {
     @Test
     public void polynomialId() {
         try {
-            assertNotEquals(details.polynomialId().length(),0);
+            assertNotEquals(details.polynomialId().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -68,7 +69,7 @@ public class tkeyShareStoreTest {
     @Test
     public void shareIndex() {
         try {
-            assertNotEquals(details.shareIndex().length(),0);
+            assertNotEquals(details.shareIndex().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -78,9 +79,9 @@ public class tkeyShareStoreTest {
     public void jsonify() {
         try {
             String json = details.toJsonString();
-            assertNotEquals(json.length(),0);
+            assertNotEquals(json.length(), 0);
             ShareStore newStore = new ShareStore(json);
-            assertEquals(details.shareIndex(),newStore.shareIndex());
+            assertEquals(details.shareIndex(), newStore.shareIndex());
         } catch (RuntimeError e) {
             fail();
         }

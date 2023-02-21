@@ -36,7 +36,7 @@ public class tkeyThresholdKeyTest {
             KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
             assertNotNull(details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
             KeyReconstructionDetails reconstruct_details = thresholdKey.reconstruct();
-            assertNotEquals(reconstruct_details.getKey().length(),0);
+            assertNotEquals(reconstruct_details.getKey().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }

@@ -7,6 +7,7 @@ import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public final class ThresholdKey {

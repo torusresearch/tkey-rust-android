@@ -24,6 +24,7 @@ public class tkeyGenerateShareStoreResultTest {
     static {
         System.loadLibrary("tkey-native");
     }
+
     private static GenerateShareStoreResult details;
 
     @BeforeClass
@@ -44,7 +45,7 @@ public class tkeyGenerateShareStoreResultTest {
     @Test
     public void index() {
         try {
-            assertNotEquals(details.getIndex().length(),0);
+            assertNotEquals(details.getIndex().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }

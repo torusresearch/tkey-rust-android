@@ -48,10 +48,10 @@ public class tkeyMetadataTest {
     public void export() {
         try {
             String export = details.export();
-            assertNotEquals(export.length(),0);
+            assertNotEquals(export.length(), 0);
             Metadata newMetadata = new Metadata(export);
             String newExport = newMetadata.export();
-            assertEquals(export,newExport);
+            assertEquals(export, newExport);
         } catch (RuntimeError e) {
             fail();
         }

@@ -25,6 +25,7 @@ public class tkeyKeypointTest {
     static {
         System.loadLibrary("tkey-native");
     }
+
     private static KeyPoint details;
 
     @BeforeClass
@@ -45,16 +46,16 @@ public class tkeyKeypointTest {
     @Test
     public void get_x() {
         try {
-            assertNotEquals(details.getX().length(),0);
-    } catch (RuntimeError e) {
-        fail();
-    }
+            assertNotEquals(details.getX().length(), 0);
+        } catch (RuntimeError e) {
+            fail();
+        }
     }
 
     @Test
     public void get_y() {
         try {
-            assertNotEquals(details.getY().length(),0);
+            assertNotEquals(details.getY().length(), 0);
         } catch (RuntimeError e) {
             fail();
         }
@@ -63,7 +64,7 @@ public class tkeyKeypointTest {
     @Test
     public void get_as_public_key() {
         try {
-            assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(),0);
+            assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(), 0);
         } catch (RuntimeError e) {
             fail();
         }
