@@ -52,6 +52,8 @@ public final class ThresholdKey {
 
     private native void jniThresholdKeySyncLocalMetadataTransitions(String curveN, RuntimeError error);
 
+    private native void jniThresholdKeyDelete(String curveN, RuntimeError error);
+
     private native void jniThresholdKeyFree();
 
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync) throws RuntimeError {
@@ -224,6 +226,14 @@ public final class ThresholdKey {
             throw error;
         }
         return new ShareStorePolyIdIndexMap(result);
+    }
+
+    public void deleteTKey() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyDelete(curveN, error);
+        if (error.code != 0) {
+            throw error;
+        }
     }
 
     @Override

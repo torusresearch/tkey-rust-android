@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
+import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.KeyDetails;
 import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
@@ -37,6 +39,45 @@ public class tkeyThresholdKeyTest {
             assertNotNull(details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
             KeyReconstructionDetails reconstruct_details = thresholdKey.reconstruct();
             assertNotEquals(reconstruct_details.getKey().length(), 0);
+        } catch (RuntimeError e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void basic_threshold_key_method_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            PrivateKey key = PrivateKey.generate();
+            thresholdKey.initialize(key.hex, null, false, false);
+            thresholdKey.reconstruct();
+            thresholdKey.getKeyDetails();
+            thresholdKey.getLastFetchedCloudMetadata();
+            thresholdKey.getLocalMetadataTransitions();
+            GenerateShareStoreResult share = thresholdKey.generateNewShare();
+            String output = thresholdKey.outputShare(share.getIndex(), null);
+            thresholdKey.outputShareStore(share.getIndex(), null);
+            thresholdKey.shareToShareStore(output);
+            thresholdKey.deleteShare(share.getIndex());
+
+            GenerateShareStoreResult share2 = thresholdKey.generateNewShare();
+
+            String input = thresholdKey.outputShare(share2.getIndex(), null);
+            ShareStore inputStore = thresholdKey.outputShareStore(share2.getIndex(), null);
+
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            thresholdKey2.initialize(null, null, true, false);
+            thresholdKey2.inputShare(input, null);
+            thresholdKey2.reconstruct();
+
+            ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            thresholdKey3.initialize(null, null, true, false);
+            thresholdKey3.inputShareStore(inputStore);
+            thresholdKey3.reconstruct();
+            thresholdKey3.deleteTKey();
         } catch (RuntimeError e) {
             fail();
         }

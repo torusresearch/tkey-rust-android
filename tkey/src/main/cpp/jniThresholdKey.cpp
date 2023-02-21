@@ -390,6 +390,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
 
 
 }
+
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetShares(JNIEnv *env,
@@ -403,4 +404,20 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetShares(JNIEnv
                                              error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyDelete(JNIEnv *env, jobject jthis,
+                                                                       jstring curve_n,
+                                                                       jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    threshold_key_delete_tkey(pThreshold, const_cast<char *>(pCurve),
+                              error_ptr);
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+    setErrorCode(env, error, errorCode);
 }
