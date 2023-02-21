@@ -14,8 +14,6 @@ import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
-import java.util.ArrayList;
-
 /**
  * Instrumented test, which will execute on an Android device.
  *

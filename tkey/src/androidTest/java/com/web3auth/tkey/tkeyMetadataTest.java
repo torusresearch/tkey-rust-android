@@ -10,13 +10,10 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.Metadata;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
-
-import java.util.ArrayList;
 
 /**
  * Instrumented test, which will execute on an Android device.
