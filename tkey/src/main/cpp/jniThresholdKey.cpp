@@ -390,3 +390,17 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
 
 
 }
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetShares(JNIEnv *env,
+                                                                          jobject jthis,
+                                                                          jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    auto *pResult = threshold_key_get_shares(pThreshold,
+                                             error_ptr);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pResult);
+}

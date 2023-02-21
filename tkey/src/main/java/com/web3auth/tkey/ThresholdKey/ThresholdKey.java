@@ -40,6 +40,8 @@ public final class ThresholdKey {
 
     private native String jniThresholdKeyGetShareIndexes(RuntimeError error);
 
+    private native long jniThresholdKeyGetShares(RuntimeError error);
+
     private native long jniThresholdKeyGetLastFetchedCloudMetadata(RuntimeError error);
 
     private native long jniThresholdKeyGetLocalMetadataTransitions(RuntimeError error);
@@ -213,6 +215,15 @@ public final class ThresholdKey {
         if (error.code != 0) {
             throw error;
         }
+    }
+
+    public ShareStorePolyIdIndexMap getShares() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        long result = jniThresholdKeyGetShares(error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return new ShareStorePolyIdIndexMap(result);
     }
 
     @Override
