@@ -84,6 +84,23 @@ public class tkeyThresholdKeyTest {
     }
 
     @Test
+    public void threshold_key_manual_sync_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true);
+            PrivateKey key = PrivateKey.generate();
+            thresholdKey.initialize(key.hex, null, false, false);
+            thresholdKey.reconstruct();
+            thresholdKey.generateNewShare();
+            thresholdKey.syncLocalMetadataTransitions();
+            thresholdKey.reconstruct();
+        } catch (RuntimeError e) {
+            fail();
+        }
+    }
+    @Test
     public void threshold_key_multi_instance() {
         try {
             PrivateKey postboxKey = PrivateKey.generate();

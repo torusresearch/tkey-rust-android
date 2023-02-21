@@ -1,7 +1,6 @@
 package com.web3auth.tkey.ThresholdKey;
 
 import androidx.annotation.Nullable;
-
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
@@ -53,6 +52,11 @@ public final class ThresholdKey {
     private native void jniThresholdKeySyncLocalMetadataTransitions(String curveN, RuntimeError error);
 
     private native void jniThresholdKeyDelete(String curveN, RuntimeError error);
+
+    private native void jniThresholdKeyAddShareDescription(String key, String Description, boolean updateMetadata, String curveN, RuntimeError error);
+    private native void jniThresholdKeyDeleteShareDescription(String key, String Description, boolean updateMetadata, String curveN, RuntimeError error);
+    private native void jniThresholdKeyUpdateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata, String curveN, RuntimeError error);
+    private native String jniThresholdKeyGetShareDescriptions(RuntimeError error);
 
     private native void jniThresholdKeyFree();
 
@@ -234,6 +238,39 @@ public final class ThresholdKey {
         if (error.code != 0) {
             throw error;
         }
+    }
+
+    public void addShareDescription(String key, String description, boolean updateMetadata) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyAddShareDescription(key,description,updateMetadata,curveN, error);
+        if (error.code != 0) {
+            throw error;
+        }
+    }
+
+    public void deleteShareDescription(String key, String description, boolean updateMetadata) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyDeleteShareDescription(key,description,updateMetadata,curveN, error);
+        if (error.code != 0) {
+            throw error;
+        }
+    }
+
+    public void updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyUpdateShareDescription(key,oldDescription,newDescription,updateMetadata,curveN, error);
+        if (error.code != 0) {
+            throw error;
+        }
+    }
+
+    public String getShareDescriptions() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        String result = jniThresholdKeyGetShareDescriptions(error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return result;
     }
 
     @Override

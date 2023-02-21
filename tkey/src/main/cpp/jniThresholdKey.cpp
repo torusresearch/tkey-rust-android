@@ -421,3 +421,94 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyDelete(JNIEnv *e
     env->ReleaseStringUTFChars(curve_n, pCurve);
     setErrorCode(env, error, errorCode);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyAddShareDescription(JNIEnv *env,
+                                                                                    jobject jthis,
+                                                                                    jstring key,
+                                                                                    jstring description,
+                                                                                    jboolean update_metadata,
+                                                                                    jstring curve_n,
+                                                                                    jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
+    const char *pDescription = env->GetStringUTFChars(description, JNI_FALSE);
+    threshold_key_add_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pDescription),update_metadata,const_cast<char *>(pCurve),
+                              error_ptr);
+    env->ReleaseStringUTFChars(key, pKey);
+    env->ReleaseStringUTFChars(description, pDescription);
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyDeleteShareDescription(JNIEnv *env,
+                                                                                       jobject jthis,
+                                                                                       jstring key,
+                                                                                       jstring description,
+                                                                                       jboolean update_metadata,
+                                                                                       jstring curve_n,
+                                                                                       jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
+    const char *pDescription = env->GetStringUTFChars(description, JNI_FALSE);
+    threshold_key_delete_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pDescription),update_metadata,const_cast<char *>(pCurve),
+                                        error_ptr);
+    env->ReleaseStringUTFChars(key, pKey);
+    env->ReleaseStringUTFChars(description, pDescription);
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyUpdateShareDescription(JNIEnv *env,
+                                                                                       jobject jthis,
+                                                                                       jstring key,
+                                                                                       jstring old_description,
+                                                                                       jstring new_description,
+                                                                                       jboolean update_metadata,
+                                                                                       jstring curve_n,
+                                                                                       jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
+    const char *pOldDescription = env->GetStringUTFChars(old_description, JNI_FALSE);
+    const char *pNewDescription = env->GetStringUTFChars(new_description, JNI_FALSE);
+    threshold_key_update_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pOldDescription),const_cast<char *>(pNewDescription),update_metadata,const_cast<char *>(pCurve),
+                                        error_ptr);
+    env->ReleaseStringUTFChars(key, pKey);
+    env->ReleaseStringUTFChars(old_description, pOldDescription);
+    env->ReleaseStringUTFChars(new_description, pNewDescription);
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetShareDescriptions(JNIEnv *env,
+                                                                                     jobject jthis,
+                                                                                     jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    char *pResult = threshold_key_get_share_descriptions(pThreshold, error_ptr);
+    setErrorCode(env, error, errorCode);
+    jstring result = env->NewStringUTF(pResult);
+    string_free(pResult);
+    return result;
+}
