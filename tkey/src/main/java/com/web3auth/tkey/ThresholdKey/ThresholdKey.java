@@ -5,6 +5,13 @@ import androidx.annotation.Nullable;
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
 public final class ThresholdKey {
     final long pointer;
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
@@ -152,13 +159,18 @@ public final class ThresholdKey {
         }
     }
 
-    public String getShareIndexes() throws RuntimeError {
+    public ArrayList<String> getShareIndexes() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetShareIndexes(error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        ArrayList<String> indexes = new ArrayList<>();
+        JSONArray jsonArray = new JSONArray(result);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            indexes.add(jsonArray.getString(i));
+        }
+        return indexes;
     }
 
     public Metadata getLastFetchedCloudMetadata() throws RuntimeError {
