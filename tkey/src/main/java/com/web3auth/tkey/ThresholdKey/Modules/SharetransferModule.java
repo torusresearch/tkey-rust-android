@@ -5,6 +5,11 @@ import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.ShareTransferStore;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+
 public final class SharetransferModule {
     private SharetransferModule() {
     }
@@ -48,13 +53,19 @@ public final class SharetransferModule {
         }
     }
 
-    public static String lookForRequest(ThresholdKey thresholdKey) throws RuntimeError {
+    public static ArrayList<String> lookForRequest(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String result = jniSharetransferModuleLookForRequest(thresholdKey, error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        ArrayList<String> array = new ArrayList<>();
+        JSONArray json = new JSONArray(result);
+        for (int i = 0; i < json.length(); i++) {
+            String value = json.getString(i);
+            array.add(value);
+        }
+        return array;
     }
 
     public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore store) throws RuntimeError {
