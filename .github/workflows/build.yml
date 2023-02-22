@@ -40,6 +40,8 @@ jobs:
         if: steps.avd-cache.outputs.cache-hit != 'true'
         uses: reactivecircus/android-emulator-runner@v2
         with:
+          channel: canary
+          profile: "Nexus S"
           api-level: '${{ matrix.api-level }}'
           force-avd-creation: false
           emulator-options: >-
@@ -50,6 +52,8 @@ jobs:
       - name: Test
         uses: reactivecircus/android-emulator-runner@v2
         with:
+          channel: canary
+          profile: "Nexus S"
           api-level: '${{ matrix.api-level }}'
           force-avd-creation: false
           emulator-options: >-
