@@ -2,6 +2,12 @@ plugins {
     id 'com.android.library'
 }
 
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.8'
+}
+
 android {
     compileSdk 33
 
@@ -23,9 +29,20 @@ android {
     }
 
     buildTypes {
+        debug {
+            testCoverageEnabled true
+        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
         }
     }
 
@@ -44,8 +61,10 @@ android {
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'com.google.android.material:material:1.8.0'
     testImplementation 'junit:junit:4.13.2'
+    testImplementation "org.jacoco:org.jacoco.agent:0.8.8"
+    testImplementation "org.jacoco:org.jacoco.report:0.8.8"
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
