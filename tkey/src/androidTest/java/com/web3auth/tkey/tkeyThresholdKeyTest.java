@@ -126,4 +126,30 @@ public class tkeyThresholdKeyTest {
             fail();
         }
     }
+    @Test
+    public void threshold_key_share_Description_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true);
+            PrivateKey key = PrivateKey.generate();
+            thresholdKey.initialize(key.hex, null, false, false);
+            thresholdKey.reconstruct();
+            String keystr = "test share";
+            String old_description = "test share description";
+            String new_description = "new test share description";
+            thresholdKey.addShareDescription(keystr, old_description, false);
+            String result1 = thresholdKey.getShareDescriptions();
+            assertEquals(result1,"{\"test share\":[\"test share description\"]}");
+            thresholdKey.updateShareDescription(keystr, old_description, new_description, false);
+            String result2 = thresholdKey.getShareDescriptions();
+            assertEquals(result2, "{\"test share\":[\"new test share description\"]}");
+            thresholdKey.deleteShareDescription(keystr, new_description, false);
+            String result3 = thresholdKey.getShareDescriptions();
+            assertEquals(result3, "{\"test share\":[]}");
+        } catch (RuntimeError e) {
+            fail();
+        }
+    }
 }

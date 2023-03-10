@@ -60,4 +60,17 @@ public class tkeySeedPhraseModuleTest {
             fail();
         }
     }
+
+//    @Test
+//    public void tkey_store_test() {
+//        try {
+//            String phrase = "seed sock milk update focus rotate barely fade car face mechanic mercy";
+//            SeedPhraseModule.setSeedPhrase(thresholdKey,"HD Key Tree",phrase,0);
+//            String tkeyStore = thresholdKey.getTKeyStore("seedPhraseModule");
+//            System.out.println(tkeyStore);
+//            assertEquals("?",tkeyStore);
+//        } catch (RuntimeError e) {
+//            fail();
+//        }
+//    }
 }

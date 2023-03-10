@@ -52,12 +52,16 @@ public class tkeySecurityQuestionModuleTest {
             String question = "favorite marvel character";
             String answer = "iron man";
             String answer_2 = "captain america";
+            String answer_3 = "black widow";
             SecurityQuestionModule.generateNewShare(thresholdKey,question,answer);
             assertEquals(question,SecurityQuestionModule.getQuestions(thresholdKey));
             assertEquals(true,SecurityQuestionModule.inputShare(thresholdKey,answer));
             assertEquals(answer,SecurityQuestionModule.getAnswer(thresholdKey));
             assertEquals(true,SecurityQuestionModule.changeSecurityQuestionAndAnswer(thresholdKey,question,answer_2));
             assertEquals(answer_2,SecurityQuestionModule.getAnswer(thresholdKey));
+            assertEquals(true, SecurityQuestionModule.storeAnswer(thresholdKey,answer_3));
+            assertEquals(answer_3,SecurityQuestionModule.getAnswer(thresholdKey));
+
         } catch (RuntimeError e) {
             fail();
         }
