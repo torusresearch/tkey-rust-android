@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
 import com.web3auth.tkey.ThresholdKey.Modules.SharetransferModule;
@@ -61,11 +62,31 @@ public class tkeyShareTransferModuleTest {
             String encPubKey = lookup.get(0);
             GenerateShareStoreResult share = thresholdKey.generateNewShare();
             SharetransferModule.approveRequestWithShareIndex(thresholdKey,encPubKey,share.getIndex());
+            SharetransferModule.addCustomInfoToRequest(thresholdKey, encPubKey, "test info");
             SharetransferModule.requestStatusCheck(thresholdKey2, request, true);
             KeyReconstructionDetails k2 = thresholdKey2.reconstruct();
             assertEquals(k1.getKey(),k2.getKey());
             ShareTransferStore st = SharetransferModule.getStore(thresholdKey);
+            SharetransferModule.getCurrentEncryptionKey(thresholdKey);
             // more test with delete, set
+        } catch (RuntimeError | JSONException e) {
+            fail();
+        }
+    }
+
+    @Test
+    public void StoreTest() {
+        try {
+            String request = SharetransferModule.requestNewShare(thresholdKey,"agent","[]");
+            ShareTransferStore store = SharetransferModule.getStore(thresholdKey2);
+            SharetransferModule.setStore(thresholdKey2, store);
+            ArrayList<String> lookup = SharetransferModule.lookForRequest(thresholdKey);
+            String encPubKey = lookup.get(0);
+            GenerateShareStoreResult share = thresholdKey.generateNewShare();
+            ShareStore outputStore = thresholdKey.outputShareStore(share.getIndex(),null);
+            SharetransferModule.approveRequest(thresholdKey, encPubKey, outputStore);
+            SharetransferModule.cleanupRequest(thresholdKey);
+            SharetransferModule.deleteStore(thresholdKey, encPubKey);
         } catch (RuntimeError | JSONException e) {
             fail();
         }

@@ -1,6 +1,10 @@
 package com.web3auth.tkey.ThresholdKey;
 
 import androidx.annotation.Nullable;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
@@ -8,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public final class ThresholdKey {
     final long pointer;
@@ -197,12 +202,17 @@ public final class ThresholdKey {
         return new LocalMetadataTransitions(result);
     }
 
-    public String getTKeyStore(String moduleName) throws RuntimeError {
+    public ArrayList<HashMap<String, Object>> getTKeyStore(String moduleName) throws RuntimeError, JsonProcessingException {
         RuntimeError error = new RuntimeError();
-        String result = jniThresholdKeyGetTKeyStore(moduleName, error);
+        String jsonString = jniThresholdKeyGetTKeyStore(moduleName, error);
         if (error.code != 0) {
             throw error;
         }
+        ObjectMapper objectMapper = new ObjectMapper();
+        // Use TypeReference to parse the JSON string into a HashMap
+        ArrayList<HashMap<String, Object>> result =
+                objectMapper.readValue(jsonString,
+                        new TypeReference<ArrayList<HashMap<String,Object>>>() {});
         return result;
     }
 

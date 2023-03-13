@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
@@ -16,6 +17,9 @@ import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 import com.web3auth.tkey.tkeyGenerateShareStoreResultTest;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -61,16 +65,19 @@ public class tkeySeedPhraseModuleTest {
         }
     }
 
-//    @Test
-//    public void tkey_store_test() {
-//        try {
-//            String phrase = "seed sock milk update focus rotate barely fade car face mechanic mercy";
-//            SeedPhraseModule.setSeedPhrase(thresholdKey,"HD Key Tree",phrase,0);
-//            String tkeyStore = thresholdKey.getTKeyStore("seedPhraseModule");
-//            System.out.println(tkeyStore);
-//            assertEquals("?",tkeyStore);
-//        } catch (RuntimeError e) {
-//            fail();
-//        }
-//    }
+    @Test
+    public void tkey_store_test() {
+        try {
+            String phrase = "seed sock milk update focus rotate barely fade car face mechanic mercy";
+            SeedPhraseModule.setSeedPhrase(thresholdKey,"HD Key Tree",phrase,0);
+            ArrayList<HashMap<String, Object>> tkeyStore = thresholdKey.getTKeyStore("seedPhraseModule");
+            String id = tkeyStore.get(0).get("id").toString();
+            String item = thresholdKey.getTKeyStoreItem("seedPhraseModule", id);
+            assertNotNull(item);
+        } catch (RuntimeError e) {
+            fail();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+    }
 }
