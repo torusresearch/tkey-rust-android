@@ -15,6 +15,7 @@ import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
 import com.web3auth.tkey.ThresholdKey.Modules.SharetransferModule;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.ShareTransferStore;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
@@ -63,6 +64,7 @@ public class tkeyShareTransferModuleTest {
             SharetransferModule.requestStatusCheck(thresholdKey2, request, true);
             KeyReconstructionDetails k2 = thresholdKey2.reconstruct();
             assertEquals(k1.getKey(),k2.getKey());
+            ShareTransferStore st = SharetransferModule.getStore(thresholdKey);
         } catch (RuntimeError | JSONException e) {
             fail();
         }
