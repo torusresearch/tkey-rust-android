@@ -122,6 +122,7 @@ public class tkeyThresholdKeyTest {
             assertNotEquals(reconstruct_details.getKey().length(), 0);
             assertNotEquals(reconstruct_details2.getKey().length(), 0);
             assertNotEquals(reconstruct_details.getKey(), reconstruct_details2.getKey());
+            // need to check this is right
             assertEquals(reconstruct_details.getAllKeys().isEmpty(),true);
             assertEquals(reconstruct_details.getSeedPhrase().isEmpty(), false);
         } catch (RuntimeError e) {

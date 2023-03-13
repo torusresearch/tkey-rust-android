@@ -65,6 +65,7 @@ public class tkeyShareTransferModuleTest {
             KeyReconstructionDetails k2 = thresholdKey2.reconstruct();
             assertEquals(k1.getKey(),k2.getKey());
             ShareTransferStore st = SharetransferModule.getStore(thresholdKey);
+            // more test with delete, set
         } catch (RuntimeError | JSONException e) {
             fail();
         }
