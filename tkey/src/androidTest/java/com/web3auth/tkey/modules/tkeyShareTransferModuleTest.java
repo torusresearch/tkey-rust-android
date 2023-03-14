@@ -78,7 +78,7 @@ public class tkeyShareTransferModuleTest {
             String request = SharetransferModule.requestNewShare(thresholdKey,"agent","[]");
             ShareTransferStore store = SharetransferModule.getStore(thresholdKey2);
             SharetransferModule.setStore(thresholdKey2, store);
-            SharetransferModule.getCurrentEncryptionKey(thresholdKey2);
+            SharetransferModule.getCurrentEncryptionKey(thresholdKey);
             ArrayList<String> lookup = SharetransferModule.lookForRequest(thresholdKey);
             String encPubKey = lookup.get(0);
             GenerateShareStoreResult share = thresholdKey.generateNewShare();
