@@ -67,8 +67,6 @@ public class tkeyShareTransferModuleTest {
             KeyReconstructionDetails k2 = thresholdKey2.reconstruct();
             assertEquals(k1.getKey(),k2.getKey());
             ShareTransferStore st = SharetransferModule.getStore(thresholdKey);
-            SharetransferModule.getCurrentEncryptionKey(thresholdKey);
-            // more test with delete, set
         } catch (RuntimeError | JSONException e) {
             fail();
         }
@@ -80,6 +78,7 @@ public class tkeyShareTransferModuleTest {
             String request = SharetransferModule.requestNewShare(thresholdKey,"agent","[]");
             ShareTransferStore store = SharetransferModule.getStore(thresholdKey2);
             SharetransferModule.setStore(thresholdKey2, store);
+            SharetransferModule.getCurrentEncryptionKey(thresholdKey2);
             ArrayList<String> lookup = SharetransferModule.lookForRequest(thresholdKey);
             String encPubKey = lookup.get(0);
             GenerateShareStoreResult share = thresholdKey.generateNewShare();
