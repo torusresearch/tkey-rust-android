@@ -16,6 +16,9 @@ import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -123,8 +126,8 @@ public class tkeyThresholdKeyTest {
             assertNotEquals(reconstruct_details2.getKey().length(), 0);
             assertNotEquals(reconstruct_details.getKey(), reconstruct_details2.getKey());
             // need to check this is right
-            assertEquals(reconstruct_details.getAllKeys().isEmpty(),true);
-            assertEquals(reconstruct_details.getSeedPhrase().isEmpty(), false);
+            assertTrue(reconstruct_details.getAllKeys().isEmpty());
+            assertFalse(reconstruct_details.getSeedPhrase().isEmpty());
         } catch (RuntimeError e) {
             fail();
         }
@@ -143,14 +146,14 @@ public class tkeyThresholdKeyTest {
             String old_description = "test share description";
             String new_description = "new test share description";
             thresholdKey.addShareDescription(keystr, old_description, false);
-            String result1 = thresholdKey.getShareDescriptions();
-            assertEquals(result1,"{\"test share\":[\"test share description\"]}");
+            HashMap<String, ArrayList<String>> result1 = thresholdKey.getShareDescriptions();
+            assertEquals(result1.get("test share"), new ArrayList<String>(){{add("test share description");}});
             thresholdKey.updateShareDescription(keystr, old_description, new_description, false);
-            String result2 = thresholdKey.getShareDescriptions();
-            assertEquals(result2, "{\"test share\":[\"new test share description\"]}");
+            HashMap<String, ArrayList<String>> result2 = thresholdKey.getShareDescriptions();
+            assertEquals(result2.get("test share"), new ArrayList<String>(){{add("new test share description");}});
             thresholdKey.deleteShareDescription(keystr, new_description, false);
-            String result3 = thresholdKey.getShareDescriptions();
-            assertEquals(result3, "{\"test share\":[]}");
+            HashMap<String, ArrayList<String>> result3 = thresholdKey.getShareDescriptions();
+            assertEquals(result3.get("test share"), new ArrayList<String>(){});
         } catch (RuntimeError e) {
             fail();
         }

@@ -274,13 +274,20 @@ public final class ThresholdKey {
         }
     }
 
-    public String getShareDescriptions() throws RuntimeError {
+    public HashMap<String, ArrayList<String>> getShareDescriptions() throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        String result = jniThresholdKeyGetShareDescriptions(error);
+        String jsonString = jniThresholdKeyGetShareDescriptions(error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            // Use HashMap<String, ArrayList<String>> to parse the JSON string into a single HashMap
+            HashMap<String, ArrayList<String>> result = objectMapper.readValue(jsonString, new TypeReference<HashMap<String, ArrayList<String>>>() {});
+            return result;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error parsing JSON string: " + e.getMessage(), e);
+        }
     }
 
     @Override
