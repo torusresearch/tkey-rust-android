@@ -4,7 +4,9 @@ import com.web3auth.tkey.RuntimeError;
 
 public final class LocalMetadataTransitions {
     private native void jniLocalMetadataTransitionsFree();
+
     private native long jniLocalMetadataTranstionsFromJson(String json, RuntimeError error);
+
     private native String jniLocalMetadataTranstionsToJson(RuntimeError error);
 
     final long pointer;

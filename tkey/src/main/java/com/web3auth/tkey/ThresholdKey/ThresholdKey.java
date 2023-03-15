@@ -1,13 +1,17 @@
 package com.web3auth.tkey.ThresholdKey;
 
 import androidx.annotation.Nullable;
+
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 public final class ThresholdKey {
     final long pointer;
@@ -54,8 +58,11 @@ public final class ThresholdKey {
     private native void jniThresholdKeyDelete(String curveN, RuntimeError error);
 
     private native void jniThresholdKeyAddShareDescription(String key, String Description, boolean updateMetadata, String curveN, RuntimeError error);
+
     private native void jniThresholdKeyDeleteShareDescription(String key, String Description, boolean updateMetadata, String curveN, RuntimeError error);
+
     private native void jniThresholdKeyUpdateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata, String curveN, RuntimeError error);
+
     private native String jniThresholdKeyGetShareDescriptions(RuntimeError error);
 
     private native void jniThresholdKeyFree();
@@ -197,22 +204,28 @@ public final class ThresholdKey {
         return new LocalMetadataTransitions(result);
     }
 
-    public String getTKeyStore(String moduleName) throws RuntimeError {
+    public ArrayList<JSONObject> getTKeyStore(String moduleName) throws JSONException, RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetTKeyStore(moduleName, error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        JSONArray store = new JSONArray(result);
+        ArrayList<JSONObject> list = new ArrayList<>();
+        for (int i = 0; i < store.length(); i++) {
+            JSONObject value = store.getJSONObject(i);
+            list.add(value);
+        }
+        return list;
     }
 
-    public String getTKeyStoreItem(String moduleName, String id) throws RuntimeError {
+    public JSONObject getTKeyStoreItem(String moduleName, String id) throws JSONException, RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetTKeyStoreItem(moduleName, id, error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        return new JSONObject(result);
     }
 
     public void syncLocalMetadataTransitions() throws RuntimeError {
@@ -242,7 +255,7 @@ public final class ThresholdKey {
 
     public void addShareDescription(String key, String description, boolean updateMetadata) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniThresholdKeyAddShareDescription(key,description,updateMetadata,curveN, error);
+        jniThresholdKeyAddShareDescription(key, description, updateMetadata, curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -250,7 +263,7 @@ public final class ThresholdKey {
 
     public void deleteShareDescription(String key, String description, boolean updateMetadata) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniThresholdKeyDeleteShareDescription(key,description,updateMetadata,curveN, error);
+        jniThresholdKeyDeleteShareDescription(key, description, updateMetadata, curveN, error);
         if (error.code != 0) {
             throw error;
         }
@@ -258,19 +271,31 @@ public final class ThresholdKey {
 
     public void updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniThresholdKeyUpdateShareDescription(key,oldDescription,newDescription,updateMetadata,curveN, error);
+        jniThresholdKeyUpdateShareDescription(key, oldDescription, newDescription, updateMetadata, curveN, error);
         if (error.code != 0) {
             throw error;
         }
     }
 
-    public String getShareDescriptions() throws RuntimeError {
+    public HashMap<String, ArrayList<String>> getShareDescriptions() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetShareDescriptions(error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        HashMap<String, ArrayList<String>> description = new HashMap<>();
+        JSONObject object = new JSONObject(result);
+        Iterator<String> iter = object.keys();
+        while (iter.hasNext()) {
+            String key = iter.next();
+            JSONArray values = object.getJSONArray(key);
+            ArrayList<String> value = new ArrayList<>();
+            for (int i = 0; i < values.length(); i++) {
+                value.add(values.getString(i));
+            }
+            description.put(key, value);
+        }
+        return description;
     }
 
     @Override

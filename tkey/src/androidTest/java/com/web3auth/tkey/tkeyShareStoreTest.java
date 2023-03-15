@@ -3,6 +3,7 @@ package com.web3auth.tkey;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.json.JSONException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,8 +45,13 @@ public class tkeyShareStoreTest {
             String lastIndex = indexes.get(indexes.size() - 1);
             tkeyShareStoreTest.details = thresholdKey.outputShareStore(lastIndex, null);
         } catch (RuntimeError | JSONException e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -53,7 +59,7 @@ public class tkeyShareStoreTest {
         try {
             assertNotEquals(details.share().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -62,7 +68,7 @@ public class tkeyShareStoreTest {
         try {
             assertNotEquals(details.polynomialId().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -71,7 +77,7 @@ public class tkeyShareStoreTest {
         try {
             assertNotEquals(details.shareIndex().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -83,7 +89,7 @@ public class tkeyShareStoreTest {
             ShareStore newStore = new ShareStore(json);
             assertEquals(details.shareIndex(), newStore.shareIndex());
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

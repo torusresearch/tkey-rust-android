@@ -7,6 +7,12 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 
+import com.web3auth.tkey.ThresholdKey.Modules.PrivateKeysModule;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -16,6 +22,21 @@ import static org.junit.Assert.*;
 public class tkeyVersionTest {
     static {
         System.loadLibrary("tkey-native");
+    }
+
+    @Test
+    public void testConstructorIsPrivate() {
+        try {
+            Constructor<Version> constructor = Version.class.getDeclaredConstructor();
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        } catch (InvocationTargetException | IllegalAccessException |
+                 InstantiationException ignored) {
+
+        } catch (NoSuchMethodException e) {
+            fail(e.toString());
+        }
     }
 
     @Test

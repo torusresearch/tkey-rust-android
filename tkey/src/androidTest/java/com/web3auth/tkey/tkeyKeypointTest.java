@@ -2,6 +2,7 @@ package com.web3auth.tkey;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,8 +40,13 @@ public class tkeyKeypointTest {
             KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
             tkeyKeypointTest.details = details.getPublicKeyPoint();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -48,7 +54,7 @@ public class tkeyKeypointTest {
         try {
             assertNotEquals(details.getX().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -57,7 +63,7 @@ public class tkeyKeypointTest {
         try {
             assertNotEquals(details.getY().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -66,7 +72,7 @@ public class tkeyKeypointTest {
         try {
             assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

@@ -80,7 +80,10 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransfer
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                         threshold_key));
     const char *pEnc = env->GetStringUTFChars(enc_pub_key_x, JNI_FALSE);
-    auto *pStore = reinterpret_cast<ShareStore *>(GetPointerField(env, share_store));
+    ShareStore *pStore = nullptr;
+    if (share_store != nullptr) {
+        pStore = reinterpret_cast<ShareStore *>(GetPointerField(env, share_store));
+    }
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     share_transfer_approve_request(pointer,
                                    const_cast<char *>(pEnc),
@@ -178,9 +181,14 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_SharetransferModule_jniSharetransfer
     char *pResult =
             share_transfer_get_current_encryption_key(pointer, error_ptr);
     setErrorCode(env, error, errorCode);
-    jstring result = env->NewStringUTF(pResult);
-    string_free(pResult);
-    return result;
+    if (pResult != nullptr) {
+        jstring result = env->NewStringUTF(pResult);
+        string_free(pResult);
+        return result;
+    } else {
+        jstring result = env->NewStringUTF("");
+        return result;
+    }
 }
 
 extern "C"

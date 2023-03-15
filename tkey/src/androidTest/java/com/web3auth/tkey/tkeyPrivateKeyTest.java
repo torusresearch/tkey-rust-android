@@ -28,7 +28,7 @@ public class tkeyPrivateKeyTest {
             PrivateKey key2 = new PrivateKey(key.hex);
             assertEquals(key.hex, key2.hex);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

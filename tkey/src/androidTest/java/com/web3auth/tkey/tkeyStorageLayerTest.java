@@ -26,7 +26,8 @@ public class tkeyStorageLayerTest {
             String url = "https://metadata.tor.us";
             new StorageLayer(false, url, 2);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+        System.gc();
     }
 }

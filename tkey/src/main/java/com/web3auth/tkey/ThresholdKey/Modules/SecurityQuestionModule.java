@@ -6,6 +6,7 @@ import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 public final class SecurityQuestionModule {
     private SecurityQuestionModule() {
+        //Utility class
     }
 
     private static native long jniSecurityQuestionModuleGenerateShareStoreResult(ThresholdKey thresholdKey, String questions, String answer, String curveN, RuntimeError error);

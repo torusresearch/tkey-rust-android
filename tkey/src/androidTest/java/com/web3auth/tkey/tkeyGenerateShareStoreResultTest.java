@@ -2,6 +2,7 @@ package com.web3auth.tkey;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +39,13 @@ public class tkeyGenerateShareStoreResultTest {
             thresholdKey.initialize(key.hex, null, false, false);
             tkeyGenerateShareStoreResultTest.details = thresholdKey.generateNewShare();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -47,7 +53,7 @@ public class tkeyGenerateShareStoreResultTest {
         try {
             assertNotEquals(details.getIndex().length(), 0);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -56,7 +62,7 @@ public class tkeyGenerateShareStoreResultTest {
         try {
             details.getShareStoreMap();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

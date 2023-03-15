@@ -1,5 +1,7 @@
 package com.web3auth.tkey.ThresholdKey.Modules;
 
+import androidx.annotation.Nullable;
+
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.ShareTransferStore;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 
 public final class SharetransferModule {
     private SharetransferModule() {
+        //Utility class
     }
 
     private static native String jniSharetransferModuleRequestNewShare(ThresholdKey thresholdKey, String agent, String indexes, String curveN, RuntimeError error);
@@ -20,7 +23,7 @@ public final class SharetransferModule {
 
     private static native String jniSharetransferModuleLookForRequest(ThresholdKey thresholdKey, RuntimeError error);
 
-    private static native void jniSharetransferModuleApproveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore shareStore, String curveN, RuntimeError error);
+    private static native void jniSharetransferModuleApproveRequest(ThresholdKey thresholdKey, String encPubKeyX, @Nullable ShareStore shareStore, String curveN, RuntimeError error);
 
     private static native void jniSharetransferModuleApproveRequestWithShareIndex(ThresholdKey thresholdKey, String encPubKeyX, String indexes, String curveN, RuntimeError error);
 
@@ -68,7 +71,7 @@ public final class SharetransferModule {
         return array;
     }
 
-    public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, ShareStore store) throws RuntimeError {
+    public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, @Nullable ShareStore store) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         jniSharetransferModuleApproveRequest(thresholdKey, encPubKeyX, store, thresholdKey.curveN, error);
         if (error.code != 0) {
@@ -114,7 +117,7 @@ public final class SharetransferModule {
     public static String getCurrentEncryptionKey(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniSharetransferModuleGetCurrentEncryptionKey(thresholdKey, error);
-        if (error.code != 0) {
+        if (error.code != 0 && error.code != 6) {
             throw error;
         }
         return result;

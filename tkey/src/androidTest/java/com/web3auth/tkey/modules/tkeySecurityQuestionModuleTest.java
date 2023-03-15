@@ -2,6 +2,9 @@ package com.web3auth.tkey.modules;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,12 +13,15 @@ import static org.junit.Assert.*;
 
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.Modules.SecurityQuestionModule;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
-import com.web3auth.tkey.tkeyGenerateShareStoreResultTest;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -42,8 +48,28 @@ public class tkeySecurityQuestionModuleTest {
             thresholdKey.reconstruct();
             tkeySecurityQuestionModuleTest.thresholdKey = thresholdKey;
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @Test
+    public void testConstructorIsPrivate() {
+        try {
+            Constructor<SecurityQuestionModule> constructor = SecurityQuestionModule.class.getDeclaredConstructor();
+            assertTrue(Modifier.isPrivate(constructor.getModifiers()));
+            constructor.setAccessible(true);
+            constructor.newInstance();
+        } catch (InvocationTargetException | IllegalAccessException |
+                 InstantiationException ignored) {
+
+        } catch (NoSuchMethodException e) {
+            fail(e.toString());
+        }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -52,14 +78,19 @@ public class tkeySecurityQuestionModuleTest {
             String question = "favorite marvel character";
             String answer = "iron man";
             String answer_2 = "captain america";
-            SecurityQuestionModule.generateNewShare(thresholdKey,question,answer);
-            assertEquals(question,SecurityQuestionModule.getQuestions(thresholdKey));
-            assertEquals(true,SecurityQuestionModule.inputShare(thresholdKey,answer));
-            assertEquals(answer,SecurityQuestionModule.getAnswer(thresholdKey));
-            assertEquals(true,SecurityQuestionModule.changeSecurityQuestionAndAnswer(thresholdKey,question,answer_2));
-            assertEquals(answer_2,SecurityQuestionModule.getAnswer(thresholdKey));
-        } catch (RuntimeError e) {
-            fail();
+            SecurityQuestionModule.generateNewShare(thresholdKey, question, answer);
+            assertEquals(question, SecurityQuestionModule.getQuestions(thresholdKey));
+            assertEquals(true, SecurityQuestionModule.inputShare(thresholdKey, answer));
+            assertEquals(answer, SecurityQuestionModule.getAnswer(thresholdKey));
+            assertEquals(true, SecurityQuestionModule.changeSecurityQuestionAndAnswer(thresholdKey, question, answer_2));
+            assertEquals(answer_2, SecurityQuestionModule.getAnswer(thresholdKey));
+            assertEquals(true, SecurityQuestionModule.storeAnswer(thresholdKey, answer_2));
+            ArrayList<JSONObject> list = thresholdKey.getTKeyStore("securityQuestions");
+            String id = list.get(0).getString("id");
+            String item = thresholdKey.getTKeyStoreItem("securityQuestions", id).getString("answer");
+            assertEquals(answer_2, item);
+        } catch (JSONException | RuntimeError e) {
+            fail(e.toString());
         }
     }
 }
