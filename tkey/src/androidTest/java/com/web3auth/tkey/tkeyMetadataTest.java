@@ -2,7 +2,6 @@ package com.web3auth.tkey;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

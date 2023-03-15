@@ -1,6 +1,5 @@
 package com.web3auth.tkey;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
