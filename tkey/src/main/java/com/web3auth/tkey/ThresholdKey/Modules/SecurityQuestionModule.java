@@ -1,6 +1,8 @@
 package com.web3auth.tkey.ThresholdKey.Modules;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
 import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
@@ -21,40 +23,105 @@ public final class SecurityQuestionModule {
 
     private static native String jniSecurityQuestionModuleGetQuestions(ThresholdKey thresholdKey, RuntimeError error);
 
-    public static GenerateShareStoreResult generateNewShare(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey, questions, answer, thresholdKey.curveN, error);
-        if (error.code != 0) {
-            throw error;
-        }
-        return new GenerateShareStoreResult(result);
+    public static void generateNewShare(ThresholdKey thresholdKey, String questions, String answer, ThresholdKeyCallback<GenerateShareStoreResult> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<GenerateShareStoreResult> result = generateNewShare(thresholdKey, questions, answer);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<GenerateShareStoreResult> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
     }
 
-    public static Boolean inputShare(ThresholdKey thresholdKey, String answer) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleInputShare(thresholdKey, answer, thresholdKey.curveN, error);
-        if (error.code != 0) {
-            throw error;
+    private static Result<GenerateShareStoreResult> generateNewShare(ThresholdKey thresholdKey, String questions, String answer) {
+        try {
+            RuntimeError error = new RuntimeError();
+            long result = jniSecurityQuestionModuleGenerateShareStoreResult(thresholdKey, questions, answer, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(new GenerateShareStoreResult(result));
+        } catch (Exception e) {
+            return new Result.Error<>(e);
         }
-        return result;
     }
 
-    public static Boolean changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey, questions, answer, thresholdKey.curveN, error);
-        if (error.code != 0) {
-            throw error;
-        }
-        return result;
+
+    public static void inputShare(ThresholdKey thresholdKey, String answer, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<Boolean> result = inputShare(thresholdKey, answer);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
     }
 
-    public static Boolean storeAnswer(ThresholdKey thresholdKey, String answer) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey, answer, thresholdKey.curveN, error);
-        if (error.code != 0) {
-            throw error;
+    private static Result<Boolean> inputShare(ThresholdKey thresholdKey, String answer) {
+        try {
+            RuntimeError error = new RuntimeError();
+            boolean result = jniSecurityQuestionModuleInputShare(thresholdKey, answer, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(result);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
         }
-        return result;
+    }
+
+    public static void changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<Boolean> result = changeSecurityQuestionAndAnswer(thresholdKey, questions, answer);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
+    private static Result<Boolean> changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer) {
+        try {
+            RuntimeError error = new RuntimeError();
+            boolean result = jniSecurityQuestionModuleChangeQuestionAndAnswer(thresholdKey, questions, answer, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(result);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public static void storeAnswer(ThresholdKey thresholdKey, String answer, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<Boolean> result = storeAnswer(thresholdKey, answer);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
+    private static Result<Boolean> storeAnswer(ThresholdKey thresholdKey, String answer) {
+        try {
+            RuntimeError error = new RuntimeError();
+            boolean result = jniSecurityQuestionModuleStoreAnswer(thresholdKey, answer, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(result);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
     }
 
     public static String getAnswer(ThresholdKey thresholdKey) throws RuntimeError {

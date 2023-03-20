@@ -1,19 +1,23 @@
 package com.web3auth.tkey;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
+import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
+import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
-import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
-import com.web3auth.tkey.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey.ThresholdKey.StorageLayer;
-import com.web3auth.tkey.ThresholdKey.ThresholdKey;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -36,9 +40,22 @@ public class tkeyGenerateShareStoreResultTest {
             ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
-            thresholdKey.initialize(key.hex, null, false, false);
-            tkeyGenerateShareStoreResultTest.details = thresholdKey.generateNewShare();
-        } catch (RuntimeError e) {
+            CountDownLatch lock = new CountDownLatch(2);
+            thresholdKey.initialize(key.hex, null, false, false, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.generateNewShare(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate new share for tkey");
+                }
+                tkeyGenerateShareStoreResultTest.details = ((Result.Success<GenerateShareStoreResult>) result).data;
+                lock.countDown();
+            });
+            lock.await();
+        } catch (RuntimeError | InterruptedException e) {
             fail(e.toString());
         }
     }

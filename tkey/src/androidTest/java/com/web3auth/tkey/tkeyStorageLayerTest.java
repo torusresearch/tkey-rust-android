@@ -1,13 +1,13 @@
 package com.web3auth.tkey;
 
+import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-
-import com.web3auth.tkey.ThresholdKey.StorageLayer;
 
 /**
  * Instrumented test, which will execute on an Android device.
