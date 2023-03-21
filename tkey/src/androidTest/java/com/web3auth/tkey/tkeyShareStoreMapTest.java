@@ -1,6 +1,17 @@
 package com.web3auth.tkey;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
+import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.ShareStoreMap;
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
+import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONException;
 import org.junit.AfterClass;
@@ -8,14 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
-
-import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
-import com.web3auth.tkey.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey.ThresholdKey.ShareStoreMap;
-import com.web3auth.tkey.ThresholdKey.StorageLayer;
-import com.web3auth.tkey.ThresholdKey.ThresholdKey;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -31,19 +35,40 @@ public class tkeyShareStoreMapTest {
     private static ShareStoreMap details;
 
     @BeforeClass
-    public static void setupTest() {
+    public static void setupTest() throws RuntimeException {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
             ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
-            thresholdKey.initialize(key.hex, null, false, false);
-            thresholdKey.reconstruct();
-            GenerateShareStoreResult share = thresholdKey.generateNewShare();
-            tkeyShareStoreMapTest.details = share.getShareStoreMap();
-        } catch (RuntimeError e) {
-            fail(e.toString());
+            CountDownLatch lock = new CountDownLatch(3);
+            thresholdKey.initialize(key.hex, null, false, false, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.generateNewShare(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate share for tkey");
+                }
+                try {
+                    tkeyShareStoreMapTest.details = ((Result.Success<GenerateShareStoreResult>) result).data.getShareStoreMap();
+                } catch (RuntimeError e) {
+                    fail();
+                }
+                lock.countDown();
+            });
+            lock.await();
+        } catch (RuntimeError | InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 

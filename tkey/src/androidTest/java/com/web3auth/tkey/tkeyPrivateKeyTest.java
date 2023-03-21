@@ -1,19 +1,22 @@
 package com.web3auth.tkey;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-
-import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 
 /**
  * Instrumented test, which will execute on an Android device.
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
 @RunWith(AndroidJUnit4.class)
 public class tkeyPrivateKeyTest {
     static {

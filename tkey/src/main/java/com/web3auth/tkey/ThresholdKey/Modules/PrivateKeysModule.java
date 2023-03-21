@@ -3,6 +3,8 @@ package com.web3auth.tkey.ThresholdKey.Modules;
 import androidx.annotation.Nullable;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONArray;
@@ -21,13 +23,29 @@ public final class PrivateKeysModule {
 
     private static native String jniPrivateKeysModuleGetPrivateKeyAccounts(ThresholdKey thresholdKey, RuntimeError error);
 
-    public static Boolean setPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey, key, format, thresholdKey.curveN, error);
-        if (error.code != 0) {
-            throw error;
+    public static void setPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<Boolean> result = setPrivateKey(thresholdKey, key, format);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
+    private static Result<Boolean> setPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format) {
+        try {
+            RuntimeError error = new RuntimeError();
+            boolean result = jniPrivateKeysModuleSetPrivateKey(thresholdKey, key, format, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(result);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
         }
-        return result;
     }
 
     public static String getPrivateKeys(ThresholdKey thresholdKey) throws RuntimeError {
