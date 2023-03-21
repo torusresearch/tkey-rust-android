@@ -2,7 +2,7 @@ package com.web3auth.tkey;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import org.json.JSONException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +40,13 @@ public class tkeyMetadataTest {
             thresholdKey.reconstruct();
             tkeyMetadataTest.details = thresholdKey.getMetadata();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -53,7 +58,7 @@ public class tkeyMetadataTest {
             String newExport = newMetadata.export();
             assertEquals(export, newExport);
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

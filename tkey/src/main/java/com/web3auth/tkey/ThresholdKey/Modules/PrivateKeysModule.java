@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public final class PrivateKeysModule {
     private PrivateKeysModule() {
+        //Utility class
     }
 
     private static native boolean jniPrivateKeysModuleSetPrivateKey(ThresholdKey thresholdKey, @Nullable String key, String format, String curveN, RuntimeError error);

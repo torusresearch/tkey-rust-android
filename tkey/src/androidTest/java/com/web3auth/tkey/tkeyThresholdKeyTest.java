@@ -2,6 +2,7 @@ package com.web3auth.tkey;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -15,6 +16,9 @@ import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -39,8 +43,9 @@ public class tkeyThresholdKeyTest {
             assertNotNull(details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed"));
             KeyReconstructionDetails reconstruct_details = thresholdKey.reconstruct();
             assertNotEquals(reconstruct_details.getKey().length(), 0);
+            System.gc();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -78,8 +83,9 @@ public class tkeyThresholdKeyTest {
             thresholdKey3.inputShareStore(inputStore);
             thresholdKey3.reconstruct();
             thresholdKey3.deleteTKey();
+            System.gc();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 
@@ -96,10 +102,12 @@ public class tkeyThresholdKeyTest {
             thresholdKey.generateNewShare();
             thresholdKey.syncLocalMetadataTransitions();
             thresholdKey.reconstruct();
+            System.gc();
         } catch (RuntimeError e) {
             fail();
         }
     }
+
     @Test
     public void threshold_key_multi_instance() {
         try {
@@ -122,8 +130,36 @@ public class tkeyThresholdKeyTest {
             assertNotEquals(reconstruct_details.getKey().length(), 0);
             assertNotEquals(reconstruct_details2.getKey().length(), 0);
             assertNotEquals(reconstruct_details.getKey(), reconstruct_details2.getKey());
+
+            //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
+            // however they are not guaranteed by Java to be called on demand.
+            System.gc();
         } catch (RuntimeError e) {
             fail();
+        }
+    }
+
+    @Test
+    public void share_descriptions_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            PrivateKey key = PrivateKey.generate();
+            thresholdKey.initialize(key.hex, null, false, false);
+            thresholdKey.reconstruct();
+            GenerateShareStoreResult share = thresholdKey.generateNewShare();
+            thresholdKey.addShareDescription(share.getIndex(), "Device share 2", true);
+            HashMap<String, ArrayList<String>> descriptions = thresholdKey.getShareDescriptions();
+            ArrayList<String> description_specific = descriptions.get(share.getIndex());
+            assert description_specific != null;
+            assertTrue(description_specific.contains("Device share 2"));
+            thresholdKey.updateShareDescription(share.getIndex(), "Device share 2", "Emulator share", true);
+            thresholdKey.deleteShareDescription(share.getIndex(), "Emulator share", true);
+            System.gc();
+        } catch (RuntimeError | JSONException e) {
+            fail(e.toString());
         }
     }
 }

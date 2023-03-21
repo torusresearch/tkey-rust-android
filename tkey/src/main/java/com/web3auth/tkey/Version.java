@@ -1,6 +1,10 @@
 package com.web3auth.tkey;
 
-public class Version {
+public final class Version {
+    private Version() {
+        //Utility class
+    }
+
     private static native String jniVersion(RuntimeError error);
 
     public static String current() throws RuntimeError {

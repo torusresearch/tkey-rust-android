@@ -438,8 +438,10 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyAddShareDescript
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
     const char *pDescription = env->GetStringUTFChars(description, JNI_FALSE);
-    threshold_key_add_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pDescription),update_metadata,const_cast<char *>(pCurve),
-                              error_ptr);
+    threshold_key_add_share_description(pThreshold, const_cast<char *>(pKey),
+                                        const_cast<char *>(pDescription), update_metadata,
+                                        const_cast<char *>(pCurve),
+                                        error_ptr);
     env->ReleaseStringUTFChars(key, pKey);
     env->ReleaseStringUTFChars(description, pDescription);
     env->ReleaseStringUTFChars(curve_n, pCurve);
@@ -462,8 +464,10 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyDeleteShareDescr
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
     const char *pDescription = env->GetStringUTFChars(description, JNI_FALSE);
-    threshold_key_delete_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pDescription),update_metadata,const_cast<char *>(pCurve),
-                                        error_ptr);
+    threshold_key_delete_share_description(pThreshold, const_cast<char *>(pKey),
+                                           const_cast<char *>(pDescription), update_metadata,
+                                           const_cast<char *>(pCurve),
+                                           error_ptr);
     env->ReleaseStringUTFChars(key, pKey);
     env->ReleaseStringUTFChars(description, pDescription);
     env->ReleaseStringUTFChars(curve_n, pCurve);
@@ -488,8 +492,11 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyUpdateShareDescr
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
     const char *pOldDescription = env->GetStringUTFChars(old_description, JNI_FALSE);
     const char *pNewDescription = env->GetStringUTFChars(new_description, JNI_FALSE);
-    threshold_key_update_share_description(pThreshold, const_cast<char *>(pKey),const_cast<char *>(pOldDescription),const_cast<char *>(pNewDescription),update_metadata,const_cast<char *>(pCurve),
-                                        error_ptr);
+    threshold_key_update_share_description(pThreshold, const_cast<char *>(pKey),
+                                           const_cast<char *>(pOldDescription),
+                                           const_cast<char *>(pNewDescription), update_metadata,
+                                           const_cast<char *>(pCurve),
+                                           error_ptr);
     env->ReleaseStringUTFChars(key, pKey);
     env->ReleaseStringUTFChars(old_description, pOldDescription);
     env->ReleaseStringUTFChars(new_description, pNewDescription);

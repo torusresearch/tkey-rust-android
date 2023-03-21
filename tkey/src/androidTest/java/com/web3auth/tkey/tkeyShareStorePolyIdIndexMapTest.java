@@ -3,6 +3,7 @@ package com.web3auth.tkey;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.json.JSONException;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,8 +41,13 @@ public class tkeyShareStorePolyIdIndexMapTest {
             thresholdKey.reconstruct();
             tkeyShareStorePolyIdIndexMapTest.details = thresholdKey.getShares();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
+    }
+
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
     }
 
     @Test
@@ -49,7 +55,7 @@ public class tkeyShareStorePolyIdIndexMapTest {
         try {
             assertNotEquals(details.getShareStoreMaps().size(), 0);
         } catch (RuntimeError | JSONException e) {
-            fail();
+            fail(e.toString());
         }
     }
 }

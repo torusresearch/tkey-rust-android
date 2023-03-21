@@ -44,8 +44,8 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_ShareSerializationModule_jniShareSer
     if (format != NULL) {
         pFormat = env->GetStringUTFChars(format, JNI_FALSE);
     }
-    char *pResult = share_serialization_serialize_share(pointer, const_cast<char *>(pShare),
-                                                        const_cast<char *>(pFormat), error_ptr);
+    char *pResult = share_serialization_deserialize_share(pointer, const_cast<char *>(pShare),
+                                                          const_cast<char *>(pFormat), error_ptr);
     if (pFormat != nullptr) {
         env->ReleaseStringUTFChars(format, pFormat);
     }

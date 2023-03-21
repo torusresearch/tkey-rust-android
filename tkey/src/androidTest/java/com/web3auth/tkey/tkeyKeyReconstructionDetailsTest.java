@@ -1,20 +1,19 @@
 package com.web3auth.tkey;
 
+import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
+import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
+import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.StorageLayer;
+import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
-
-import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
-import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
-import com.web3auth.tkey.ThresholdKey.KeyDetails;
-import com.web3auth.tkey.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey.ThresholdKey.StorageLayer;
-import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -22,12 +21,12 @@ import com.web3auth.tkey.ThresholdKey.ThresholdKey;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class tkeyKeypointTest {
+public class tkeyKeyReconstructionDetailsTest {
     static {
         System.loadLibrary("tkey-native");
     }
 
-    private static KeyPoint details;
+    private static KeyReconstructionDetails details;
 
     @BeforeClass
     public static void setupTest() {
@@ -37,8 +36,8 @@ public class tkeyKeypointTest {
             ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
-            KeyDetails details = thresholdKey.initialize(key.hex, null, false, false);
-            tkeyKeypointTest.details = details.getPublicKeyPoint();
+            thresholdKey.initialize(key.hex, null, false, false);
+            tkeyKeyReconstructionDetailsTest.details = thresholdKey.reconstruct();
         } catch (RuntimeError e) {
             fail(e.toString());
         }
@@ -50,27 +49,27 @@ public class tkeyKeypointTest {
     }
 
     @Test
-    public void get_x() {
+    public void getKey() {
         try {
-            assertNotEquals(details.getX().length(), 0);
+            details.getKey();
         } catch (RuntimeError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void get_y() {
+    public void getAllKeys() {
         try {
-            assertNotEquals(details.getY().length(), 0);
+            details.getAllKeys();
         } catch (RuntimeError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void get_as_public_key() {
+    public void getSeedPhrase() {
         try {
-            assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(), 0);
+            details.getSeedPhrase();
         } catch (RuntimeError e) {
             fail(e.toString());
         }

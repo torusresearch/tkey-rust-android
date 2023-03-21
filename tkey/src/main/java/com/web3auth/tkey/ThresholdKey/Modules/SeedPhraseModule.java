@@ -7,6 +7,7 @@ import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 public final class SeedPhraseModule {
     private SeedPhraseModule() {
+        //Utility class
     }
 
     private static native void jniSeedPhraseModuleSetSeedPhrase(ThresholdKey thresholdKey, String format, String phrase, int wallets, String curveN, RuntimeError error);

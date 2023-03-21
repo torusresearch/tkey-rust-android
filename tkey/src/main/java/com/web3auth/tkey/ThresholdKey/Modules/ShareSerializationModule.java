@@ -7,6 +7,7 @@ import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 public final class ShareSerializationModule {
     private ShareSerializationModule() {
+        //Utility class
     }
 
     private static native String jniShareSerializationModuleSerializeShare(ThresholdKey thresholdKey, String share, @Nullable String format, RuntimeError error);

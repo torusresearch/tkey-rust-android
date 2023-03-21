@@ -26,8 +26,9 @@ public class tkeyServiceProviderTest {
         try {
             PrivateKey key = PrivateKey.generate();
             new ServiceProvider(false, key.hex);
+            System.gc();
         } catch (RuntimeError e) {
-            fail();
+            fail(e.toString());
         }
     }
 }
