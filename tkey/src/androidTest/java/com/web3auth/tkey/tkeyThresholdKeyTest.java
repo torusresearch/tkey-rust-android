@@ -181,7 +181,7 @@ public class tkeyThresholdKeyTest {
                 }
                 lock4.countDown();
             });
-            thresholdKey3.deleteTKey(result -> {
+            thresholdKey3.CRITICALDeleteTKey(result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not delete tkey");
                 }

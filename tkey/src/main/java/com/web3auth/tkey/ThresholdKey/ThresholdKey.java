@@ -70,12 +70,17 @@ public final class ThresholdKey {
 
     private native String jniThresholdKeyGetShareDescriptions(RuntimeError error);
 
+    private native String jniThresholdKeyStorageLayerGetMetadata(@Nullable String privateKey, RuntimeError error);
+
+    private native void jniThresholdKeyStorageLayerSetMetadata(@Nullable String privateKey, String json, String curveN, RuntimeError error);
+
+    private native void jniThresholdKeyStorageLayerSetMetadataStream(String privateKeys, String json, String curveN, RuntimeError error);
+
     private native void jniThresholdKeyFree();
 
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        Executor executor = Executors.newSingleThreadExecutor();
-        this.executor = executor;
+        this.executor = Executors.newSingleThreadExecutor();
 
         long ptr = jniThresholdKey(metadata, shares, storage, provider, transitions, lastFetchedCloudMetadata, enableLogging, manualSync, error);
         if (error.code != 0) {
@@ -107,6 +112,20 @@ public final class ThresholdKey {
         );
     }
 
+    public void initialize(@Nullable String importShare, @Nullable ShareStore input, final ThresholdKeyCallback<KeyDetails> callback) {
+        executor.execute(
+                () -> {
+                    try {
+                        Result<KeyDetails> result = initialize(importShare, input, false, false);
+                        callback.onComplete(result);
+                    } catch (Exception e) {
+                        Result<KeyDetails> error = new Result.Error<>(e);
+                        callback.onComplete(error);
+                    }
+                }
+        );
+    }
+
     private Result<KeyDetails> initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions) {
         try {
             RuntimeError error = new RuntimeError();
@@ -115,6 +134,87 @@ public final class ThresholdKey {
                 throw new Exception(error);
             }
             return new Result.Success<>(new KeyDetails(ptr));
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void storage_layer_get_metadata(@Nullable String privateKey, final ThresholdKeyCallback<String> callback) {
+        executor.execute(
+                () -> {
+                    try {
+                        Result<String> result = storage_layer_get_metadata(privateKey);
+                        callback.onComplete(result);
+                    } catch (Exception e) {
+                        Result<String> error = new Result.Error<>(e);
+                        callback.onComplete(error);
+                    }
+                }
+        );
+    }
+
+    private Result<Void> storage_layer_set_metadata(@Nullable String privateKey, String json) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyStorageLayerSetMetadata(privateKey, json, curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void storage_layer_set_metadata(@Nullable String privateKey, String json, final ThresholdKeyCallback<Void> callback) {
+        executor.execute(
+                () -> {
+                    try {
+                        Result<Void> result = storage_layer_set_metadata(privateKey, json);
+                        callback.onComplete(result);
+                    } catch (Exception e) {
+                        Result<Void> error = new Result.Error<>(e);
+                        callback.onComplete(error);
+                    }
+                }
+        );
+    }
+
+    private Result<Void> storage_layer_set_metadata_stream(String privateKeys, String json) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyStorageLayerSetMetadataStream(privateKeys, json, curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void storage_layer_set_metadata_stream(String privateKeys, String json, final ThresholdKeyCallback<Void> callback) {
+        executor.execute(
+                () -> {
+                    try {
+                        Result<Void> result = storage_layer_set_metadata_stream(privateKeys, json);
+                        callback.onComplete(result);
+                    } catch (Exception e) {
+                        Result<Void> error = new Result.Error<>(e);
+                        callback.onComplete(error);
+                    }
+                }
+        );
+    }
+
+    private Result<String> storage_layer_get_metadata(@Nullable String privateKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            String result = jniThresholdKeyStorageLayerGetMetadata(privateKey, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(result);
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -170,26 +270,26 @@ public final class ThresholdKey {
         }
     }
 
-    public void deleteShare(String shareIndex, ThresholdKeyCallback<Boolean> callback) {
+    public void deleteShare(String shareIndex, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = deleteShare(shareIndex);
+                Result<Void> result = deleteShare(shareIndex);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> deleteShare(String shareIndex) {
+    private Result<Void> deleteShare(String shareIndex) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyDeleteShare(shareIndex, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -222,26 +322,26 @@ public final class ThresholdKey {
         return new ShareStore(result);
     }
 
-    public void inputShare(String share, @Nullable String shareType, ThresholdKeyCallback<Boolean> callback) {
+    public void inputShare(String share, @Nullable String shareType, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = inputShare(share, shareType);
+                Result<Void> result = inputShare(share, shareType);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> inputShare(String share, @Nullable String shareType) {
+    private Result<Void> inputShare(String share, @Nullable String shareType) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyInputShare(share, shareType, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -256,26 +356,26 @@ public final class ThresholdKey {
         return new ShareStore(result);
     }
 
-    public void inputShareStore(ShareStore store, ThresholdKeyCallback<Boolean> callback) {
+    public void inputShareStore(ShareStore store, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = inputShareStore(store);
+                Result<Void> result = inputShareStore(store);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> inputShareStore(ShareStore store) {
+    private Result<Void> inputShareStore(ShareStore store) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyInputShareStore(store, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -337,26 +437,26 @@ public final class ThresholdKey {
         return new JSONObject(result);
     }
 
-    public void syncLocalMetadataTransitions(ThresholdKeyCallback<Boolean> callback) {
+    public void syncLocalMetadataTransitions(ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = syncLocalMetadataTransitions();
+                Result<Void> result = syncLocalMetadataTransitions();
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> syncLocalMetadataTransitions() {
+    private Result<Void> syncLocalMetadataTransitions() {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeySyncLocalMetadataTransitions(curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -371,101 +471,101 @@ public final class ThresholdKey {
         return new ShareStorePolyIdIndexMap(result);
     }
 
-    public void deleteTKey(ThresholdKeyCallback<Boolean> callback) {
+    public void CRITICALDeleteTKey(ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = deleteTKey();
+                Result<Void> result = deleteTKey();
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> deleteTKey() {
+    private Result<Void> deleteTKey() {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyDelete(curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
     }
 
-    public void addShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Boolean> callback) {
+    public void addShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = addShareDescription(key, description, updateMetadata);
+                Result<Void> result = addShareDescription(key, description, updateMetadata);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> addShareDescription(String key, String description, boolean updateMetadata) {
+    private Result<Void> addShareDescription(String key, String description, boolean updateMetadata) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyAddShareDescription(key, description, updateMetadata, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
     }
 
-    public void deleteShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Boolean> callback) {
+    public void deleteShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = deleteShareDescription(key, description, updateMetadata);
+                Result<Void> result = deleteShareDescription(key, description, updateMetadata);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> deleteShareDescription(String key, String description, boolean updateMetadata) {
+    private Result<Void> deleteShareDescription(String key, String description, boolean updateMetadata) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyDeleteShareDescription(key, description, updateMetadata, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
     }
 
-    public void updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata, ThresholdKeyCallback<Boolean> callback) {
+    public void updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Boolean> result = updateShareDescription(key, oldDescription, newDescription, updateMetadata);
+                Result<Void> result = updateShareDescription(key, oldDescription, newDescription, updateMetadata);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
     }
 
-    private Result<Boolean> updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata) {
+    private Result<Void> updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata) {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyUpdateShareDescription(key, oldDescription, newDescription, updateMetadata, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
