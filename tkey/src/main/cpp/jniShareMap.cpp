@@ -27,12 +27,11 @@ Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetKeys(JNIEnv *env, job
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetShareByKey(JNIEnv *env, jobject jthis,
-                                                                      jstring key,
+                                                                      jlong ptr, jstring key,
                                                                       jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    jlong pObject = GetPointerField(env, jthis);
-    auto *pMap = reinterpret_cast<ShareMap *>(pObject);
+    auto *pMap = reinterpret_cast<ShareMap *>(ptr);
     const char *pKey = env->GetStringUTFChars(key, JNI_FALSE);
     char *pResult = share_map_get_share_by_key(pMap, const_cast<char *>(pKey), error_ptr);
     env->ReleaseStringUTFChars(key, pKey);

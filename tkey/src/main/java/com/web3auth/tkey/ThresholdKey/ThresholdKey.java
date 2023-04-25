@@ -77,7 +77,7 @@ public final class ThresholdKey {
     private native void jniThresholdKeyStorageLayerSetMetadataStream(String privateKeys, String json, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyGetAllShareStoresForLatestPolynomial(String curveN, RuntimeError error);
-
+    private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
     private native void jniThresholdKeyFree();
 
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync) throws RuntimeError {
@@ -601,6 +601,15 @@ public final class ThresholdKey {
             throw error;
         }
         return new ShareStoreArray(ptr);
+    }
+
+    public Polynomial reconstructLatestPolynomial() throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        long ptr = jniThresholdKeyReconstructLatestPolynomial(curveN,error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return new Polynomial(ptr);
     }
 
     @Override

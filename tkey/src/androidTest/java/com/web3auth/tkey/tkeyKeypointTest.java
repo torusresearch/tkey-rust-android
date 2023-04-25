@@ -90,4 +90,13 @@ public class tkeyKeypointTest {
             fail(e.toString());
         }
     }
+
+    @Test
+    public void createXY() {
+        try {
+            new KeyPoint(details.getX(), details.getY());
+        } catch (RuntimeError e) {
+            fail(e.toString());
+        }
+    }
 }

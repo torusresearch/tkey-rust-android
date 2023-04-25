@@ -13,7 +13,7 @@ public final class ShareMap {
 
     private native void jniShareMapFree();
     private native String jniShareMapGetKeys(long ptr, RuntimeError error);
-    private native String jniShareMapGetShareByKey(String key, RuntimeError error);
+    private native String jniShareMapGetShareByKey(long ptr, String key, RuntimeError error);
 
     public ArrayList<Pair<String, String>> share_map;
 
@@ -27,7 +27,7 @@ public final class ShareMap {
         JSONArray json = new JSONArray(keys);
         for (int i = 0; i < json.length(); i++) {
             String key = json.getString(i);
-            String value = jniShareMapGetShareByKey(key, error);
+            String value = jniShareMapGetShareByKey(ptr, key, error);
             if (error.code != 0) {
                 throw error;
             }

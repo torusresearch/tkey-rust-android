@@ -1,17 +1,18 @@
 package com.web3auth.tkey;
 
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
+import com.web3auth.tkey.ThresholdKey.Polynomial;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey.ThresholdKey.ShareStoreArray;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -24,13 +25,14 @@ import java.util.concurrent.CountDownLatch;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
 @RunWith(AndroidJUnit4.class)
-public class tkeyShareStoreArrayTest {
+public class tkeyKeyPolynomialTest {
     static {
         System.loadLibrary("tkey-native");
     }
 
-    private static ShareStoreArray details;
+    private static Polynomial details;
 
     @BeforeClass
     public static void setupTest() {
@@ -49,12 +51,12 @@ public class tkeyShareStoreArrayTest {
             });
             thresholdKey.reconstruct(result -> {
                 if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
+                    fail("Could not reconstruct tkey");
                 }
                 lock.countDown();
             });
             lock.await();
-            details = thresholdKey.getAllAllShareStoresForLatestPolynomial();
+            details = thresholdKey.reconstructLatestPolynomial();
         } catch (RuntimeError | InterruptedException e) {
             fail(e.toString());
         }
@@ -66,22 +68,20 @@ public class tkeyShareStoreArrayTest {
     }
 
     @Test
-    public void test_length() {
+    public void publicPolynomial() {
         try {
-            assertNotEquals(details.length(), 0);
+            details.getPublicPolynomial();
         } catch (RuntimeError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void test_items() {
+    public void generateShares() {
         try {
-            int len = details.length();
-            for (int i = 0; i < len; i++) {
-                details.getAt(i);
-            }
-        } catch (RuntimeError e) {
+            String indexes = "[\"c9022864e78c175beb9931ba136233fce416ece4c9af258ac9af404f7436c281\",\"8cd35d2d246e475de2413732c2d134d39bb51a1ed07cb5b1d461b5184c62c1b6\",\"6e0ab0cb7e47bdce6b08c043ee449d94c3addf33968ae79b4c8d7014238c46e4\"]";
+            details.generateShares(indexes);
+        } catch (RuntimeError | JSONException  e) {
             fail(e.toString());
         }
     }

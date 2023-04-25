@@ -7,16 +7,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.Polynomial;
+import com.web3auth.tkey.ThresholdKey.PublicPolynomial;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
-import com.web3auth.tkey.ThresholdKey.ShareStoreArray;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -24,13 +27,15 @@ import java.util.concurrent.CountDownLatch;
  *
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
+
 @RunWith(AndroidJUnit4.class)
-public class tkeyShareStoreArrayTest {
+public class tkeyKeyPublicPolynomialTest {
     static {
         System.loadLibrary("tkey-native");
     }
 
-    private static ShareStoreArray details;
+    private static PublicPolynomial details;
+    private static ArrayList<String> shareIndexes;
 
     @BeforeClass
     public static void setupTest() {
@@ -49,13 +54,14 @@ public class tkeyShareStoreArrayTest {
             });
             thresholdKey.reconstruct(result -> {
                 if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
+                    fail("Could not reconstruct tkey");
                 }
                 lock.countDown();
             });
             lock.await();
-            details = thresholdKey.getAllAllShareStoresForLatestPolynomial();
-        } catch (RuntimeError | InterruptedException e) {
+            details = thresholdKey.reconstructLatestPolynomial().getPublicPolynomial();
+            shareIndexes = thresholdKey.getShareIndexes();
+        } catch (RuntimeError | JSONException | InterruptedException e) {
             fail(e.toString());
         }
     }
@@ -66,22 +72,21 @@ public class tkeyShareStoreArrayTest {
     }
 
     @Test
-    public void test_length() {
+    public void getThreshold() {
         try {
-            assertNotEquals(details.length(), 0);
+            assertNotEquals(0,details.getThreshold());
         } catch (RuntimeError e) {
             fail(e.toString());
         }
     }
 
     @Test
-    public void test_items() {
+    public void commitmentEval() {
         try {
-            int len = details.length();
-            for (int i = 0; i < len; i++) {
-                details.getAt(i);
+            for (String shareIndex : shareIndexes) {
+                details.polyCommitmentEval(shareIndex);
             }
-        } catch (RuntimeError e) {
+        } catch (RuntimeError  e) {
             fail(e.toString());
         }
     }
