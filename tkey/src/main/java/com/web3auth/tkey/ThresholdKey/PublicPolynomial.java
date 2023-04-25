@@ -7,6 +7,7 @@ public final class PublicPolynomial {
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
     private native void jniPublicPolynomialFree();
+
     private native int jniGetThreshold(RuntimeError error);
 
     private native long jniPolyCommitmentEval(String index, String curveN, RuntimeError error);
@@ -26,10 +27,9 @@ public final class PublicPolynomial {
         return result;
     }
 
-    public KeyPoint polyCommitmentEval(String index) throws RuntimeError
-    {
+    public KeyPoint polyCommitmentEval(String index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long ptr = jniPolyCommitmentEval(index,curveN,error);
+        long ptr = jniPolyCommitmentEval(index, curveN, error);
         if (error.code != 0) {
             throw error;
         }

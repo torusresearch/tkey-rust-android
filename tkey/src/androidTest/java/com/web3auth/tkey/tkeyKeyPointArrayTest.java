@@ -3,6 +3,7 @@ package com.web3auth.tkey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.fail;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
@@ -33,21 +34,21 @@ public class tkeyKeyPointArrayTest {
     public void key_point_array() {
         try {
             KeyPointArray arr = new KeyPointArray();
-            assertEquals(0,arr.length());
+            assertEquals(0, arr.length());
             KeyPoint point = new KeyPoint(PrivateKey.generate().hex, PrivateKey.generate().hex);
             KeyPoint point2 = new KeyPoint(PrivateKey.generate().hex, PrivateKey.generate().hex);
             arr.insert(point);
-            assertEquals(1,arr.length());
+            assertEquals(1, arr.length());
             arr.insert(point);
-            assertEquals(2,arr.length());
+            assertEquals(2, arr.length());
             arr.insert(point);
-            assertEquals(3,arr.length());
+            assertEquals(3, arr.length());
             arr.removeAt(0);
-            assertEquals(2,arr.length());
+            assertEquals(2, arr.length());
             arr.updateAt(point2, 1);
             KeyPoint ret1 = arr.getAt(0);
             KeyPoint ret2 = arr.getAt(1);
-            assertNotEquals(ret1,ret2);
+            assertNotEquals(ret1, ret2);
             arr.lagrange();
         } catch (RuntimeError e) {
             fail(e.toString());

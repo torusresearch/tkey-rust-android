@@ -6,7 +6,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
-import com.web3auth.tkey.ThresholdKey.KeyReconstructionDetails;
 import com.web3auth.tkey.ThresholdKey.Polynomial;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
@@ -81,7 +80,7 @@ public class tkeyKeyPolynomialTest {
         try {
             String indexes = "[\"c9022864e78c175beb9931ba136233fce416ece4c9af258ac9af404f7436c281\",\"8cd35d2d246e475de2413732c2d134d39bb51a1ed07cb5b1d461b5184c62c1b6\",\"6e0ab0cb7e47bdce6b08c043ee449d94c3addf33968ae79b4c8d7014238c46e4\"]";
             details.generateShares(indexes);
-        } catch (RuntimeError | JSONException  e) {
+        } catch (RuntimeError | JSONException e) {
             fail(e.toString());
         }
     }

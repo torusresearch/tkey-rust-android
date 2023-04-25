@@ -37,7 +37,8 @@ Java_com_web3auth_tkey_ThresholdKey_PublicPolynomial_jniPolyCommitmentEval(JNIEn
     auto *pPolynomial = reinterpret_cast<PublicPolynomial *>(pObject);
     const char *pIndexe = env->GetStringUTFChars(index, JNI_FALSE);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
-    auto *pResult = public_polynomial_poly_commitment_eval(pPolynomial, const_cast<char *>(pIndexe), const_cast<char *>(pCurve), error_ptr);
+    auto *pResult = public_polynomial_poly_commitment_eval(pPolynomial, const_cast<char *>(pIndexe),
+                                                           const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(index, pIndexe);
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);

@@ -66,7 +66,7 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointNew(JNIEnv *env, 
     int *error_ptr = &errorCode;
     const char *pX = env->GetStringUTFChars(x, JNI_FALSE);
     const char *pY = env->GetStringUTFChars(y, JNI_FALSE);
-    auto *pPoint = key_point_new(const_cast<char *>(pX),const_cast<char *>(pY), error_ptr);
+    auto *pPoint = key_point_new(const_cast<char *>(pX), const_cast<char *>(pY), error_ptr);
     env->ReleaseStringUTFChars(x, pX);
     env->ReleaseStringUTFChars(y, pY);
     setErrorCode(env, error, errorCode);

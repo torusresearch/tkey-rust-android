@@ -21,15 +21,16 @@ Java_com_web3auth_tkey_ThresholdKey_ShareStoreArray_jniShareStoreArrayGetAt(JNIE
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pArr = reinterpret_cast<ShareStoreArray *>(pObject);
-    auto *pResult = share_store_array_get_value_by_index(pArr,index, error_ptr);
+    auto *pResult = share_store_array_get_value_by_index(pArr, index, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
 
 extern "C"
 JNIEXPORT jint JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ShareStoreArray_jniShareStoreArrayLen(JNIEnv *env, jobject jthis,
-                                                                         jthrowable error) {
+Java_com_web3auth_tkey_ThresholdKey_ShareStoreArray_jniShareStoreArrayLen(JNIEnv *env,
+                                                                          jobject jthis,
+                                                                          jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);

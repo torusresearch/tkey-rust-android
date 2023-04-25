@@ -12,7 +12,9 @@ import java.util.ArrayList;
 public final class ShareMap {
 
     private native void jniShareMapFree();
+
     private native String jniShareMapGetKeys(long ptr, RuntimeError error);
+
     private native String jniShareMapGetShareByKey(long ptr, String key, RuntimeError error);
 
     public ArrayList<Pair<String, String>> share_map;

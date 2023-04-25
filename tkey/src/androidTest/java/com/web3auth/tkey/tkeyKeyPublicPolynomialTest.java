@@ -7,7 +7,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
-import com.web3auth.tkey.ThresholdKey.Polynomial;
 import com.web3auth.tkey.ThresholdKey.PublicPolynomial;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
@@ -74,7 +73,7 @@ public class tkeyKeyPublicPolynomialTest {
     @Test
     public void getThreshold() {
         try {
-            assertNotEquals(0,details.getThreshold());
+            assertNotEquals(0, details.getThreshold());
         } catch (RuntimeError e) {
             fail(e.toString());
         }
@@ -86,7 +85,7 @@ public class tkeyKeyPublicPolynomialTest {
             for (String shareIndex : shareIndexes) {
                 details.polyCommitmentEval(shareIndex);
             }
-        } catch (RuntimeError  e) {
+        } catch (RuntimeError e) {
             fail(e.toString());
         }
     }

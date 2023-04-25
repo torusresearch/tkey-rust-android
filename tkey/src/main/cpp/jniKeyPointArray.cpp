@@ -20,13 +20,14 @@ Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayFree(JNIEnv *e
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayRemoveAt(JNIEnv *env,
-                                                                           jobject jthis, jint index,
+                                                                           jobject jthis,
+                                                                           jint index,
                                                                            jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pArr = reinterpret_cast<KeyPointArray *>(pObject);
-    key_point_array_remove(pArr,index, error_ptr);
+    key_point_array_remove(pArr, index, error_ptr);
     setErrorCode(env, error, errorCode);
 }
 
@@ -41,7 +42,7 @@ Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayInsert(JNIEnv 
     jlong pPointObject = GetPointerField(env, point);
     auto *pArr = reinterpret_cast<KeyPointArray *>(pObject);
     auto *pPoint = reinterpret_cast<KeyPoint *>(pPointObject);
-    key_point_array_insert(pArr,pPoint, error_ptr);
+    key_point_array_insert(pArr, pPoint, error_ptr);
     setErrorCode(env, error, errorCode);
 }
 
@@ -58,7 +59,7 @@ Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayUpdateAt(JNIEn
     jlong pPointObject = GetPointerField(env, point);
     auto *pArr = reinterpret_cast<KeyPointArray *>(pObject);
     auto *pPoint = reinterpret_cast<KeyPoint *>(pPointObject);
-    key_point_array_update_at_index(pArr, index,pPoint, error_ptr);
+    key_point_array_update_at_index(pArr, index, pPoint, error_ptr);
     setErrorCode(env, error, errorCode);
 }
 
@@ -71,7 +72,7 @@ Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayGetAt(JNIEnv *
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pArr = reinterpret_cast<KeyPointArray *>(pObject);
-    auto *pResult = key_point_array_get_value_by_index(pArr,index, error_ptr);
+    auto *pResult = key_point_array_get_value_by_index(pArr, index, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
@@ -100,7 +101,7 @@ Java_com_web3auth_tkey_ThresholdKey_KeyPointArray_jniKeyPointArrayLagrange(JNIEn
     jlong pObject = GetPointerField(env, jthis);
     auto *pArr = reinterpret_cast<KeyPointArray *>(pObject);
     const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
-    auto *pResult = lagrange_interpolate_polynomial(pArr,const_cast<char *>(pCurve), error_ptr);
+    auto *pResult = lagrange_interpolate_polynomial(pArr, const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);

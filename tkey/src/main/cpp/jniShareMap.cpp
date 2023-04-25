@@ -12,7 +12,8 @@ Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapFree(JNIEnv *env, jobjec
 
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetKeys(JNIEnv *env, jobject jthis, jlong ptr,
+Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetKeys(JNIEnv *env, jobject jthis,
+                                                                jlong ptr,
                                                                 jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;

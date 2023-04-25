@@ -5,12 +5,19 @@ import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 
 public final class KeyPointArray {
     private native long jniKeyPointArrayNew();
+
     private native void jniKeyPointArrayFree();
+
     private native void jniKeyPointArrayRemoveAt(int index, RuntimeError error);
+
     private native void jniKeyPointArrayInsert(KeyPoint point, RuntimeError error);
+
     private native void jniKeyPointArrayUpdateAt(KeyPoint point, int index, RuntimeError error);
+
     private native long jniKeyPointArrayGetAt(int index, RuntimeError error);
+
     private native int jniKeyPointArrayLen(RuntimeError error);
+
     private native long jniKeyPointArrayLagrange(String curveN, RuntimeError error);
 
     final long pointer;
@@ -25,7 +32,7 @@ public final class KeyPointArray {
 
     public void removeAt(int index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniKeyPointArrayRemoveAt(index,error);
+        jniKeyPointArrayRemoveAt(index, error);
         if (error.code != 0) {
             throw error;
         }
@@ -33,7 +40,7 @@ public final class KeyPointArray {
 
     public void insert(KeyPoint point) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniKeyPointArrayInsert(point,error);
+        jniKeyPointArrayInsert(point, error);
         if (error.code != 0) {
             throw error;
         }
@@ -41,7 +48,7 @@ public final class KeyPointArray {
 
     public void updateAt(KeyPoint point, int index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        jniKeyPointArrayUpdateAt(point,index,error);
+        jniKeyPointArrayUpdateAt(point, index, error);
         if (error.code != 0) {
             throw error;
         }
@@ -49,7 +56,7 @@ public final class KeyPointArray {
 
     public KeyPoint getAt(int index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
-        long ptr = jniKeyPointArrayGetAt(index,error);
+        long ptr = jniKeyPointArrayGetAt(index, error);
         if (error.code != 0) {
             throw error;
         }
@@ -68,7 +75,7 @@ public final class KeyPointArray {
     public Polynomial lagrange() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
-        long ptr = jniKeyPointArrayLagrange(curveN,error);
+        long ptr = jniKeyPointArrayLagrange(curveN, error);
         if (error.code != 0) {
             throw error;
         }
