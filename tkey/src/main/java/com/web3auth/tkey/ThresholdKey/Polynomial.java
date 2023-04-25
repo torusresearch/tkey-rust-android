@@ -1,6 +1,8 @@
 package com.web3auth.tkey.ThresholdKey;
 import com.web3auth.tkey.RuntimeError;
 
+import org.json.JSONException;
+
 public final class Polynomial {
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
     private native void jniPolynomialFree();
@@ -24,7 +26,7 @@ public final class Polynomial {
         return new PublicPolynomial(ptr);
     }
 
-    public ShareMap generateShares(String indexes) throws RuntimeError {
+    public ShareMap generateShares(String indexes) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         long ptr = jniGenerateShares(indexes,curveN,error);
         if (error.code != 0) {

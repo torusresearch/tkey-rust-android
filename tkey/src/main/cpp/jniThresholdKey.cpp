@@ -593,6 +593,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyStorageLayerSetM
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
 }
+
 extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetAllShareStoresForLatestPolynomial(

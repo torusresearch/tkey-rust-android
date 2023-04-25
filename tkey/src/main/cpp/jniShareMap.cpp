@@ -9,20 +9,21 @@ Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapFree(JNIEnv *env, jobjec
     auto *pMap = reinterpret_cast<ShareMap *>(pObject);
     share_map_free(pMap);
 }
+
 extern "C"
 JNIEXPORT jstring JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetKeys(JNIEnv *env, jobject jthis,
+Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetKeys(JNIEnv *env, jobject jthis, jlong ptr,
                                                                 jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
-    jlong pObject = GetPointerField(env, jthis);
-    auto *pMap = reinterpret_cast<ShareMap *>(pObject);
+    auto *pMap = reinterpret_cast<ShareMap *>(ptr);
     char *pResult = share_map_get_share_keys(pMap, error_ptr);
     setErrorCode(env, error, errorCode);
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
     return result;
 }
+
 extern "C"
 JNIEXPORT jstring JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ShareMap_jniShareMapGetShareByKey(JNIEnv *env, jobject jthis,
