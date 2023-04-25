@@ -56,7 +56,7 @@ public final class KeyPointArray {
         return new KeyPoint(ptr);
     }
 
-    public int len() throws RuntimeError {
+    public int length() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int result = jniKeyPointArrayLen(error);
         if (error.code != 0) {

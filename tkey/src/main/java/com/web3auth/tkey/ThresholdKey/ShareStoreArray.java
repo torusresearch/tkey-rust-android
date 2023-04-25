@@ -22,7 +22,7 @@ public final class ShareStoreArray {
         return new ShareStore(ptr);
     }
 
-    public int len() throws RuntimeError {
+    public int length() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int result = jniShareStoreArrayLen(error);
         if (error.code != 0) {
