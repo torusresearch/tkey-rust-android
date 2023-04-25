@@ -593,3 +593,18 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyStorageLayerSetM
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
 }
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetAllShareStoresForLatestPolynomial(
+        JNIEnv *env, jobject jthis, jstring curveN, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
+    auto *pResult = threshold_key_get_all_share_stores_for_latest_polynomial(pThreshold,const_cast<char *>(pCurve),
+                                             error_ptr);
+    env->ReleaseStringUTFChars(curveN, pCurve);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pResult);
+}
