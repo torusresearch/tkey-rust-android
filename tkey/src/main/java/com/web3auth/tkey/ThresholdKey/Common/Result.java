@@ -1,14 +1,17 @@
 package com.web3auth.tkey.ThresholdKey.Common;
 
 public abstract class Result<T> {
-    private Result() {
-    }
+    private Result() {}
 
     public static final class Success<T> extends Result<T> {
         public T data;
 
         public Success(T data) {
             this.data = data;
+        }
+
+        public Success() {
+            this.data = null;
         }
     }
 

@@ -10,7 +10,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetMetadata(
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
     auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    Metadata *pResult = threshold_key_get_metadata(pThreshold, error_ptr);
+    Metadata *pResult = threshold_key_get_current_metadata(pThreshold, error_ptr);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
@@ -518,4 +518,112 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetShareDescript
     jstring result = env->NewStringUTF(pResult);
     string_free(pResult);
     return result;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyStorageLayerGetMetadata(JNIEnv *env,
+                                                                                        jobject jthis,
+                                                                                        jstring private_key,
+                                                                                        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pKey = nullptr;
+    if (private_key != nullptr) {
+        pKey = env->GetStringUTFChars(private_key, JNI_FALSE);
+    }
+    char *pResult = threshold_key_get_metadata(pThreshold, const_cast<char *>(pKey),
+                                               error_ptr);
+    if (private_key != nullptr) {
+        env->ReleaseStringUTFChars(private_key, pKey);
+    }
+    setErrorCode(env, error, errorCode);
+    jstring result = env->NewStringUTF(pResult);
+    string_free(pResult);
+    return result;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyStorageLayerSetMetadata(JNIEnv *env,
+                                                                                        jobject jthis,
+                                                                                        jstring private_key,
+                                                                                        jstring json,
+                                                                                        jstring curveN,
+                                                                                        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pKey = nullptr;
+    if (private_key != nullptr) {
+        pKey = env->GetStringUTFChars(private_key, JNI_FALSE);
+    }
+    const char *pJson = env->GetStringUTFChars(json, JNI_FALSE);
+    const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
+    threshold_key_set_metadata(pThreshold, const_cast<char *>(pKey), const_cast<char *>(pJson),
+                               const_cast<char *>(pCurve),
+                               error_ptr);
+    if (private_key != nullptr) {
+        env->ReleaseStringUTFChars(private_key, pKey);
+    }
+    env->ReleaseStringUTFChars(json, pJson);
+    env->ReleaseStringUTFChars(curveN, pCurve);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyStorageLayerSetMetadataStream(
+        JNIEnv *env, jobject jthis, jstring private_keys, jstring json, jstring curveN,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pKeys = env->GetStringUTFChars(private_keys, JNI_FALSE);
+    const char *pJson = env->GetStringUTFChars(json, JNI_FALSE);
+    const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
+    threshold_key_set_metadata_stream(pThreshold, const_cast<char *>(pKeys),
+                                      const_cast<char *>(pJson),
+                                      const_cast<char *>(pCurve),
+                                      error_ptr);
+    env->ReleaseStringUTFChars(private_keys, pKeys);
+    env->ReleaseStringUTFChars(json, pJson);
+    env->ReleaseStringUTFChars(curveN, pCurve);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyGetAllShareStoresForLatestPolynomial(
+        JNIEnv *env, jobject jthis, jstring curveN, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
+    auto *pResult = threshold_key_get_all_share_stores_for_latest_polynomial(pThreshold,
+                                                                             const_cast<char *>(pCurve),
+                                                                             error_ptr);
+    env->ReleaseStringUTFChars(curveN, pCurve);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pResult);
+}
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyReconstructLatestPolynomial(
+        JNIEnv *env, jobject jthis, jstring curveN, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pCurve = env->GetStringUTFChars(curveN, JNI_FALSE);
+    auto *pResult = threshold_key_reconstruct_latest_poly(pThreshold, const_cast<char *>(pCurve),
+                                                          error_ptr);
+    env->ReleaseStringUTFChars(curveN, pCurve);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pResult);
 }
