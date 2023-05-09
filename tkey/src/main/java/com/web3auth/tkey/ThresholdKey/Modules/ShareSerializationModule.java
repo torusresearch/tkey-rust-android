@@ -14,7 +14,7 @@ public final class ShareSerializationModule {
 
     private static native String jniShareSerializationModuleDeserializeShare(ThresholdKey thresholdKey, String share, @Nullable String format, RuntimeError error);
 
-    public static String serializeShare(ThresholdKey thresholdKey, String share, @Nullable String format) throws RuntimeError {
+    public static String serializeShare(ThresholdKey thresholdKey, String share, @Nullable String format = null) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniShareSerializationModuleSerializeShare(thresholdKey, share, format, error);
         if (error.code != 0) {
@@ -23,7 +23,7 @@ public final class ShareSerializationModule {
         return result;
     }
 
-    public static String deserializeShare(ThresholdKey thresholdKey, String share, @Nullable String format) throws RuntimeError {
+    public static String deserializeShare(ThresholdKey thresholdKey, String share, @Nullable String format = null) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniShareSerializationModuleDeserializeShare(thresholdKey, share, format, error);
         if (error.code != 0) {
