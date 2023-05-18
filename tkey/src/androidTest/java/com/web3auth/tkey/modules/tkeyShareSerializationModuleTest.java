@@ -99,9 +99,9 @@ public class tkeyShareSerializationModuleTest {
                 lock.countDown();
             });
             lock.await();
-            String output = thresholdKey.outputShare(share[0].getIndex(), null);
-            String serialized = ShareSerializationModule.serializeShare(thresholdKey, output, null);
-            String deserialized = ShareSerializationModule.deserializeShare(thresholdKey, serialized, null);
+            String output = thresholdKey.outputShare(share[0].getIndex());
+            String serialized = ShareSerializationModule.serializeShare(thresholdKey, output);
+            String deserialized = ShareSerializationModule.deserializeShare(thresholdKey, serialized);
             assertEquals(output, deserialized);
 
             CountDownLatch lock1 = new CountDownLatch(1);
