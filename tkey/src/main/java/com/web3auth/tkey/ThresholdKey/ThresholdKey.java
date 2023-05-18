@@ -3,9 +3,11 @@ package com.web3auth.tkey.ThresholdKey;
 import androidx.annotation.Nullable;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
+import com.web3auth.tkey.ThresholdKey.Common.TssOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,17 +24,17 @@ public final class ThresholdKey {
     final long pointer;
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
-    private native long jniThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storageLayer, @Nullable ServiceProvider serviceProvider, @Nullable LocalMetadataTransitions localTransitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, RuntimeError error);
+    private native long jniThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storageLayer, @Nullable ServiceProvider serviceProvider, @Nullable LocalMetadataTransitions localTransitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss, RuntimeError error);
 
     private native long jniThresholdKeyGetMetadata(RuntimeError error);
 
-    private native long jniThresholdKeyInitialize(@Nullable String share, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, String curveN, RuntimeError error);
+    private native long jniThresholdKeyInitialize(@Nullable String share, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, String curveN, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, RuntimeError error);
 
     private native long jniThresholdKeyReconstruct(String curveN, RuntimeError error);
 
-    private native long jniThresholdKeyGenerateNewShare(String curveN, RuntimeError error);
+    private native long jniThresholdKeyGenerateNewShare(String curveN, boolean useTss, @Nullable TssOptions options, RuntimeError error);
 
-    private native void jniThresholdKeyDeleteShare(String shareIndex, String curveN, RuntimeError error);
+    private native void jniThresholdKeyDeleteShare(String shareIndex, String curveN, boolean useTss, @Nullable TssOptions options, RuntimeError error);
 
     private native long jniThresholdKeyGetKeyDetails(RuntimeError error);
 
@@ -80,13 +82,15 @@ public final class ThresholdKey {
 
     private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
 
+    public native void jniThresholdKeyServiceProviderAssignPublicKey(String tss_tag, String tss_nonce, String tss_public_key, RuntimeError error);
+
     private native void jniThresholdKeyFree();
 
-    public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync) throws RuntimeError {
+    public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         this.executor = Executors.newSingleThreadExecutor();
 
-        long ptr = jniThresholdKey(metadata, shares, storage, provider, transitions, lastFetchedCloudMetadata, enableLogging, manualSync, error);
+        long ptr = jniThresholdKey(metadata, shares, storage, provider, transitions, lastFetchedCloudMetadata, enableLogging, manualSync, rss, error);
         if (error.code != 0) {
             throw error;
         }
@@ -102,11 +106,11 @@ public final class ThresholdKey {
         return new Metadata(ptr);
     }
 
-    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, final ThresholdKeyCallback<KeyDetails> callback) {
+    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
                     try {
-                        Result<KeyDetails> result = initialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions);
+                        Result<KeyDetails> result = initialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, useTss, device_tss_share, device_tss_index, factor_pub);
                         callback.onComplete(result);
                     } catch (Exception e) {
                         Result<KeyDetails> error = new Result.Error<>(e);
@@ -116,11 +120,11 @@ public final class ThresholdKey {
         );
     }
 
-    public void initialize(@Nullable String importShare, @Nullable ShareStore input, final ThresholdKeyCallback<KeyDetails> callback) {
+    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
                     try {
-                        Result<KeyDetails> result = initialize(importShare, input, false, false);
+                        Result<KeyDetails> result = initialize(importShare, input, false, false, useTss, device_tss_share, device_tss_index, factor_pub);
                         callback.onComplete(result);
                     } catch (Exception e) {
                         Result<KeyDetails> error = new Result.Error<>(e);
@@ -130,10 +134,10 @@ public final class ThresholdKey {
         );
     }
 
-    private Result<KeyDetails> initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions) {
+    private Result<KeyDetails> initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub) {
         try {
             RuntimeError error = new RuntimeError();
-            long ptr = jniThresholdKeyInitialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, curveN, error);
+            long ptr = jniThresholdKeyInitialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, curveN, useTss, device_tss_share, device_tss_index, factor_pub, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -249,10 +253,10 @@ public final class ThresholdKey {
         }
     }
 
-    public void generateNewShare(ThresholdKeyCallback<GenerateShareStoreResult> callback) {
+    public void generateNewShare(boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<GenerateShareStoreResult> callback) {
         executor.execute(() -> {
             try {
-                Result<GenerateShareStoreResult> result = generateNewShare();
+                Result<GenerateShareStoreResult> result = generateNewShare(useTss, options);
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<GenerateShareStoreResult> error = new Result.Error<>(e);
@@ -261,10 +265,10 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<GenerateShareStoreResult> generateNewShare() {
+    private Result<GenerateShareStoreResult> generateNewShare(boolean useTss, @Nullable TssOptions options) {
         try {
             RuntimeError error = new RuntimeError();
-            long ptr = jniThresholdKeyGenerateNewShare(curveN, error);
+            long ptr = jniThresholdKeyGenerateNewShare(curveN, useTss, options, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -274,10 +278,10 @@ public final class ThresholdKey {
         }
     }
 
-    public void deleteShare(String shareIndex, ThresholdKeyCallback<Void> callback) {
+    public void deleteShare(String shareIndex, boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = deleteShare(shareIndex);
+                Result<Void> result = deleteShare(shareIndex, useTss, options);
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
@@ -286,10 +290,10 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> deleteShare(String shareIndex) {
+    private Result<Void> deleteShare(String shareIndex, boolean useTss, @Nullable TssOptions options) {
         try {
             RuntimeError error = new RuntimeError();
-            jniThresholdKeyDeleteShare(shareIndex, curveN, error);
+            jniThresholdKeyDeleteShare(shareIndex, curveN, useTss, options, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -612,6 +616,14 @@ public final class ThresholdKey {
             throw error;
         }
         return new Polynomial(ptr);
+    }
+
+    public void serviceProviderAssignPublicKey(String tssTag, String nonce, String tssPubKey) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyServiceProviderAssignPublicKey(tssTag,nonce,tssPubKey, error);
+        if (error.code != 0) {
+            throw error;
+        }
     }
 
     @Override

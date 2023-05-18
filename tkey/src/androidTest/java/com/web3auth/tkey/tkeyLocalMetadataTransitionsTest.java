@@ -39,11 +39,11 @@ public class tkeyLocalMetadataTransitionsTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(4);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -55,7 +55,7 @@ public class tkeyLocalMetadataTransitionsTest {
                 }
                 lock.countDown();
             });
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not generate new share for tkey");
                 }
@@ -67,7 +67,7 @@ public class tkeyLocalMetadataTransitionsTest {
                 } catch (RuntimeError e) {
                     fail(e.toString());
                 }
-                thresholdKey.deleteShare(index, result1 -> {
+                thresholdKey.deleteShare( index, false, null, result1 -> {
                     if (result1 instanceof Result.Error) {
                         fail("Could not generate new share for tkey");
                     }

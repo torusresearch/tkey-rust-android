@@ -53,10 +53,10 @@ public class tkeyShareTransferModuleTest {
         try {
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
             PrivateKey postboxKey = PrivateKey.generate();
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(null, null, false, false, result ->
+            thresholdKey.initialize(null, null, false, false, false, null, 0, null, result ->
             {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 1");
@@ -73,8 +73,8 @@ public class tkeyShareTransferModuleTest {
             lock.await();
             tkeyShareTransferModuleTest.thresholdKey = thresholdKey;
             CountDownLatch lock1 = new CountDownLatch(1);
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
-            thresholdKey2.initialize(null, null, true, false, result -> {
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            thresholdKey2.initialize(null, null, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 2");
                 }
@@ -195,7 +195,7 @@ public class tkeyShareTransferModuleTest {
             String encPubKey = lookup.get().get(0);
             final GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
             CountDownLatch lock2 = new CountDownLatch(1);
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not look for request for for tkey instance 1");
                 }
@@ -271,7 +271,7 @@ public class tkeyShareTransferModuleTest {
             CountDownLatch lock4 = new CountDownLatch(1);
             String encPubKey = lookup.get().get(0);
             final GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not look for request for tkey instance 1");
                 }
