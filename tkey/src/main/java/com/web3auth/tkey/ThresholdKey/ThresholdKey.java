@@ -308,6 +308,10 @@ public final class ThresholdKey {
         return new KeyDetails(ptr);
     }
 
+    public String outputShare(String shareIndex) throws RuntimeError {
+        return outputShare(shareIndex, null);
+    }
+
     public String outputShare(String shareIndex, @Nullable String shareType) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyOutputShare(shareIndex, shareType, curveN, error);
