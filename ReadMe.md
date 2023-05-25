@@ -10,7 +10,7 @@ If you are instead seeking the iOS implementation, please see [here](https://git
 
 1. Compile the project 
 
-2. Import the build AAR into your application.
+2. Import the built AAR file into your application.
 
 
 ## Integration with CustomAuth
