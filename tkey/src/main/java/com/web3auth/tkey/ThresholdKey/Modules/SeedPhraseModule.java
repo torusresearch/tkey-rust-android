@@ -20,6 +20,16 @@ public final class SeedPhraseModule {
 
     private static native void jniSeedPhraseModuleDeletePhrase(ThresholdKey thresholdKey, @Nullable String phrase, RuntimeError error);
 
+    /**
+     * Sets a seed phrase on the metadata of a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param format "HD Key Tree" is the only supported format.
+     * @param phrase The seed phrase. Optional, will be generated if not provided.
+     * @param wallets Number of children derived from this seed phrase.
+     * @param callback The method which the result will be sent to
+     * @see Result
+     * @see ThresholdKeyCallback
+     */
     public static void setSeedPhrase(ThresholdKey thresholdKey, String format, @Nullable String phrase, int wallets, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -45,6 +55,15 @@ public final class SeedPhraseModule {
         }
     }
 
+    /**
+     * Replaces an old seed phrase with a new seed phrase on a ThresholdKey object. Same format of the seed phrase must be used.
+     * @param thresholdKey The threshold key to act on.
+     * @param oldPhrase The original seed phrase.
+     * @param newPhrase The replacement seed phrase.
+     * @param callback The method which the result will be sent to
+     * @see Result
+     * @see ThresholdKeyCallback
+     */
     public static void changePhrase(ThresholdKey thresholdKey, String oldPhrase, String newPhrase, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -70,6 +89,12 @@ public final class SeedPhraseModule {
         }
     }
 
+    /**
+     * Returns the seed phrases stored on a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid threshold key.
+     * @return String
+     */
     public static String getPhrases(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniSeedPhraseModuleGetSeedPhrases(thresholdKey, error);
@@ -79,6 +104,14 @@ public final class SeedPhraseModule {
         return result;
     }
 
+    /**
+     * Deletes a seed phrase stored on a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param phrase The original seed phrase.
+     * @param callback The method which the result will be sent to
+     * @see Result
+     * @see ThresholdKeyCallback
+     */
     public static void deletePhrase(ThresholdKey thresholdKey, String phrase, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {

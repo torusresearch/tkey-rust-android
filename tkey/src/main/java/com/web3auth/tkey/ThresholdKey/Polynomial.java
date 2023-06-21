@@ -15,10 +15,20 @@ public final class Polynomial {
 
     final long pointer;
 
+    /**
+     * Instantiate a Polynomial object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public Polynomial(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Retrieves the public polynomial.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return PublicPolynomial
+     * @see PublicPolynomial
+     */
     public PublicPolynomial getPublicPolynomial() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniGetPublicPolynomial(error);
@@ -28,6 +38,14 @@ public final class Polynomial {
         return new PublicPolynomial(ptr);
     }
 
+    /**
+     * Retrieves the shares for this polynomial.
+     * @param indexes Share index to be used.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @throws JSONException Indicates the data is malformed.
+     * @return ShareMap
+     * @see ShareMap
+     */
     public ShareMap generateShares(String indexes) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         long ptr = jniGenerateShares(indexes, curveN, error);

@@ -19,6 +19,12 @@ public final class ShareMap {
 
     public ArrayList<Pair<String, String>> share_map;
 
+    /**
+     * Instantiate a ShareMap object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     */
     public ShareMap(long ptr) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String keys = jniShareMapGetKeys(ptr, error);

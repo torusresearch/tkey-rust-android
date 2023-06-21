@@ -3,6 +3,7 @@ package com.web3auth.tkey.ThresholdKey;
 import androidx.core.util.Pair;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,10 +19,21 @@ public final class ShareStorePolyIdIndexMap {
 
     final long pointer;
 
+    /**
+     * Instantiates a ShareStorePolyIdIndexMap object.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public ShareStorePolyIdIndexMap(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Returns the share maps.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return ArrayList
+     * @see ShareStoreMap
+     */
     public ArrayList<Pair<String, ShareStoreMap>> getShareStoreMaps() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String keys = jniShareStorePolyIdIndexMapGetKeys(error);

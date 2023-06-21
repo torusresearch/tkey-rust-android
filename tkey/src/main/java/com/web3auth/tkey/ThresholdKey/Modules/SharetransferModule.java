@@ -14,6 +14,15 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 public final class SharetransferModule {
+    /// This module facilitates the transfer of shares between devices, this ensure that both devies can share the same private key. The service provider configuration will need to be the same for both instances of the `ThresholdKey`. This is particularly useful where a user would want to share a login between multiple devices that they control without ending up with a common share between them after the process is complete.
+    /// Device A will fully reconstruct the `ThresholdKey`.
+    /// Device B will be initialized in the same way as Device A.
+    /// Device B will request a share from Device A.
+    /// Device A will then lookup and approve the share request for Device B.
+    /// Device B would then check the status of the request until it is approved.
+    /// Device B would then be able to reconstruct the `ThresholdKey`, reaching the same private key as Device A.
+    /// Device B would then cleanup the share request, automatic if enabled.
+
     private SharetransferModule() {
         //Utility class
     }
@@ -40,6 +49,14 @@ public final class SharetransferModule {
 
     private static native void jniSharetransferModuleCleanupRequest(ThresholdKey thresholdKey, RuntimeError error);
 
+    /**
+     * Requests a new share for transfer for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param userAgent Information about the device requesting the share.
+     * @param availableShareIndexes Json string indicating the available share indexes on which the transfer should take place, can be an empty array `"[]"`
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void requestNewShare(ThresholdKey thresholdKey, String userAgent, String availableShareIndexes, ThresholdKeyCallback<String> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -65,6 +82,14 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Adds custom information to a share transfer request for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param encPubKeyX The encryption key for the share transfer request.
+     * @param customInfo Json string indicating the custom information to be added.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void addCustomInfoToRequest(ThresholdKey thresholdKey, String encPubKeyX, String customInfo, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -90,6 +115,12 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Searches for available share transfer requests for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void lookForRequest(ThresholdKey thresholdKey, ThresholdKeyCallback<ArrayList<String>> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -121,6 +152,14 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Approves a share transfer request for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param encPubKeyX The encryption key for the share transfer request.
+     * @param store Json string indicating the custom information to be added.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void approveRequest(ThresholdKey thresholdKey, String encPubKeyX, @Nullable ShareStore store, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -146,6 +185,14 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Approves a share transfer request for a specific share index for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param encPubKeyX The encryption key for the share transfer request.
+     * @param shareIndex The relevant share index for the share transfer request.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void approveRequestWithShareIndex(ThresholdKey thresholdKey, String encPubKeyX, String shareIndex, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -171,6 +218,12 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Retrieves the share transfer store for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void getStore(ThresholdKey thresholdKey, ThresholdKeyCallback<ShareTransferStore> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -196,6 +249,13 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Sets the share transfer store for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param store The share transfer store.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void setStore(ThresholdKey thresholdKey, ShareTransferStore store, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -221,6 +281,13 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Removes the share transfer store for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param encPubKeyX The encryption key for the share transfer request.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void deleteStore(ThresholdKey thresholdKey, String encPubKeyX, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -246,6 +313,12 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     * Retrieves the encryption key for the current share transfer request of a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid parameters was used or invalid threshold key.
+     * @return String
+     */
     public static String getCurrentEncryptionKey(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniSharetransferModuleGetCurrentEncryptionKey(thresholdKey, error);
@@ -255,6 +328,15 @@ public final class SharetransferModule {
         return result;
     }
 
+    /**
+     *  Checks the status of a share transfer request for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param encPubKeyX The encryption key for the share transfer request.
+     * @param callback The method which the result will be sent to
+     * @param deleteRequestOnCompletion Determines if the share request should be deleted on completion.
+     * @see ThresholdKeyCallback
+     * @see ShareStore
+     */
     public static void requestStatusCheck(ThresholdKey thresholdKey, String encPubKeyX, Boolean deleteRequestOnCompletion, ThresholdKeyCallback<ShareStore> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -280,6 +362,11 @@ public final class SharetransferModule {
         }
     }
 
+    /**
+     *Clears share transfer requests for a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid threshold key.
+     */
     public static void cleanupRequest(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         jniSharetransferModuleCleanupRequest(thresholdKey, error);

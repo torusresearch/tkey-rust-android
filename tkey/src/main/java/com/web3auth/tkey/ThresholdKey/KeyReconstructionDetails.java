@@ -19,10 +19,19 @@ public final class KeyReconstructionDetails {
 
     final long pointer;
 
+    /**
+     * Instantiate a KeyReconstructionDetails object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public KeyReconstructionDetails(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Returns the private key in hexadecimal format.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return String
+     */
     public String getKey() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String key = jniKeyReconstructionDetailsGetPrivateKey(error);
@@ -32,6 +41,11 @@ public final class KeyReconstructionDetails {
         return key;
     }
 
+    /**
+     * Returns the seed phrase.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return ArrayList
+     */
     public ArrayList<String> getSeedPhrase() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int len = jniKeyReconstructionDetailsGetSeedPhraseLen(error);
@@ -49,6 +63,11 @@ public final class KeyReconstructionDetails {
         return list;
     }
 
+    /**
+     * Returns all keys.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return ArrayList
+     */
     public ArrayList<String> getAllKeys() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int len = jniKeyReconstructionDetailsGetAllKeysLen(error);
