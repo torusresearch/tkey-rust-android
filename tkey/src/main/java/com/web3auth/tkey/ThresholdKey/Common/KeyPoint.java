@@ -15,10 +15,20 @@ public final class KeyPoint {
 
     private native void jniKeyPointFree();
 
+    /**
+     * Instantiate a KeyPoint object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public KeyPoint(long ptr) {
         this.pointer = ptr;
     }
 
+    /**
+    * Compares two KeyPoint objects
+    * @param o Keypoint to compare against.
+    * @throws RuntimeException Indicates invalid parameters was used.
+    * @return boolean `true` if they are equal, `false` otherwise.
+    */
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -39,6 +49,12 @@ public final class KeyPoint {
         }
     }
 
+    /**
+     * Instantiate a KeyPoint object using X and Y co-ordinates in hexadecimal format.
+     * @param x X value of co-ordinate pair.
+     * @param y Y value of co-ordinate pair.
+     * @throws RuntimeError Indicates invalid parameters was used.
+     */
     public KeyPoint(String x, String y) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniKeyPointNew(x, y, error);
@@ -48,6 +64,11 @@ public final class KeyPoint {
         pointer = result;
     }
 
+    /**
+     * Retrieves the X value of the co-ordinate pair.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return String
+     */
     public String getX() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniKeyPointGetX(error);
@@ -57,6 +78,11 @@ public final class KeyPoint {
         return result;
     }
 
+    /**
+     * Retrieves the Y value of the co-ordinate pair.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return String
+     */
     public String getY() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniKeyPointGetY(error);
@@ -66,6 +92,12 @@ public final class KeyPoint {
         return result;
     }
 
+    /**
+     * Gets the serialized form, should it be a valid PublicKey.
+     * @param format `"elliptic-compressed"` for the compressed form, otherwise the uncompressed form will be returned.
+     * @throws RuntimeError Indicates either the underlying pointer is invalid or the co-ordinate pair is not a valid PublicKey.
+     * @return String
+     */
     public String getAsCompressedPublicKey(String format) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniKeyPointEncode(format, error);

@@ -13,6 +13,12 @@ public final class ServiceProvider {
 
     final long pointer;
 
+    /**
+     * Instantiates a ServiceProvider object.
+     * @param enableLogging Determines whether logging is enabled or not.
+     * @param postboxKey The private key to be used for the ServiceProvider.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     */
     public ServiceProvider(boolean enableLogging, String postboxKey, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable NodeDetails sss, @Nullable NodeDetails tss, @Nullable NodeDetails rss) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniServiceProvider(enableLogging, postboxKey, curveN, useTss, verifierName, verifierId, sss, tss, rss, error);

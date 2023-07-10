@@ -19,10 +19,21 @@ public final class ShareStoreMap {
 
     final long pointer;
 
+    /**
+     * Instantiates a ShareStoreMap object.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public ShareStoreMap(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Returns the share stores.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return ArrayList
+     * @see ShareStore
+     */
     public ArrayList<Pair<String, ShareStore>> getShareStores() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String keys = jniShareStoreMapGetKeys(error);

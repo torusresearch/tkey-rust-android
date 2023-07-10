@@ -117,7 +117,7 @@ public class tkeyThresholdKeyTest {
                 lock1.countDown();
             });
             lock1.await();
-            String output = thresholdKey.outputShare(share[0].getIndex(), null);
+            String output = thresholdKey.outputShare(share[0].getIndex());
             thresholdKey.outputShareStore(share[0].getIndex(), null);
             thresholdKey.shareToShareStore(output);
             CountDownLatch lock2 = new CountDownLatch(2);
@@ -137,7 +137,7 @@ public class tkeyThresholdKeyTest {
                 lock2.countDown();
             });
             lock2.await();
-            String input = thresholdKey.outputShare(share2[0].getIndex(), null);
+            String input = thresholdKey.outputShare(share2[0].getIndex());
             ShareStore inputStore = thresholdKey.outputShareStore(share2[0].getIndex(), null);
 
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);

@@ -5,7 +5,7 @@ plugins {
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = '0.8.8'
+    toolVersion = '0.8.7'
 }
 
 android {
@@ -60,11 +60,23 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "org.jacoco:org.jacoco.agent:0.8.8"
-    testImplementation "org.jacoco:org.jacoco.report:0.8.8"
+    testImplementation 'org.jacoco:org.jacoco.agent:0.8.7'
+    testImplementation 'org.jacoco:org.jacoco.report:0.8.7'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
+
+task javadoc(type: Javadoc) {
+    failOnError(false)
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+afterEvaluate {
+    javadoc.classpath += files(android.libraryVariants.collect { variant ->
+        variant.javaCompileProvider.get().classpath.files
+    })
 }

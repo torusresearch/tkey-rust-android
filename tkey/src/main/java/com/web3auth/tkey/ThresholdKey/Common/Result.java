@@ -1,5 +1,7 @@
 package com.web3auth.tkey.ThresholdKey.Common;
 
+
+@SuppressWarnings("unused") // linter doesn't check T is required with extends and produces unchecked cast warnings instead
 public abstract class Result<T> {
     private Result() {}
 

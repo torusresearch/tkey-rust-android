@@ -11,10 +11,19 @@ public final class Metadata {
 
     final long pointer;
 
+    /**
+     * Instantiate a Metadata object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public Metadata(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Instantiate a Metadata object using its' json representation.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @param json The json string.
+     */
     public Metadata(String json) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniMetadataFromJson(json, error);
@@ -24,6 +33,11 @@ public final class Metadata {
         pointer = ptr;
     }
 
+    /**
+     * Serialize to json
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return String
+     */
     public String export() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniMetadataToJson(error);

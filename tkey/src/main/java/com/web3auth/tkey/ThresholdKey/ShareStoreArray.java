@@ -12,10 +12,21 @@ public final class ShareStoreArray {
 
     final long pointer;
 
+    /**
+     * Instantiates a ShareStoreArray object.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public ShareStoreArray(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Returns a ShareStore in the collection at the specified index.
+     * @param index Index to retrieve the item from.
+     * @throws RuntimeError Indicates underlying pointer or index is invalid.
+     * @return ShareStore
+     * @see ShareStore
+     */
     public ShareStore getAt(int index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniShareStoreArrayGetAt(index, error);
@@ -25,6 +36,11 @@ public final class ShareStoreArray {
         return new ShareStore(ptr);
     }
 
+    /**
+     * Returns the length of the collection.
+     * @throws RuntimeError Indicates underlying pointer or index is invalid.
+     * @return int
+     */
     public int length() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int result = jniShareStoreArrayLen(error);

@@ -86,6 +86,24 @@ public final class ThresholdKey {
 
     private native void jniThresholdKeyFree();
 
+    /**
+     * Instantiates a ThresholdKey object.
+     * @param metadata Existing metadata to be used, optional.
+     * @param shares Existing shares to be used, optional.
+     * @param storage StorageLayer to be used.
+     * @param provider Service provider to be used, optional only in the most basic usage of tKey.
+     * @param transitions Existing local transitions to be used.
+     * @param lastFetchedCloudMetadata Existing cloud metadata to be used.
+     * @param enableLogging Determines whether logging is available or not (pending).
+     * @param manualSync Determines if changes to the metadata are automatically synced.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     * @see Metadata
+     * @see ShareStorePolyIdIndexMap
+     * @see StorageLayer
+     * @see ServiceProvider
+     * @see LocalMetadataTransitions
+     *
+     */
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         this.executor = Executors.newSingleThreadExecutor();
@@ -97,6 +115,13 @@ public final class ThresholdKey {
         pointer = ptr;
     }
 
+    /**
+     * Returns the metadata.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     * @return Metadata
+     * @see Metadata
+     *
+     */
     public Metadata getMetadata() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniThresholdKeyGetMetadata(error);
@@ -106,6 +131,17 @@ public final class ThresholdKey {
         return new Metadata(ptr);
     }
 
+    /**
+     * Initializes a ThresholdKey object.
+     * @param importShare Share to be imported, optional.
+     * @param input Sharestore used, optional.
+     * @param neverInitializedNewKey Do not initialize a new tKey is an existing one is found.
+     * @param includeLocalMetadataTransitions Prioritize existing metadata transitions over cloud fetched transitions.
+     * @param callback The method which the result will be sent to
+     * @see ShareStore
+     * @see ThresholdKeyCallback
+     * @see KeyDetails
+     */
     public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
@@ -120,6 +156,15 @@ public final class ThresholdKey {
         );
     }
 
+    /**
+     * Initializes a ThresholdKey object.
+     * @param importShare Share to be imported, optional.
+     * @param input Sharestore used, optional.
+     * @param callback The method which the result will be sent to
+     * @see ShareStore
+     * @see ThresholdKeyCallback
+     * @see KeyDetails
+     */
     public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
@@ -147,6 +192,11 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Function to retrieve the metadata directly from the network, only used in very specific instances.
+     * @param privateKey The reconstructed private key, optional.
+     * @param callback The method which the result will be sent to
+     */
     public void storage_layer_get_metadata(@Nullable String privateKey, final ThresholdKeyCallback<String> callback) {
         executor.execute(
                 () -> {
@@ -174,6 +224,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Function to set the metadata directly to the network, only used in very specific instances.
+     * @param privateKey The private key, optional.
+     * @param json Relevant json to be set.
+     * @param callback The method which the result will be sent to
+     */
     public void storage_layer_set_metadata(@Nullable String privateKey, String json, final ThresholdKeyCallback<Void> callback) {
         executor.execute(
                 () -> {
@@ -201,6 +257,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Function to set the metadata directly to the network, only used in very specific instances.
+     * @param privateKeys The relevant private keys.
+     * @param json Relevant json to be set.
+     * @param callback The method which the result will be sent to
+     */
     public void storage_layer_set_metadata_stream(String privateKeys, String json, final ThresholdKeyCallback<Void> callback) {
         executor.execute(
                 () -> {
@@ -228,6 +290,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Reconstructs the private key, this assumes that the number of shares inserted into the `ThrehsoldKey` are equal or greater than the threshold.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see KeyReconstructionDetails
+     */
     public void reconstruct(final ThresholdKeyCallback<KeyReconstructionDetails> callback) {
         executor.execute(() -> {
             try {
@@ -253,6 +321,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Generates a new share.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see GenerateShareStoreResult
+     */
     public void generateNewShare(boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<GenerateShareStoreResult> callback) {
         executor.execute(() -> {
             try {
@@ -278,6 +352,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Deletes a share at the specified index. Caution is advised to not try delete a share that would prevent the total number of shares being below the threshold.
+     * @param shareIndex Index of share to be deleted.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void deleteShare(String shareIndex, boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -303,6 +383,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Returns the key details, mainly used after reconstruction.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return KeyDetails
+     * @see KeyDetails
+     */
     public KeyDetails getKeyDetails() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniThresholdKeyGetKeyDetails(error);
@@ -312,6 +398,23 @@ public final class ThresholdKey {
         return new KeyDetails(ptr);
     }
 
+    /**
+     * Retrieves a specific share.
+     * @param shareIndex The index of the share to output.
+     * @throws RuntimeError Indicates invalid pointer or invalid index.
+     * @return String
+     */
+    public String outputShare(String shareIndex) throws RuntimeError {
+        return outputShare(shareIndex, null);
+    }
+
+    /**
+     * Retrieves a specific share.
+     * @param shareIndex The index of the share to output.
+     * @param shareType The format of the output, can be `"mnemonic"`, optional.
+     * @throws RuntimeError Indicates invalid pointer or invalid index.
+     * @return String
+     */
     public String outputShare(String shareIndex, @Nullable String shareType) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyOutputShare(shareIndex, shareType, curveN, error);
@@ -321,6 +424,13 @@ public final class ThresholdKey {
         return result;
     }
 
+    /**
+     * Converts a share to a ShareStore.
+     * @param share Hexadecimal representation of a share.
+     * @throws RuntimeError Indicates invalid parameters.
+     * @return ShareStore
+     * @see ShareStore
+     */
     public ShareStore shareToShareStore(String share) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniThresholdKeyShareToShareStore(share, curveN, error);
@@ -330,6 +440,14 @@ public final class ThresholdKey {
         return new ShareStore(result);
     }
 
+    /**
+     * Converts a share to a ShareStore.
+     * @param share Hexadecimal representation of a share.
+     * @param shareType The format of the share, can be `"mnemonic"`, optional.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see ShareStore
+     */
     public void inputShare(String share, @Nullable String shareType, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -355,6 +473,14 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Retrieves a specific share store.
+     * @param shareIndex The index of the share to output.
+     * @param polyId The polynomial id to be used for the output, optional.
+     * @throws RuntimeError Indicates invalid pointer or invalid index.
+     * @return ShareStore
+     * @see ShareStore
+     */
     public ShareStore outputShareStore(String shareIndex, @Nullable String polyId) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniThresholdKeyOutputShareStore(shareIndex, polyId, curveN, error);
@@ -364,6 +490,13 @@ public final class ThresholdKey {
         return new ShareStore(result);
     }
 
+    /**
+     * Inserts a ShareStore, useful for insertion before reconstruction to ensure the number of shares meet the minimum threshold.
+     * @param store The ShareStore to be inserted.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see ShareStore
+     */
     public void inputShareStore(ShareStore store, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -389,6 +522,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Retrieves all share indexes.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return ArrayList
+     */
     public ArrayList<String> getShareIndexes() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetShareIndexes(error);
@@ -403,6 +542,12 @@ public final class ThresholdKey {
         return indexes;
     }
 
+    /**
+     * Returns last metadata fetched from the cloud.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return Metadata
+     * @see Metadata
+     */
     public Metadata getLastFetchedCloudMetadata() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniThresholdKeyGetLastFetchedCloudMetadata(error);
@@ -412,6 +557,12 @@ public final class ThresholdKey {
         return new Metadata(result);
     }
 
+    /**
+     * Returns current metadata transitions not yet synchronised.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return Metadata
+     * @see Metadata
+     */
     public LocalMetadataTransitions getLocalMetadataTransitions() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniThresholdKeyGetLocalMetadataTransitions(error);
@@ -421,6 +572,13 @@ public final class ThresholdKey {
         return new LocalMetadataTransitions(result);
     }
 
+    /**
+     * Returns the tKey store for a module.
+     * @param moduleName Specific name of the module.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return ArrayList
+     */
     public ArrayList<JSONObject> getTKeyStore(String moduleName) throws JSONException, RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetTKeyStore(moduleName, error);
@@ -436,6 +594,14 @@ public final class ThresholdKey {
         return list;
     }
 
+    /**
+     * Returns the specific tKey store item json for a module.
+     * @param moduleName Specific name of the module.
+     * @param id Identifier of the item.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return JSONObject
+     */
     public JSONObject getTKeyStoreItem(String moduleName, String id) throws JSONException, RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetTKeyStoreItem(moduleName, id, error);
@@ -445,6 +611,11 @@ public final class ThresholdKey {
         return new JSONObject(result);
     }
 
+    /**
+     * Syncronises metadata transitions, only used if manual sync is enabled.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void syncLocalMetadataTransitions(ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -470,6 +641,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Returns all shares according to their mapping.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return ShareStorePolyIdIndexMap
+     * @see ShareStorePolyIdIndexMap
+     */
     public ShareStorePolyIdIndexMap getShares() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniThresholdKeyGetShares(error);
@@ -479,6 +656,11 @@ public final class ThresholdKey {
         return new ShareStorePolyIdIndexMap(result);
     }
 
+    /**
+     * Permanently deletes a tKey, this process is irrecoverable.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void CRITICALDeleteTKey(ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -504,6 +686,14 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Adds a share description.
+     * @param key The key, usually the share index.
+     * @param description  Description for the key.
+     * @param updateMetadata Whether the metadata is synced immediately or not.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void addShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -529,6 +719,14 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Deletes a share description.
+     * @param key The key, usually the share index.
+     * @param description  Description for the key.
+     * @param updateMetadata Whether the metadata is synced immediately or not.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void deleteShareDescription(String key, String description, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -554,6 +752,15 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Updates a share description.
+     * @param key The key, usually the share index.
+     * @param oldDescription Old description used for the key.
+     * @param newDescription New description for the key.
+     * @param updateMetadata Whether the metadata is synced immediately or not.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void updateShareDescription(String key, String oldDescription, String newDescription, boolean updateMetadata, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
@@ -579,6 +786,12 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Returns all shares descriptions.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @throws JSONException Data in object is malformed.
+     * @return HashMap
+     */
     public HashMap<String, ArrayList<String>> getShareDescriptions() throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
         String result = jniThresholdKeyGetShareDescriptions(error);
@@ -600,6 +813,12 @@ public final class ThresholdKey {
         return description;
     }
 
+    /**
+     * Returns share stores for the latest polynomial.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return ShareMap
+     * @see ShareMap
+     */
     public ShareStoreArray getAllAllShareStoresForLatestPolynomial() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniThresholdKeyGetAllShareStoresForLatestPolynomial(curveN, error);
@@ -609,6 +828,12 @@ public final class ThresholdKey {
         return new ShareStoreArray(ptr);
     }
 
+    /**
+     * Returns the latest polynomial.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return Polynomial
+     * @see Polynomial
+     */
     public Polynomial reconstructLatestPolynomial() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniThresholdKeyReconstructLatestPolynomial(curveN, error);

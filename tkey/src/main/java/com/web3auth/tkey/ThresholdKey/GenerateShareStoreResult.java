@@ -11,10 +11,19 @@ public final class GenerateShareStoreResult {
 
     final long pointer;
 
+    /**
+     * Instantiate a GenerateShareStoreResult object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public GenerateShareStoreResult(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Returns the share index in the GenerateShareStoreResult object.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return String
+     */
     public String getIndex() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String share_index = jniGenerateShareStoreResultGetShareIndex(error);
@@ -24,6 +33,12 @@ public final class GenerateShareStoreResult {
         return share_index;
     }
 
+    /**
+     * Returns the share store map in the GenerateShareStoreResult object.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return ShareStoreMap
+     * @see ShareStoreMap
+     */
     public ShareStoreMap getShareStoreMap() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long store_map = jniGenerateShareStoreResultGetShareStoreMap(error);
