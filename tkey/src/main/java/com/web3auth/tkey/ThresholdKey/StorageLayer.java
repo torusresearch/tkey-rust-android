@@ -90,6 +90,13 @@ public final class StorageLayer {
         return networkResponse;
     }
 
+    /**
+     * Instantiates a ServiceProvider object.
+     * @param enableLogging Determines whether logging is enabled or not.
+     * @param hostUrl Url for the metadata server.
+     * @param serverTimeOffset Timezone offset for the metadata server.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     */
     public StorageLayer(boolean enableLogging, String hostUrl, int serverTimeOffset) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniStorageLayer(enableLogging, hostUrl, serverTimeOffset, "networkInterface", "(Ljava/lang/String;Ljava/lang/String;Lcom/web3auth/tkey/RuntimeError;)Ljava/lang/String;", error);

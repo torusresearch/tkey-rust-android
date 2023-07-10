@@ -1,6 +1,7 @@
 package com.web3auth.tkey.ThresholdKey;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 
 public final class ServiceProvider {
     private native void jniServiceProviderFree();
@@ -11,6 +12,12 @@ public final class ServiceProvider {
 
     final long pointer;
 
+    /**
+     * Instantiates a ServiceProvider object.
+     * @param enableLogging Determines whether logging is enabled or not.
+     * @param postboxKey The private key to be used for the ServiceProvider.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     */
     public ServiceProvider(boolean enableLogging, String postboxKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniServiceProvider(enableLogging, postboxKey, curveN, error);

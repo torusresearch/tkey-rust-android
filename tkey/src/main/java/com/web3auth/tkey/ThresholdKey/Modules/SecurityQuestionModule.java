@@ -23,6 +23,15 @@ public final class SecurityQuestionModule {
 
     private static native String jniSecurityQuestionModuleGetQuestions(ThresholdKey thresholdKey, RuntimeError error);
 
+    /**
+     * Generates a new security share on an existing ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param questions The security question
+     * @param answer The answer for the security question.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see GenerateShareStoreResult
+     */
     public static void generateNewShare(ThresholdKey thresholdKey, String questions, String answer, ThresholdKeyCallback<GenerateShareStoreResult> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -49,6 +58,13 @@ public final class SecurityQuestionModule {
     }
 
 
+    /**
+     * Inputs a stored security share into an existing ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param answer The answer for the security question of the stored share.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public static void inputShare(ThresholdKey thresholdKey, String answer, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -74,6 +90,15 @@ public final class SecurityQuestionModule {
         }
     }
 
+    /**
+     * Changes the question and answer for an existing security share on a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @param questions The security question.
+     * @param answer The answer for the security question.
+     * @param callback The method which the result will be sent to
+     * @see Result
+     * @see ThresholdKeyCallback
+     */
     public static void changeSecurityQuestionAndAnswer(ThresholdKey thresholdKey, String questions, String answer, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -99,6 +124,14 @@ public final class SecurityQuestionModule {
         }
     }
 
+    /**
+     * Saves the answer for an existing security share on a ThresholdKey object to the tkey store.
+     * @param thresholdKey The threshold key to act on.
+     * @param answer The answer for the security question.
+     * @param callback The method which the result will be sent to
+     * @see Result
+     * @see ThresholdKeyCallback
+     */
     public static void storeAnswer(ThresholdKey thresholdKey, String answer, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
@@ -124,6 +157,12 @@ public final class SecurityQuestionModule {
         }
     }
 
+    /**
+     * Retrieves the answer for an existing security share on a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return String
+     */
     public static String getAnswer(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniSecurityQuestionModuleGetAnswer(thresholdKey, error);
@@ -133,6 +172,12 @@ public final class SecurityQuestionModule {
         return result;
     }
 
+    /**
+     * Retrieves the question for an existing security share on a ThresholdKey object.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid pointer.
+     * @return String
+     */
     public static String getQuestions(ThresholdKey thresholdKey) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniSecurityQuestionModuleGetQuestions(thresholdKey, error);

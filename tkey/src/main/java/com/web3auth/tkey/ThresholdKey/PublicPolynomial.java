@@ -14,10 +14,19 @@ public final class PublicPolynomial {
 
     final long pointer;
 
+    /**
+     * Instantiate a PublicPolynomial object using the underlying pointer.
+     * @param ptr The pointer to the underlying foreign function interface object.
+     */
     public PublicPolynomial(long ptr) {
         pointer = ptr;
     }
 
+    /**
+     * Retrieves the threshold.
+     * @throws RuntimeError Indicates underlying pointer is invalid.
+     * @return int
+     */
     public int getThreshold() throws RuntimeError {
         RuntimeError error = new RuntimeError();
         int result = jniGetThreshold(error);
@@ -27,6 +36,13 @@ public final class PublicPolynomial {
         return result;
     }
 
+    /**
+     * Retrieves the keypoint for the respective share index.
+     * @param index share index in hexadecimal format
+     * @throws RuntimeError Indicates underlying pointer or index is invalid.
+     * @return KeyPoint
+     * @see KeyPoint
+     */
     public KeyPoint polyCommitmentEval(String index) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long ptr = jniPolyCommitmentEval(index, curveN, error);

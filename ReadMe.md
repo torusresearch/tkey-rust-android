@@ -12,6 +12,11 @@ If you are instead seeking the iOS implementation, please see [here](https://git
 
 2. Import the built AAR file into your application.
 
+## Building and viewing the documentation
+
+```terminal
+./gradlew javadoc && open ./tkey/build/docs/javadoc/index.html
+```
 
 ## Integration with CustomAuth
 
