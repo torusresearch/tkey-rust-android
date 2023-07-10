@@ -96,12 +96,14 @@ public final class ThresholdKey {
      * @param lastFetchedCloudMetadata Existing cloud metadata to be used.
      * @param enableLogging Determines whether logging is available or not (pending).
      * @param manualSync Determines if changes to the metadata are automatically synced.
+     * @param rss Communication object for the RSS service, required for TSS.
      * @throws RuntimeError Indicates invalid parameters were used.
      * @see Metadata
      * @see ShareStorePolyIdIndexMap
      * @see StorageLayer
      * @see ServiceProvider
      * @see LocalMetadataTransitions
+     * @see RssComm
      *
      */
     public ThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storage, @Nullable ServiceProvider provider, @Nullable LocalMetadataTransitions transitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss) throws RuntimeError {
@@ -137,6 +139,10 @@ public final class ThresholdKey {
      * @param input Sharestore used, optional.
      * @param neverInitializedNewKey Do not initialize a new tKey is an existing one is found.
      * @param includeLocalMetadataTransitions Prioritize existing metadata transitions over cloud fetched transitions.
+     * @param useTss If TSS is to be used or not.
+     * @param device_tss_share Device share for TSS, optional.
+     * @param device_tss_index Device index for TSS.
+     * @param factor_pub Factor key for TSS, optional.
      * @param callback The method which the result will be sent to
      * @see ShareStore
      * @see ThresholdKeyCallback
@@ -160,6 +166,10 @@ public final class ThresholdKey {
      * Initializes a ThresholdKey object.
      * @param importShare Share to be imported, optional.
      * @param input Sharestore used, optional.
+     * @param useTss If TSS should be used or not.
+     * @param device_tss_share Device share for TSS, optional.
+     * @param device_tss_index Device index for TSS.
+     * @param factor_pub Factor key for TSS, optional.
      * @param callback The method which the result will be sent to
      * @see ShareStore
      * @see ThresholdKeyCallback
@@ -324,8 +334,11 @@ public final class ThresholdKey {
     /**
      * Generates a new share.
      * @param callback The method which the result will be sent to
+     * @param useTss Whether TSS is used or not.
+     * @param options Options for TSS
      * @see ThresholdKeyCallback
      * @see GenerateShareStoreResult
+     * @see TssOptions
      */
     public void generateNewShare(boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<GenerateShareStoreResult> callback) {
         executor.execute(() -> {
@@ -355,8 +368,11 @@ public final class ThresholdKey {
     /**
      * Deletes a share at the specified index. Caution is advised to not try delete a share that would prevent the total number of shares being below the threshold.
      * @param shareIndex Index of share to be deleted.
+     * @param useTss Whether TSS is used or not.
+     * @param options Options for TSS
      * @param callback The method which the result will be sent to
      * @see ThresholdKeyCallback
+     * @see TssOptions
      */
     public void deleteShare(String shareIndex, boolean useTss, @Nullable TssOptions options, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {

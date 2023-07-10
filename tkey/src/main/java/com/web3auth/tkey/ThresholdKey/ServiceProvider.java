@@ -17,7 +17,14 @@ public final class ServiceProvider {
      * Instantiates a ServiceProvider object.
      * @param enableLogging Determines whether logging is enabled or not.
      * @param postboxKey The private key to be used for the ServiceProvider.
+     * @param useTss Whether to use TSS or not.
+     * @param verifierName Verifier Name, required for TSS.
+     * @param verifierId Verifier ID, required for TSS.
+     * @param sss Node information for the SSS service, required for TSS.
+     * @param tss Node information for the TSS service, required for TSS.
+     * @param rss Node information for the RSS Service, required for TSS.
      * @throws RuntimeError Indicates invalid parameters were used.
+     * @see NodeDetails
      */
     public ServiceProvider(boolean enableLogging, String postboxKey, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable NodeDetails sss, @Nullable NodeDetails tss, @Nullable NodeDetails rss) throws RuntimeError {
         RuntimeError error = new RuntimeError();
