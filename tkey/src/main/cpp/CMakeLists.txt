@@ -52,6 +52,9 @@ add_library(
         jniShareMap.cpp
         jniKeyPointArray.cpp
         jniShareStoreArray.cpp
+        common/jniNodeDetails.cpp
+        common/jniTssOptions.cpp
+        jniRssComm.cpp
 )
 
 find_library(

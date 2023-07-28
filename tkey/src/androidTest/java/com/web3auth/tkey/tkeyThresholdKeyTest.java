@@ -43,11 +43,11 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -87,11 +87,11 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -109,7 +109,7 @@ public class tkeyThresholdKeyTest {
             thresholdKey.getLocalMetadataTransitions();
             GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
             CountDownLatch lock1 = new CountDownLatch(1);
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not generate new share for tkey");
                 }
@@ -121,7 +121,7 @@ public class tkeyThresholdKeyTest {
             thresholdKey.outputShareStore(share[0].getIndex(), null);
             thresholdKey.shareToShareStore(output);
             CountDownLatch lock2 = new CountDownLatch(2);
-            thresholdKey.deleteShare(share[0].getIndex(), result -> {
+            thresholdKey.deleteShare(share[0].getIndex(), false, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not delete share for tkey");
                 }
@@ -129,7 +129,7 @@ public class tkeyThresholdKeyTest {
             });
 
             GenerateShareStoreResult[] share2 = new GenerateShareStoreResult[1];
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not generate new share for tkey");
                 }
@@ -140,9 +140,9 @@ public class tkeyThresholdKeyTest {
             String input = thresholdKey.outputShare(share2[0].getIndex());
             ShareStore inputStore = thresholdKey.outputShareStore(share2[0].getIndex(), null);
 
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock3 = new CountDownLatch(3);
-            thresholdKey2.initialize(null, null, true, false, result -> {
+            thresholdKey2.initialize(null, null, true, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -161,9 +161,9 @@ public class tkeyThresholdKeyTest {
                 lock3.countDown();
             });
             lock3.await();
-            ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock4 = new CountDownLatch(4);
-            thresholdKey3.initialize(null, null, true, false, result -> {
+            thresholdKey3.initialize(null, null, true, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -199,11 +199,11 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(5);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -215,7 +215,7 @@ public class tkeyThresholdKeyTest {
                 }
                 lock.countDown();
             });
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not generate new share for tkey");
                 }
@@ -246,16 +246,16 @@ public class tkeyThresholdKeyTest {
             PrivateKey postboxKey = PrivateKey.generate();
             PrivateKey postboxKey2 = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
             StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false);
+            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             PrivateKey key2 = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(4);
 
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -268,7 +268,7 @@ public class tkeyThresholdKeyTest {
                 assertNotNull(pub);
                 lock.countDown();
             });
-            thresholdKey2.initialize(key2.hex, null, false, false, result -> {
+            thresholdKey2.initialize(key2.hex, null, false, false, false, null,0,null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -329,11 +329,11 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(3);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -346,7 +346,7 @@ public class tkeyThresholdKeyTest {
                 lock.countDown();
             });
             final GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
-            thresholdKey.generateNewShare(result -> {
+            thresholdKey.generateNewShare(false, null,result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not generate new share for tkey");
                 }
