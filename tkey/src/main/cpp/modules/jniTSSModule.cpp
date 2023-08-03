@@ -1,6 +1,6 @@
 #include <jni.h>
 #include "include/tkey.h"
-#include "common/jniCommon.cpp"
+#include "../common/jniCommon.cpp"
 
 extern "C"
 JNIEXPORT jstring JNICALL
@@ -100,9 +100,9 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTS
     const char *pDeviceTSSShare = env->GetStringUTFChars(device_tss_share, JNI_FALSE);
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pTssIndex = &device_tss_index;
+    int* pTssIndex = &device_tss_index; // int can go straight through due to it being a simple type, only error_ptr is a pointer to an int (int *) since it functions as an inout parameter
 
-    threshold_key_create_tagged_tss_share(pointer, 
+    threshold_key_create_tagged_tss_share(pointer,
                                                           const_cast<char *>(pDeviceTSSShare),
                                                           const_cast<char *>(pFactorPub),
                                                           pTssIndex,
