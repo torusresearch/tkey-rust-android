@@ -39,7 +39,7 @@ public class tkeyShareStoreMapTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex, false,null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex, false,null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(3);
@@ -67,7 +67,7 @@ public class tkeyShareStoreMapTest {
                 lock.countDown();
             });
             lock.await();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             throw new RuntimeException(e);
         }
     }

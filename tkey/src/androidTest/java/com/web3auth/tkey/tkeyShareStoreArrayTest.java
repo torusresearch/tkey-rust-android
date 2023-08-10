@@ -12,6 +12,7 @@ import com.web3auth.tkey.ThresholdKey.ShareStoreArray;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +38,7 @@ public class tkeyShareStoreArrayTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
@@ -55,7 +56,7 @@ public class tkeyShareStoreArrayTest {
             });
             lock.await();
             details = thresholdKey.getAllAllShareStoresForLatestPolynomial();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }

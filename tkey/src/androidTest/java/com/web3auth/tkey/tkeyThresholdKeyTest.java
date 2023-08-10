@@ -43,7 +43,7 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
@@ -77,7 +77,7 @@ public class tkeyThresholdKeyTest {
             });
             lock.await();
             System.gc();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }
@@ -87,7 +87,7 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
@@ -189,7 +189,7 @@ public class tkeyThresholdKeyTest {
             });
             lock4.await();
             System.gc();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }
@@ -199,7 +199,7 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(5);
@@ -235,7 +235,7 @@ public class tkeyThresholdKeyTest {
             });
             lock.await();
             System.gc();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail();
         }
     }
@@ -246,9 +246,9 @@ public class tkeyThresholdKeyTest {
             PrivateKey postboxKey = PrivateKey.generate();
             PrivateKey postboxKey2 = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
@@ -319,7 +319,7 @@ public class tkeyThresholdKeyTest {
             //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
             // however they are not guaranteed by Java to be called on demand.
             System.gc();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail();
         }
     }
@@ -329,7 +329,7 @@ public class tkeyThresholdKeyTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(3);

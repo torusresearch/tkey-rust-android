@@ -38,6 +38,42 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleGetAllTSSTags(
     return result;
 }
 
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSTagFactorPub(
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                        threshold_key));
+    
+    char *pResult = threshold_key_get_tss_tag_factor_pub(pointer, error_ptr);
+    
+    setErrorCode(env, error, errorCode);
+    jstring result = env->NewStringUTF(pResult);
+    string_free(pResult);
+    return result;
+}
+
+extern "C"
+JNIEXPORT jstring JNICALL
+Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGetExtendedVerifier(
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                        threshold_key));
+    
+    char *pResult = threshold_key_get_extended_verifier_id(pointer, error_ptr);
+    
+    setErrorCode(env, error, errorCode);
+    jstring result = env->NewStringUTF(pResult);
+    string_free(pResult);
+    return result;
+}
+
 // init return type 
 // function name
 // init params
@@ -85,7 +121,7 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleGetTSSTag(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTSSTagShare(
+Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTSSShare(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring device_tss_share,
         jstring factor_pub,
@@ -96,8 +132,12 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTS
     int *error_ptr = &errorCode;
     auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
                                                                         threshold_key));
-                                                                        
-    const char *pDeviceTSSShare = env->GetStringUTFChars(device_tss_share, JNI_FALSE);
+
+
+    const char *pDeviceTSSShare = nullptr;
+    if(device_tss_share != nullptr) {
+        pDeviceTSSShare = env->GetStringUTFChars(device_tss_share, JNI_FALSE);
+    }
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
     int* pTssIndex = &device_tss_index; // int can go straight through due to it being a simple type, only error_ptr is a pointer to an int (int *) since it functions as an inout parameter
@@ -105,16 +145,18 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTS
     threshold_key_create_tagged_tss_share(pointer,
                                                           const_cast<char *>(pDeviceTSSShare),
                                                           const_cast<char *>(pFactorPub),
-                                                          pTssIndex,
+                                                          device_tss_index,
                                                           const_cast<char *>(pCurveN),
                                                           error_ptr);
 
 
-    env->ReleaseStringUTFChars(device_tss_share, pDeviceTSSShare);
+    setErrorCode(env, error, errorCode);
+    if(device_tss_share != nullptr) {
+        env->ReleaseStringUTFChars(device_tss_share, pDeviceTSSShare);
+    }
     env->ReleaseStringUTFChars(factor_pub, pFactorPub);
     env->ReleaseStringUTFChars(curve_n, pCurveN);
 
-    setErrorCode(env, error, errorCode);
 }
 
 extern "C"
@@ -133,7 +175,7 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleGetTSSShare(
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
     int* pThreshold = &threshold;
 
-    char *pResult = threshold_key_get_tss_share(pointer, pThreshold, error_ptr);
+    char *pResult = threshold_key_get_tss_share(pointer, const_cast<char *>(pFactorKey), threshold, const_cast<char *>(pCurveN), error_ptr);
     
     env->ReleaseStringUTFChars(factor_key, pFactorKey);
     env->ReleaseStringUTFChars(curve_n, pCurveN);
@@ -187,7 +229,7 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniCopyFactorPub(
 
     threshold_key_copy_factor_pub(pointer, 
                                     const_cast<char *>(pNewFactorPub),
-                                    pNewTssIndex,
+                                    new_tss_index,
                                     const_cast<char *>(pFactorPub),
                                     const_cast<char *>(pCurveN),
                                     error_ptr);
@@ -227,8 +269,8 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
 
     threshold_key_generate_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                    pInputTssIndex,
-                                    pNewTssIndex,
+                                    input_tss_index,
+                                    new_tss_index,
                                     const_cast<char *>(pNewFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),
@@ -270,7 +312,7 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniDeleteTSSShare(
 
     threshold_key_delete_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                    pInputTssIndex,
+                                    input_tss_index,
                                     const_cast<char *>(pFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),

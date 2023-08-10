@@ -7,6 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -25,9 +26,9 @@ public class tkeyServiceProviderTest {
     public void provider() {
         try {
             PrivateKey key = PrivateKey.generate();
-            new ServiceProvider(false, key.hex,false, null,null,null,null,null);
+            new ServiceProvider(false, key.hex,false, null,null,null);
             System.gc();
-        } catch (RuntimeError e) {
+        } catch (RuntimeError | JSONException e) {
             fail(e.toString());
         }
     }

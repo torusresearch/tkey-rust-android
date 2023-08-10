@@ -7,6 +7,8 @@ public final class KeyPoint {
 
     private native long jniKeyPointNew(String x, String y, RuntimeError error);
 
+    private native long jniKeyPointNewAddr(String address, RuntimeError error);
+
     private native String jniKeyPointEncode(String format, RuntimeError error);
 
     private native String jniKeyPointGetX(RuntimeError error);
@@ -58,6 +60,15 @@ public final class KeyPoint {
     public KeyPoint(String x, String y) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniKeyPointNew(x, y, error);
+        if (error.code != 0) {
+            throw error;
+        }
+        pointer = result;
+    }
+    
+    public KeyPoint(String address) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        long result = jniKeyPointNewAddr(address, error);
         if (error.code != 0) {
             throw error;
         }

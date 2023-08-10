@@ -5,6 +5,8 @@ import com.web3auth.tkey.RuntimeError;
 public final class PrivateKey {
 
     private static native String jniGeneratePrivateKey(String curve, RuntimeError error);
+    
+    private static native String jniPrivateToPublic(String secret, RuntimeError error);
 
     public String hex;
     final static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
@@ -29,5 +31,15 @@ public final class PrivateKey {
             throw error;
         }
         return new PrivateKey(result);
+    }
+
+    public String toPublic() throws RuntimeError {
+
+        RuntimeError error = new RuntimeError();
+        String result = jniPrivateToPublic(this.hex, error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return result;
     }
 }

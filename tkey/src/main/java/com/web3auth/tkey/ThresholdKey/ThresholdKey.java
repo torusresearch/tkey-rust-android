@@ -23,7 +23,7 @@ public final class ThresholdKey {
     public final Executor executor;
     final long pointer;
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
-
+    public Boolean useTss;
     private native long jniThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storageLayer, @Nullable ServiceProvider serviceProvider, @Nullable LocalMetadataTransitions localTransitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss, RuntimeError error);
 
     private native long jniThresholdKeyGetMetadata(RuntimeError error);
@@ -110,6 +110,9 @@ public final class ThresholdKey {
         RuntimeError error = new RuntimeError();
         this.executor = Executors.newSingleThreadExecutor();
 
+        if(rss!=null) {
+            useTss = true;
+        }
         long ptr = jniThresholdKey(metadata, shares, storage, provider, transitions, lastFetchedCloudMetadata, enableLogging, manualSync, rss, error);
         if (error.code != 0) {
             throw error;
