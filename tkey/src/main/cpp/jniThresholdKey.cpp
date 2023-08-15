@@ -658,22 +658,3 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyReconstructLates
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyServiceProviderAssignPublicKey(
-        JNIEnv *env, jobject jthis, jstring tss_tag, jstring tss_nonce, jstring tss_public_key,
-        jthrowable error) {
-    int errorCode = 0;
-    int *error_ptr = &errorCode;
-    jlong pObject = GetPointerField(env, jthis);
-    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    const char *pTag = env->GetStringUTFChars(tss_tag, JNI_FALSE);
-    const char *pNonce = env->GetStringUTFChars(tss_nonce, JNI_FALSE);
-    const char *pKey = env->GetStringUTFChars(tss_public_key, JNI_FALSE);
-    threshold_key_service_provider_assign_tss_public_key(pThreshold, const_cast<char *>(pTag), const_cast<char *>(pNonce), const_cast<char *>(pKey),
-                                                          error_ptr);
-    env->ReleaseStringUTFChars(tss_tag, pTag);
-    env->ReleaseStringUTFChars(tss_nonce, pNonce);
-    env->ReleaseStringUTFChars(tss_public_key, pKey);
-    setErrorCode(env, error, errorCode);
-}

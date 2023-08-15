@@ -12,7 +12,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -67,7 +67,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     implementation 'com.github.grvgoel81:fetch-node-details-java:3.0.8'
-    implementation 'com.github.grvgoel81:torus-utils-java:4.0.6'
+    implementation 'com.github.grvgoel81:torus-utils-java:4.0.7'
     implementation 'com.auth0:java-jwt:3.19.2'
     implementation 'org.web3j:core:4.8.8-android'
 }

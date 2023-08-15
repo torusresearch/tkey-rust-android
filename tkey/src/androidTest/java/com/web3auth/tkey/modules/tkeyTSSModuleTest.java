@@ -27,6 +27,7 @@ import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -44,7 +45,9 @@ import org.torusresearch.torusutils.types.VerifierParams;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.Date;
@@ -171,7 +174,8 @@ public class tkeyTSSModuleTest {
             TorusCtorOptions torusOptions = new TorusCtorOptions("Custom");
             torusOptions.setNetwork(TorusNetwork.SAPPHIRE_DEVNET.toString());
             torusOptions.setClientId("BG4pe3aBso5SjVbpotFQGnXVHgxhgOxnqnNBKyjfEJ3izFvIVWUaMIzoCrAfYag8O6t6a6AOvdLcS4JR2sQMjR4");
-            // torusOptions.setEnableOneKey(true);
+//            torusOptions.setEnableOneKey(true);
+//            torusOptions.setAllowHost("https://signer.tor.us/api/allow");
             TorusUtils torusUtils = new TorusUtils(torusOptions);
 
             String idToken = new JwtUtils().generateIdToken(TORUS_TEST_EMAIL);
@@ -186,16 +190,29 @@ public class tkeyTSSModuleTest {
 
             System.out.println(retrievedShare.getFinalKeyData().getPrivKey() + " priv key " + retrievedShare.getFinalKeyData().getEvmAddress() + " nonce " + retrievedShare.getMetadata().getNonce());
             System.out.println("retrievedShare");
+//            JSONArray signatureArray = new JSONArray();
             ArrayList<String> signatureString = new ArrayList<>();
-            List<SessionToken> signature = retrievedShare.getSessionData().sessionTokenData;
+            List<SessionToken> signature = retrievedShare.getSessionData().getSessionTokenData();
+            Set<String> integerSet = new HashSet<>();
+            System.out.println(signature.size());
 
             for (SessionToken item : signature) {
                 if (item != null) {
                     System.out.println("signature");
-                    System.out.println(item.getSignature());
+//                    System.out.println(item.getSignature().toString());
+//                    signatureArray.put(item.getSignature());
                     signatureString.add(item.getSignature());
+                    integerSet.add(item.getSignature());
                 }
             }
+//            for (String item : integerSet) {
+//                if (item != null) {
+//                    signatureString.add(item);
+//                }
+//            }
+            System.out.println("signature string");
+            System.out.println(signatureString.toString());
+
 
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(true, "https://metadata.tor.us", 2);
@@ -240,6 +257,7 @@ public class tkeyTSSModuleTest {
 
             String tssTag = "testing";
 
+            
             PrivateKey factorKey = PrivateKey.generate();
             String factorPub = factorKey.toPublic();
 
@@ -247,7 +265,12 @@ public class tkeyTSSModuleTest {
             System.out.println(factorPub.toString());
             CountDownLatch lock2 = new CountDownLatch(1);
 
-            TSSModule.createTaggedTSSTagShare(thresholdKey, tssTag, null, factorPub, 2, nodeDetail, torusUtils,result -> {
+//            TSSModule.updateTssPubKey(thresholdKey, tssTag, nodeDetail, torusUtils, false, result -> {
+//                if (result instanceof Result.Error) {
+//                    throw new RuntimeException("failed to pre updateTssPubKey");
+//                }
+//            });
+            TSSModule.createTaggedTSSTagShare(thresholdKey, tssTag, null, factorPub, 2, nodeDetail, torusUtils, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not create tagged tss shares for tkey");
                 }

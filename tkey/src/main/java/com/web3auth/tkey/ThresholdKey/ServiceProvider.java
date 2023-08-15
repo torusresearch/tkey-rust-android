@@ -74,7 +74,7 @@ public final class ServiceProvider {
               rss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(rssEndpoints).toString(), jsonArray.toString(), 3);
               tss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(tssEndpoints).toString(), jsonArray.toString(), 3);
         }
-        long ptr = jniServiceProvider(enableLogging, postboxKey, curveN, useTss, verifierName, verifierId, sss, rss, tss, error);
+        long ptr = jniServiceProvider(enableLogging, postboxKey, curveN, useTss, verifierName, verifierId, sss, tss, rss, error);
         if (error.code != 0) {
             throw error;
         }

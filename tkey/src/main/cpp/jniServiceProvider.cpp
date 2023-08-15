@@ -29,7 +29,7 @@ Java_com_web3auth_tkey_ThresholdKey_ServiceProvider_jniServiceProvider(
 
     const char *pId = nullptr;
     if (verifier_id != nullptr) {
-        pName = env->GetStringUTFChars(verifier_id, JNI_FALSE);
+        pId = env->GetStringUTFChars(verifier_id, JNI_FALSE);
     }
 
     NodeDetails* pS = nullptr;
@@ -51,6 +51,9 @@ Java_com_web3auth_tkey_ThresholdKey_ServiceProvider_jniServiceProvider(
                                      const_cast<char *>(pCurve), use_tss, const_cast<char *>(pName), const_cast<char *>(pId), pT, pR, pS, error_ptr);
     if (verifier_name != nullptr) {
         env->ReleaseStringUTFChars(verifier_name, pName);
+    }
+    if (verifier_id != nullptr) {
+        env->ReleaseStringUTFChars(verifier_id, pId);
     }
 
     env->ReleaseStringUTFChars(postbox_key, pPostbox);

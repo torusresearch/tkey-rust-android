@@ -82,8 +82,6 @@ public final class ThresholdKey {
 
     private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
 
-    public native void jniThresholdKeyServiceProviderAssignPublicKey(String tss_tag, String tss_nonce, String tss_public_key, RuntimeError error);
-
     private native void jniThresholdKeyFree();
 
     /**
@@ -804,8 +802,7 @@ public final class ThresholdKey {
             return new Result.Error<>(e);
         }
     }
-
-    /**
+ /**
      * Returns all shares descriptions.
      * @throws RuntimeError Indicates invalid pointer.
      * @throws JSONException Data in object is malformed.
@@ -862,13 +859,6 @@ public final class ThresholdKey {
         return new Polynomial(ptr);
     }
 
-    public void serviceProviderAssignPublicKey(String tssTag, String nonce, String tssPubKey) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        jniThresholdKeyServiceProviderAssignPublicKey(tssTag,nonce,tssPubKey, error);
-        if (error.code != 0) {
-            throw error;
-        }
-    }
 
     @Override
     protected void finalize() throws Throwable {

@@ -261,7 +261,10 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
                                                                         
     const char *pInputTSSShare = env->GetStringUTFChars(input_tss_share, JNI_FALSE);
     const char *pNewFactorPub = env->GetStringUTFChars(new_factor_pub, JNI_FALSE);
-    const char *pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
+    const char *pSelectedServers = nullptr;
+    if(selected_servers != nullptr) {
+        pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
+    }
     const char *pAuthSignatures = env->GetStringUTFChars(auth_signatures, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
     int* pInputTssIndex = &input_tss_index;
@@ -269,8 +272,8 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
 
     threshold_key_generate_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                    input_tss_index,
-                                    new_tss_index,
+                                     *pInputTssIndex,
+                                     *pNewTssIndex,
                                     const_cast<char *>(pNewFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),
@@ -280,10 +283,11 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
 
     env->ReleaseStringUTFChars(input_tss_share, pInputTSSShare);
     env->ReleaseStringUTFChars(new_factor_pub, pNewFactorPub);
-    env->ReleaseStringUTFChars(selected_servers, pSelectedServers);
     env->ReleaseStringUTFChars(auth_signatures, pAuthSignatures);
     env->ReleaseStringUTFChars(curve_n, pCurveN);
-
+    if(selected_servers != nullptr) {
+        env->ReleaseStringUTFChars(selected_servers, pSelectedServers);
+    }
     setErrorCode(env, error, errorCode);
 }
 
@@ -326,5 +330,28 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniDeleteTSSShare(
     env->ReleaseStringUTFChars(auth_signatures, pAuthSignatures);
     env->ReleaseStringUTFChars(curve_n, pCurveN);
 
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniThresholdKeyServiceProviderAssignPublicKey(
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jstring tss_tag, jstring tss_nonce, jstring tss_public_key,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                        threshold_key));
+
+    const char *pTag = env->GetStringUTFChars(tss_tag, JNI_FALSE);
+    const char *pNonce = env->GetStringUTFChars(tss_nonce, JNI_FALSE);
+    const char *pKey = env->GetStringUTFChars(tss_public_key, JNI_FALSE);
+    threshold_key_service_provider_assign_tss_public_key(pointer, const_cast<char *>(pTag), const_cast<char *>(pNonce), const_cast<char *>(pKey),
+                                                          error_ptr);
+    env->ReleaseStringUTFChars(tss_tag, pTag);
+    env->ReleaseStringUTFChars(tss_nonce, pNonce);
+    env->ReleaseStringUTFChars(tss_public_key, pKey);
     setErrorCode(env, error, errorCode);
 }
