@@ -74,15 +74,6 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGetExtendedVerifier(
     return result;
 }
 
-// init return type 
-// function name
-// init params
-// conversion for string and int done correctly 
-// function called with app. init to result
-// free converted params
-// set error code
-// return result if return type is present(string free for result)
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleSetTSSTag(

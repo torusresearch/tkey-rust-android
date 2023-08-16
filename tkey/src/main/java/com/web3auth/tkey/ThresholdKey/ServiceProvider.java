@@ -6,14 +6,8 @@ import com.web3auth.tkey.RuntimeError;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.TorusNodePub;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
-
-import java.math.BigInteger;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public final class ServiceProvider {
     private native void jniServiceProviderFree();
@@ -25,11 +19,7 @@ public final class ServiceProvider {
     static String verifierId;
     static NodeDetails nodeDetails;
     static Boolean useTss;
-    static Boolean assignedTssPubKey;
-
     final long pointer;
-    static FetchNodeDetails fetchNodeDetails;
-
 
     /**
      * Instantiates a ServiceProvider object.
@@ -51,17 +41,9 @@ public final class ServiceProvider {
             String[] sssEndpoints = nodeDetails.getTorusNodeSSSEndpoints();
             String[] rssEndpoints = nodeDetails.getTorusNodeRSSEndpoints();
             String[] tssEndpoints = nodeDetails.getTorusNodeTSSEndpoints();
-            String[] nodeEndpoints = nodeDetails.getTorusNodeEndpoints();
 
             TorusNodePub[] pub = nodeDetails.getTorusNodePub();
 
-//            sss = NodeDetails("", nodeEndpoints, sssEndpoints, rssEndpoints, tssEndpoints, )
-//              sss = new FetchNodeDetails()
-              System.out.println("sssEndpoints.toString()");
-              System.out.println(Arrays.toString(sssEndpoints));
-              System.out.println(new JSONArray(sssEndpoints).toString());
-              System.out.println(pub[0].toString());
-              System.out.println(pub[0].getX());
               JSONArray jsonArray = new JSONArray();
               for (TorusNodePub data : pub) {
                 JSONObject jsonObject = new JSONObject();
@@ -69,7 +51,6 @@ public final class ServiceProvider {
                 jsonObject.put("y", data.getY());
                 jsonArray.put(jsonObject);
               }
-              System.out.println(jsonArray.toString());
               sss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(sssEndpoints).toString(), jsonArray.toString(), 3);
               rss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(rssEndpoints).toString(), jsonArray.toString(), 3);
               tss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(tssEndpoints).toString(), jsonArray.toString(), 3);
@@ -78,10 +59,10 @@ public final class ServiceProvider {
         if (error.code != 0) {
             throw error;
         }
-        this.nodeDetails = nodeDetails;
-        this.verifier = verifierName;
-        this.verifierId = verifierId;
-        this.useTss = useTss;
+        ServiceProvider.nodeDetails = nodeDetails;
+        ServiceProvider.verifier = verifierName;
+        ServiceProvider.verifierId = verifierId;
+        ServiceProvider.useTss = useTss;
         pointer = ptr;
     }
 

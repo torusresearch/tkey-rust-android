@@ -24,8 +24,6 @@ public final class NodeDetails {
 
         RuntimeError error = new RuntimeError();
         long ptr = jniNodeDetails(serverEndpoints, serverPublicKeys, serverThreshold, error);
-        System.out.println("error code");
-        System.out.println(error.code);
         if (error.code != 0) {
             throw error;
         }
