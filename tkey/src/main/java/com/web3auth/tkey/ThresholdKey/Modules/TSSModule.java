@@ -213,7 +213,7 @@ public final class TSSModule {
         if (factorKey.length() > 66) {
             throw new RuntimeException("Invalid factor Key");
         }
-        setTSSTag(thresholdKey, tssTag, result -> {
+        setTSSTag(thresholdKey, TSSTag, result -> {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to copyFactorPub");
             }
@@ -328,7 +328,7 @@ public final class TSSModule {
                 throw new Exception(error);
             }
             return new Result.Success<>(true);
-        } catch (Exception | RuntimeError e) {
+        } catch (Exception e) {
             return new Result.Error<>((Exception) e);
         }
     }
@@ -393,7 +393,7 @@ public final class TSSModule {
     public static void updateTssPubKey(ThresholdKey thresholdKey, String tssTag, NodeDetails nodeDetails,
                                        TorusUtils torusUtils, Boolean prefetch, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         
-        setTSSTag(thresholdKey, TSSTag, result -> {
+        setTSSTag(thresholdKey, tssTag, result -> {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to set TSS Tag");
             }
@@ -461,7 +461,7 @@ public final class TSSModule {
         Pair<String, String> tssShareResult = getTSSShare(thresholdKey, TSSTag, factorKey, 0);
         String tssShare = tssShareResult.second;
         int tssIndex = Integer.parseInt(tssShareResult.first);
-        TSSModule.deleteTSSShare(thresholdKey, TSSTag, tssShare, tssIndex, authSignatures, deleteFac`torPub, nodeDetails, torusUtils, selectedServers, deleteResult -> {
+        TSSModule.deleteTSSShare(thresholdKey, TSSTag, tssShare, tssIndex, authSignatures, deleteFactorPub, nodeDetails, torusUtils, selectedServers, deleteResult -> {
             if (deleteResult instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
                 callback.onComplete(deleteResult);
             }
