@@ -257,8 +257,6 @@ public final class TSSModule {
 
         RuntimeError error = new RuntimeError();
         String result = jniTSSModuleGetTSSShare(thresholdKey, factorKey, threshold, thresholdKey.curveN, error);
-        System.out.println("result");
-        System.out.println(result);
         String[] splitString = result.split(",", 3);
 
         if (error.code != 0) {
@@ -384,16 +382,27 @@ public final class TSSModule {
     private static Result<Boolean> deleteTSSShare(ThresholdKey thresholdKey, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String deleteFactorPub, int[] selectedServers) {
         try {
             RuntimeError error = new RuntimeError();
-            JSONArray jsonArray = new JSONArray(authSignatures);
+            JSONArray jsonArray = new JSONArray();
+            for (String signature: authSignatures) {
+                jsonArray.put(signature);
+            }
             String authSignaturesString = jsonArray.toString();
+            System.out.println("deleteTSSShares code");
 
             JSONArray jsonServer = new JSONArray();
-            for (int value : selectedServers) {
-                jsonServer.put(value);
+            if(selectedServers != null) {
+                for (int value : selectedServers) {
+                    jsonServer.put(value);
+                }
             }
-            String selectedServersString = jsonServer.toString();
 
+            String selectedServersString = null;
+            if(jsonServer.length() > 0) {
+                selectedServersString = jsonServer.toString();
+            }
             jniDeleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, deleteFactorPub, selectedServersString, authSignaturesString, thresholdKey.curveN, error);
+            System.out.println("error.code");
+            System.out.println(error.code);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -407,20 +416,22 @@ public final class TSSModule {
                                       NodeDetails nodeDetails, TorusUtils torusUtils, int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         setTSSTag(thresholdKey, TSSTag);
 
-        updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, result -> {
-            if (result instanceof Result.Error) {
+        updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, result1 -> {
+            if (result1 instanceof Result.Error) {
                 throw new RuntimeException("failed to set TSS Tag");
             }
+
+            thresholdKey.executor.execute(() -> {
+                try {
+                    Result<Boolean> result = deleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, authSignatures, deleteFactorPub, selectedServers);
+                    callback.onComplete(result);
+                } catch (Exception e) {
+                    Result<Boolean> error = new Result.Error<>(e);
+                    callback.onComplete(error);
+                }
+            });
         });
-        thresholdKey.executor.execute(() -> {
-            try {
-                Result<Boolean> result = deleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, authSignatures, deleteFactorPub, selectedServers);
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
-                callback.onComplete(error);
-            }
-        });
+
     }
 
     // todo: prefetch boolean should be optional param with default param false
@@ -444,10 +455,6 @@ public final class TSSModule {
 
             jsonPubKey.put("nodeIndexes", nodeIndexArray);
             jsonPubKey.put("publicKey", pubObject);
-            System.out.println(pubObject.toString());
-
-//            jsonPubKey.put("nodeIndexes", publicAddress.nodeIndexes);
-//            jsonPubKey.put("publicKey", pubObject);
             System.out.println(jsonPubKey.toString());
             thresholdKey.executor.execute(() -> {
                 try {
@@ -506,7 +513,7 @@ public final class TSSModule {
 //        String extendedVerifierId = thresholdKey.getEx();
 //    }
 
-    public static void AddFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils) throws RuntimeError, Exception {
+    public static void AddFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         if (factorKey.length() > 64) {
             throw new RuntimeException("Invalid factor Key");
         }
@@ -515,15 +522,15 @@ public final class TSSModule {
         String tssShare = tssShareResult.second;
         int tssIndex = Integer.parseInt(tssShareResult.first);
         TSSModule.generateTSSShare(thresholdKey, TSSTag, tssShare, tssIndex, authSignatures, newFactorPub, newTssIndex, nodeDetails, torusUtils, selectedServers, generateResult -> {
-            if (generateResult instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
-                // Error handling here
-                throw new RuntimeException("Generation Failed");
+            if (generateResult instanceof Result.Error) {
+                callback.onComplete(generateResult);
             }
+            callback.onComplete(new Result.Success<>(true));
         });
     }
 
 
-    public static void DeleteFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String deleteFactorPub, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers) throws RuntimeError, Exception {
+    public static void DeleteFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String deleteFactorPub, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         if (factorKey.length() > 64) {
             throw new RuntimeException("Invalid factor Key");
         }
@@ -533,9 +540,9 @@ public final class TSSModule {
         int tssIndex = Integer.parseInt(tssShareResult.first);
         TSSModule.deleteTSSShare(thresholdKey, TSSTag, tssShare, tssIndex, authSignatures, deleteFactorPub, nodeDetails, torusUtils, selectedServers, generateResult -> {
             if (generateResult instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
-                // Error handling here
-                throw new RuntimeException("Generation Failed");
+                callback.onComplete(generateResult);
             }
+            callback.onComplete(new Result.Success<>(true));
         });
     }
 

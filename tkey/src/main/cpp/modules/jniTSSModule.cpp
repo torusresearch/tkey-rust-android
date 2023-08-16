@@ -309,14 +309,16 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniDeleteTSSShare(
                                                                         
     const char *pInputTSSShare = env->GetStringUTFChars(input_tss_share, JNI_FALSE);
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
-    const char *pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
     const char *pAuthSignatures = env->GetStringUTFChars(auth_signatures, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
     int* pInputTssIndex = &input_tss_index;
-
+    const char *pSelectedServers = nullptr;
+    if(selected_servers != nullptr) {
+        pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
+    }
     threshold_key_delete_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                    input_tss_index,
+                                    *pInputTssIndex,
                                     const_cast<char *>(pFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),
@@ -326,10 +328,11 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniDeleteTSSShare(
 
     env->ReleaseStringUTFChars(input_tss_share, pInputTSSShare);
     env->ReleaseStringUTFChars(factor_pub, pFactorPub);
-    env->ReleaseStringUTFChars(selected_servers, pSelectedServers);
     env->ReleaseStringUTFChars(auth_signatures, pAuthSignatures);
     env->ReleaseStringUTFChars(curve_n, pCurveN);
-
+    if(selected_servers != nullptr) {
+        env->ReleaseStringUTFChars(selected_servers, pSelectedServers);
+    }
     setErrorCode(env, error, errorCode);
 }
 

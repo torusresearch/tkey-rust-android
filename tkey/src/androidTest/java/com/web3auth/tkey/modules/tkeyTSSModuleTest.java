@@ -8,6 +8,7 @@ import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -29,6 +30,7 @@ import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -199,17 +201,13 @@ public class tkeyTSSModuleTest {
             for (SessionToken item : signature) {
                 if (item != null) {
                     System.out.println("signature");
-//                    System.out.println(item.getSignature().toString());
-//                    signatureArray.put(item.getSignature());
-                    signatureString.add(item.getSignature());
+                    JSONObject temp = new JSONObject();
+                    temp.put("data", item.getToken());
+                    temp.put("sig", item.getSignature());
+                    signatureString.add(temp.toString());
                     integerSet.add(item.getSignature());
                 }
             }
-//            for (String item : integerSet) {
-//                if (item != null) {
-//                    signatureString.add(item);
-//                }
-//            }
             System.out.println("signature string");
             System.out.println(signatureString.toString());
 
@@ -316,16 +314,16 @@ public class tkeyTSSModuleTest {
             System.out.println(tssShare3);
             System.out.println(tssIndex3);
             Pair<String, String> tssShareResponseUpdated = TSSModule.getTSSShare(thresholdKey, tssTag, factorKey.hex, 0);
-            String tssShareUpdated = tssShareResponse3.second;
+            String tssShareUpdated = tssShareResponseUpdated.second;
 
 
             // after refresh (generate new share), existing tss_share is not valid anymore, new tss share1 is return
-            assertEquals(tssShare, tssShareUpdated);
-            assertEquals(tssShare3, tssShareUpdated);
-            assertEquals(tssIndex3, tssIndex);
+            assertNotEquals(tssShare3, tssShareUpdated);
+            assertNotEquals(tssIndex3, tssIndex);
+            assertNotEquals(tssShare, tssShareUpdated);
 
             // Initialize on Instance 2
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, null);
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
 
             CountDownLatch lock5 = new CountDownLatch(3);
             thresholdKey2.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
@@ -351,7 +349,7 @@ public class tkeyTSSModuleTest {
             Pair<String, String> tssShareResponse2 = TSSModule.getTSSShare(thresholdKey2, tssTag, factorKey.hex, 0);
             String tssIndex2 = tssShareResponse2.first;
             String tssShare2 = tssShareResponse2.second;
-            assertEquals(tssShare, tssShare2);
+            assertNotEquals(tssShare, tssShare2);
             assertEquals(tssShareUpdated, tssShare2);
             assertEquals(tssIndex, tssIndex2);
             Pair<String, String> tssShareResponse2_3 = TSSModule.getTSSShare(thresholdKey2, tssTag, newFactorKey.hex, 0);
@@ -362,24 +360,41 @@ public class tkeyTSSModuleTest {
 
             // 2/3 -> 2/2 tss
             CountDownLatch lock6 = new CountDownLatch(1);
-            TSSModule.deleteTSSShare(thresholdKey2, tssTag, tssShare3, Integer.parseInt(tssIndex3), signatureString, newFactorPub, nodeDetail, torusUtils, null, result -> {
+            TSSModule.deleteTSSShare(thresholdKey, tssTag, tssShare3, Integer.parseInt(tssIndex3), signatureString, newFactorPub, nodeDetail, torusUtils, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not deleteTSSShare mpc tkey");
                 }
+                System.out.println("delete share error");
+                System.out.println(result);
                 lock6.countDown();
             });
             lock6.await();
-            Pair<String, String> tssShareResponseUpdated2 = TSSModule.getTSSShare(thresholdKey2, tssTag, factorKey.hex, 0);
+            Pair<String, String> tssShareResponseUpdated2 = TSSModule.getTSSShare(thresholdKey, tssTag, factorKey.hex, 0);
             String tssIndexUpdated2 = tssShareResponseUpdated2.first;
             String tssShareUpdated2 = tssShareResponseUpdated2.second;
-            assertEquals(tssShare, tssShareUpdated2);
-            assertEquals(tssShareUpdated, tssShareUpdated2);
+            assertNotEquals(tssShare, tssShareUpdated2);
+            assertNotEquals(tssShareUpdated, tssShareUpdated2);
+            assertEquals(tssIndex, tssIndexUpdated2);
 
             // 2/2 -> 2/3 tss using addFactorPub
-            TSSModule.AddFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, 3, null, nodeDetail, torusUtils);
+            CountDownLatch lock7 = new CountDownLatch(1);
+            TSSModule.AddFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, 3, null, nodeDetail, torusUtils, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not deleteTSSShare mpc tkey");
+                }
+                lock7.countDown();
+            });
+            lock7.await();
 
+            CountDownLatch lock8 = new CountDownLatch(1);
             // 2/3 -> 2/2 tss using deleteFactorPub
-            TSSModule.DeleteFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, nodeDetail, torusUtils, null);
+            TSSModule.DeleteFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, nodeDetail, torusUtils, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not deleteTSSShare mpc tkey");
+                }
+                lock8.countDown();
+            });
+            lock8.await();
         } catch (Exception | RuntimeError e) {
             throw new RuntimeException(e);
         }
@@ -390,8 +405,6 @@ public class tkeyTSSModuleTest {
         try {
             String TORUS_TEST_EMAIL = "saasa2123@tr.us";
             String TORUS_TEST_VERIFIER = "torus-test-health";
-//            String TORUS_IMPORT_EMAIL = "importeduser2@tor.us";
-//            String TORUS_EXTENDED_VERIFIER_EMAIL = "testextenderverifierid@example.com";
 
             FetchNodeDetails nodeManager = new FetchNodeDetails(TorusNetwork.SAPPHIRE_DEVNET);
 
@@ -500,8 +513,8 @@ public class tkeyTSSModuleTest {
                 Pair<String, String> tssShareResponse = TSSModule.getTSSShare(thresholdKey, tag, factorKey.hex, 0);
                 tssIndexes.add(tssShareResponse.first);
                 tssShares.add(tssShareResponse.second);
-
             }
+
             CountDownLatch lock3 = new CountDownLatch(1);
             thresholdKey.syncLocalMetadataTransitions(result -> {
                 if (result instanceof Result.Error) {
@@ -522,15 +535,23 @@ public class tkeyTSSModuleTest {
                 newFactorPubs.add(newFactorPub);
 
                 TssMod tssMod = tssMods.get(i);
-                TSSModule.AddFactorPub(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, signatureString, newFactorPub, 3, null, nodeDetail , torusUtils);
+
+                CountDownLatch lock10 = new CountDownLatch(1);
+                TSSModule.AddFactorPub(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, signatureString, newFactorPub, 3, null, nodeDetail , torusUtils, result -> {
+                    if (result instanceof Result.Error) {
+                        fail("Could not generateTSSShare mpc tkey");
+                    }
+                    lock10.countDown();
+                });
+                lock10.await();
 
                 Pair<String, String> tssShareResponse = TSSModule.getTSSShare(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, 0);
                 assertEquals(tssIndexes.get(i), tssShareResponse.first);
-                assertEquals(tssShares.get(i), tssShareResponse.second);
+                assertNotEquals(tssShares.get(i), tssShareResponse.second);
 
                 Pair<String, String> tssShareResponse2 = TSSModule.getTSSShare(thresholdKey, tssMod.getTag(), newFactorKey.hex, 0);
-                assertEquals(tssIndexes.get(i), tssShareResponse2.first);
-                assertEquals(tssShares.get(i), tssShareResponse2.second);
+                assertNotEquals(tssIndexes.get(i), tssShareResponse2.first);
+                assertNotEquals(tssShares.get(i), tssShareResponse2.second);
             }
             CountDownLatch lock4 = new CountDownLatch(1);
             thresholdKey.syncLocalMetadataTransitions(result -> {
@@ -563,11 +584,11 @@ public class tkeyTSSModuleTest {
 
                 Pair<String, String> tssShareResponse = TSSModule.getTSSShare(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, 0);
                 assertEquals(tssIndexes.get(i), tssShareResponse.first);
-                assertEquals(tssShares.get(i), tssShareResponse.second);
+                assertNotEquals(tssShares.get(i), tssShareResponse.second);
 
                 Pair<String, String> tssShareResponse1 = TSSModule.getTSSShare(thresholdKey, tssMod.getTag(), newFactorKeys.get(i).hex, 0);
-                assertEquals(tssIndexes.get(i), tssShareResponse1.first);
-                assertEquals(tssShares.get(i), tssShareResponse1.second);
+                assertNotEquals(tssIndexes.get(i), tssShareResponse1.first);
+                assertNotEquals(tssShares.get(i), tssShareResponse1.second);
 
                 Pair<String, String> tssShareResponse2 = TSSModule.getTSSShare(thresholdKey, tssMod.getTag(), newFactorKeys2.get(i).hex, 0);
                 assertEquals(tssShareResponse1.first, tssShareResponse2.first);
@@ -583,7 +604,7 @@ public class tkeyTSSModuleTest {
             lock6.await();
 
             // Initialize on Instance 2
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, null);
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
             CountDownLatch lock7 = new CountDownLatch(3);
             thresholdKey2.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
@@ -608,11 +629,11 @@ public class tkeyTSSModuleTest {
             List<TssMod> tssMods2 = new ArrayList<>();
 
             for (int i=0; i< testTags.length; i++) {
-                tssMods2.add(new TssMod(thresholdKey2, testTags[i]));
-                TSSModule.getTSSShare(thresholdKey2, testTags[i], factorKeys.get(i).hex, 0);
+                tssMods2.add(new TssMod(thresholdKey, testTags[i]));
+                TSSModule.getTSSShare(thresholdKey, testTags[i], factorKeys.get(i).hex, 0);
             }
             CountDownLatch lock8 = new CountDownLatch(1);
-            thresholdKey2.syncLocalMetadataTransitions(result -> {
+            thresholdKey.syncLocalMetadataTransitions(result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not sync local metadata transitions tkey");
                 }
@@ -627,16 +648,23 @@ public class tkeyTSSModuleTest {
                 newFactorPubs2.add(newFactorPub2);
 
                 TssMod tssMod = tssMods2.get(i);
-                TSSModule.DeleteFactorPub(thresholdKey2, tssMod.getTag(), newFactorKeys.get(i).hex, signatureString, newFactorPubs.get(i), nodeDetail , torusUtils, null);
+                CountDownLatch lock9 = new CountDownLatch(1);
+                TSSModule.DeleteFactorPub(thresholdKey, tssMod.getTag(), newFactorKeys.get(i).hex, signatureString, newFactorPubs.get(i), nodeDetail , torusUtils, null, result -> {
+                    if (result instanceof Result.Error) {
+                        fail("Could not generateTSSShare mpc tkey");
+                    }
+                    lock9.countDown();
+                });
+                lock9.await();
             }
-            CountDownLatch lock9 = new CountDownLatch(1);
-            thresholdKey2.syncLocalMetadataTransitions(result -> {
+            CountDownLatch lock10 = new CountDownLatch(1);
+            thresholdKey.syncLocalMetadataTransitions(result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not sync local metadata transitions tkey");
                 }
-                lock9.countDown();
+                lock10.countDown();
             });
-            lock9.await();
+            lock10.await();
         } catch (Exception | RuntimeError e) {
             throw new RuntimeException(e);
         }
