@@ -236,7 +236,7 @@ public class tkeyTSSModuleTest {
             CountDownLatch lock7 = new CountDownLatch(1);
             TSSModule.AddFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, 3, null, nodeDetail, torusUtils, result -> {
                 if (result instanceof Result.Error) {
-                    fail("Could not deleteTSSShare mpc tkey");
+                    fail("Could not Add Factor Pub");
                 }
                 lock7.countDown();
             });
@@ -246,11 +246,12 @@ public class tkeyTSSModuleTest {
             // 2/3 -> 2/2 tss using deleteFactorPub
             TSSModule.DeleteFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, nodeDetail, torusUtils, null, result -> {
                 if (result instanceof Result.Error) {
-                    fail("Could not deleteTSSShare mpc tkey");
+                    fail("Could not Delete Factor Pub");
                 }
                 lock8.countDown();
             });
             lock8.await();
+            System.gc();
         } catch (Exception | RuntimeError e) {
             throw new RuntimeException(e);
         }
@@ -502,6 +503,7 @@ public class tkeyTSSModuleTest {
                 lock10.countDown();
             });
             lock10.await();
+            System.gc();
         } catch (Exception | RuntimeError e) {
             throw new RuntimeException(e);
         }
