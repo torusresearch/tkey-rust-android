@@ -381,7 +381,7 @@ public class tkeyTSSModuleTest {
                 CountDownLatch lock10 = new CountDownLatch(1);
                 TSSModule.AddFactorPub(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, signatureString, newFactorPub, 3, null, nodeDetail , torusUtils, result -> {
                     if (result instanceof Result.Error) {
-                        fail("Could not generateTSSShare mpc tkey");
+                        fail("Could not AddFactorPub");
                     }
                     lock10.countDown();
                 });
@@ -489,7 +489,7 @@ public class tkeyTSSModuleTest {
                 CountDownLatch lock9 = new CountDownLatch(1);
                 TSSModule.DeleteFactorPub(thresholdKey, tssMod.getTag(), newFactorKeys.get(i).hex, signatureString, newFactorPubs.get(i), nodeDetail , torusUtils, null, result -> {
                     if (result instanceof Result.Error) {
-                        fail("Could not generateTSSShare mpc tkey");
+                        fail("Could not DeleteFactorPub");
                     }
                     lock9.countDown();
                 });
