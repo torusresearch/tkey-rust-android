@@ -28,7 +28,7 @@ public final class ThresholdKey {
 
     private native long jniThresholdKeyGetMetadata(RuntimeError error);
 
-    private native long jniThresholdKeyInitialize(@Nullable String share, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, String curveN, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, RuntimeError error);
+    private native long jniThresholdKeyInitialize(@Nullable String share, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean delete1of1, String curveN, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, RuntimeError error);
 
     private native long jniThresholdKeyReconstruct(String curveN, RuntimeError error);
 
@@ -41,6 +41,10 @@ public final class ThresholdKey {
     private native String jniThresholdKeyOutputShare(String shareIndex, @Nullable String shareType, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyOutputShareStore(String shareIndex, @Nullable String polyId, String curveN, RuntimeError error);
+    
+    private native void jniThresholdKeyInputFactorKey(String factor_key, RuntimeError error);
+    
+    private native void jniThresholdKeyAddLocalMetadataTransitions(String input_json, String private_key, String curve_n, RuntimeError error);
 
     private native long jniThresholdKeyShareToShareStore(String share, String curveN, RuntimeError error);
 
@@ -141,6 +145,7 @@ public final class ThresholdKey {
      * @param neverInitializedNewKey Do not initialize a new tKey is an existing one is found.
      * @param includeLocalMetadataTransitions Prioritize existing metadata transitions over cloud fetched transitions.
      * @param useTss If TSS is to be used or not.
+     * @param useTss If TSS is to be used or not.
      * @param device_tss_share Device share for TSS, optional.
      * @param device_tss_index Device index for TSS.
      * @param factor_pub Factor key for TSS, optional.
@@ -149,11 +154,11 @@ public final class ThresholdKey {
      * @see ThresholdKeyCallback
      * @see KeyDetails
      */
-    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
+    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean delete1of1, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
                     try {
-                        Result<KeyDetails> result = initialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, useTss, device_tss_share, device_tss_index, factor_pub);
+                        Result<KeyDetails> result = initialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, delete1of1, useTss, device_tss_share, device_tss_index, factor_pub);
                         callback.onComplete(result);
                     } catch (Exception e) {
                         Result<KeyDetails> error = new Result.Error<>(e);
@@ -176,11 +181,11 @@ public final class ThresholdKey {
      * @see ThresholdKeyCallback
      * @see KeyDetails
      */
-    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
+    public void initialize(@Nullable String importShare, @Nullable ShareStore input, boolean delete1of1, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub, final ThresholdKeyCallback<KeyDetails> callback) {
         executor.execute(
                 () -> {
                     try {
-                        Result<KeyDetails> result = initialize(importShare, input, false, false, useTss, device_tss_share, device_tss_index, factor_pub);
+                        Result<KeyDetails> result = initialize(importShare, input, false, false, delete1of1, useTss, device_tss_share, device_tss_index, factor_pub);
                         callback.onComplete(result);
                     } catch (Exception e) {
                         Result<KeyDetails> error = new Result.Error<>(e);
@@ -190,10 +195,10 @@ public final class ThresholdKey {
         );
     }
 
-    private Result<KeyDetails> initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub) {
+    private Result<KeyDetails> initialize(@Nullable String importShare, @Nullable ShareStore input, boolean neverInitializedNewKey, boolean includeLocalMetadataTransitions, boolean delete1of1, boolean useTss, @Nullable String device_tss_share, int device_tss_index, @Nullable KeyPoint factor_pub) {
         try {
             RuntimeError error = new RuntimeError();
-            long ptr = jniThresholdKeyInitialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, curveN, useTss, device_tss_share, device_tss_index, factor_pub, error);
+            long ptr = jniThresholdKeyInitialize(importShare, input, neverInitializedNewKey, includeLocalMetadataTransitions, delete1of1, curveN, useTss, device_tss_share, device_tss_index, factor_pub, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -530,6 +535,56 @@ public final class ThresholdKey {
         try {
             RuntimeError error = new RuntimeError();
             jniThresholdKeyInputShareStore(store, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void inputFactorKey(String factorKey, ThresholdKeyCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                Result<Void> result = inputFactorKey(factorKey);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Void> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
+    private Result<Void> inputFactorKey(String factorKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyInputFactorKey(factorKey, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void addLocalMetadataTransitions(String inputJson, String privateKey, String curveN, ThresholdKeyCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                Result<Void> result = addLocalMetadataTransitions(inputJson, privateKey, curveN);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Void> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
+    private Result<Void> addLocalMetadataTransitions(String inputJson, String privateKey, String curveN) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyAddLocalMetadataTransitions(inputJson, privateKey, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }

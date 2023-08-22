@@ -66,7 +66,7 @@
         struct ServiceProvider* service_provider(bool enable_logging, char* postbox_key, char* curve_n, bool use_tss, char* verifier_name, char* verifier_id, struct NodeDetails* tss_node_details, struct NodeDetails* rss_node_details,struct NodeDetails* sss_node_details, int* error_code);
         void service_provider_free(struct ServiceProvider* prt);
         struct FFIThresholdKey* threshold_key(struct Metadata* metadata, struct ShareStorePolyIDShareIndexMap* shares, struct FFIStorageLayer* storage_layer, struct ServiceProvider* service_provider, struct LocalMetadataTransitions* local_metadata_transitions, struct Metadata* last_fetch_cloud_metadata, bool enable_logging, bool manual_sync, struct FFIRssComm* rss_comm, int* error_code);
-        struct KeyDetails* threshold_key_initialize(struct FFIThresholdKey* threshold_key, char* import_share, struct ShareStore* input, bool never_initialize_new_key, bool include_local_metadata_transitions, char* curve_n, bool use_tss, char* device_share, int* device_tss_index, struct KeyPoint* factor_pub, int* error_code);
+        struct KeyDetails* threshold_key_initialize(struct FFIThresholdKey* threshold_key, char* import_share, struct ShareStore* input, bool never_initialize_new_key, bool include_local_metadata_transitions, bool delete_1_of_1, char* curve_n, bool use_tss, char* device_share, int* device_tss_index, struct KeyPoint* factor_pub, int* error_code);
         struct KeyDetails* threshold_key_get_key_details(struct FFIThresholdKey* threshold_key, int* error_code);
         struct KeyReconstructionDetails* threshold_key_reconstruct(struct FFIThresholdKey* threshold_key, char* curve_n, int* error_code);
         void threshold_key_free(struct FFIThresholdKey* ptr);
@@ -88,10 +88,12 @@
         void threshold_key_input_share(struct FFIThresholdKey* threshold_key, char* share, char* share_type, char* curve_n, int* error_code);
         struct ShareStore* threshold_key_output_share_store(struct FFIThresholdKey* threshold_key, char* share_index, char* poly_id, char* curve_n, int* error_code);
         void threshold_key_input_share_store(struct FFIThresholdKey* threshold_key, struct ShareStore* share_store, int* error_code);
+        void threshold_key_input_factor_key(struct FFIThresholdKey* threshold_key, char* factor_key, int* error_code);
         char* threshold_key_get_shares_indexes(struct FFIThresholdKey* threshold_key, int* error_code);
         char* threshold_key_encrypt(struct FFIThresholdKey* threshold_key, char* data, char* curve_n, int* error_code);
         char* threshold_key_decrypt(struct FFIThresholdKey* threshold_key, char* data, int* error_code);
         struct LocalMetadataTransitions* threshold_key_get_local_metadata_transitions(struct FFIThresholdKey* threshold_key, int* error_code);
+        void threshold_key_add_local_metadata_transitions(struct FFIThresholdKey* threshold_key, char* input_json, char* private_key, char* curve_n, int* error_code);
         struct Polynomial* threshold_key_reconstruct_latest_poly(struct FFIThresholdKey *threshold_key, char* curve_n, int* error_code);
         struct Metadata* threshold_key_get_last_fetched_cloud_metadata(struct FFIThresholdKey* threshold_key, int* error_code);
         void threshold_key_sync_local_metadata_transitions(struct FFIThresholdKey *threshold_key, char* curve_n, int* error_code);
@@ -116,6 +118,7 @@
 
         int threshold_key_get_tss_nonce(struct FFIThresholdKey* threshold_key, char* tss_tag, int* error_code );
         void threshold_key_copy_factor_pub(struct FFIThresholdKey* threshold_key, char* new_factor_pub, int new_tss_index, char* factor_pub, char* curve_n, int* error_code );
+        void threshold_key_backup_share_with_factor_key(struct FFIThresholdKey* threshold_key, char* share_index, char* factor_key, char* curve_n, int* error_code);
 
         void threshold_key_generate_tss_share(struct FFIThresholdKey* threshold_key, char* input_tss_share, int input_tss_index, int new_tss_index, char* new_factor_pub, char* selected_servers, char* auth_signatures, char* curve_n, int* error_code );
         void threshold_key_delete_tss_share(struct FFIThresholdKey* threshold_key, char* input_tss_share, int input_tss_index, char* factor_pub, char* selected_servers, char* auth_signatures, char* curve_n, int* error_code );

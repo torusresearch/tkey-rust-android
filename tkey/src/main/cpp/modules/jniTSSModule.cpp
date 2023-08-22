@@ -235,6 +235,37 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniCopyFactorPub(
 
 extern "C"
 JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniBackupShareWithFactorKey(
+        JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
+        jstring share_index,
+        jstring factor_key,
+        jstring curve_n,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    auto *pointer = reinterpret_cast<FFIThresholdKey *>(GetPointerField(env,
+                                                                        threshold_key));
+                                                                        
+    const char *pShareIndex = env->GetStringUTFChars(share_index, JNI_FALSE);
+    const char *pFactorKey = env->GetStringUTFChars(factor_key, JNI_FALSE);
+    const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
+
+    threshold_key_backup_share_with_factor_key(pointer, 
+                                    const_cast<char *>(pShareIndex),
+                                    const_cast<char *>(pFactorKey),
+                                    const_cast<char *>(pCurveN),
+                                    error_ptr);
+
+
+    env->ReleaseStringUTFChars(share_index, pShareIndex);
+    env->ReleaseStringUTFChars(factor_key, pFactorKey);
+    env->ReleaseStringUTFChars(curve_n, pCurveN);
+
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
 Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
         JNIEnv *env, __attribute__((unused)) jclass clazz, jobject threshold_key,
         jstring input_tss_share,

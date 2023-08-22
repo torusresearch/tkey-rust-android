@@ -71,6 +71,8 @@ public final class TSSModule {
 
     private static native void jniCopyFactorPub(ThresholdKey thresholdKey, String newFactorPub, int newTssIndex, String factorPub, String curveN, RuntimeError error);
     
+    private static native void jniBackupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey, String curveN, RuntimeError error);
+    
     private static native void jniGenerateTSSShare(ThresholdKey thresholdKey, String inputTssShare, int inputTssIndex, int newTssIndex, String newFactorPub,  String selectedServers, String authSignatures, String curveN, RuntimeError error);
 
     private static native void jniDeleteTSSShare(ThresholdKey thresholdKey, String inputTssShare, int inputTssIndex, String factorPub,  String selectedServers, String authSignatures, String curveN, RuntimeError error);
@@ -187,12 +189,15 @@ public final class TSSModule {
     }
 
     public static Pair<String, String> getTSSShare(ThresholdKey thresholdKey, String TSSTag, String factorKey, int threshold) throws RuntimeError {
-        if(factorKey.length() > 64) {
+        if(factorKey.length() > 66) {
             throw new RuntimeException("Invalid factor Key");
         }
-        setTSSTag(thresholdKey, TSSTag);
 
         RuntimeError error = new RuntimeError();
+        jniTSSModuleSetTSSTag(thresholdKey, TSSTag, error);
+        if (error.code != 0) {
+            throw error;
+        }
         String result = jniTSSModuleGetTSSShare(thresholdKey, factorKey, threshold, thresholdKey.curveN, error);
         String[] splitString = result.split(",", 2);
 
@@ -239,6 +244,19 @@ public final class TSSModule {
         try {
             RuntimeError error = new RuntimeError();
             jniCopyFactorPub(thresholdKey, newFactorPub, tssIndex, factorKey, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(true);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public static Result<Boolean> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniBackupShareWithFactorKey(thresholdKey, shareIndex, factorKey, thresholdKey.curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -459,7 +477,7 @@ public final class TSSModule {
     }
 
     public static void AddFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
-        if (factorKey.length() > 64) {
+        if (factorKey.length() > 66) {
             throw new RuntimeException("Invalid factor Key");
         }
         Pair<String, String> tssShareResult = getTSSShare(thresholdKey, TSSTag, factorKey, 0);
@@ -475,7 +493,7 @@ public final class TSSModule {
 
 
     public static void DeleteFactorPub(ThresholdKey thresholdKey, String TSSTag, String factorKey, ArrayList<String> authSignatures, String deleteFactorPub, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
-        if (factorKey.length() > 64) {
+        if (factorKey.length() > 66) {
             throw new RuntimeException("Invalid factor Key");
         }
         Pair<String, String> tssShareResult = getTSSShare(thresholdKey, TSSTag, factorKey, 0);

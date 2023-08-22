@@ -113,7 +113,7 @@ public class tkeyTSSModuleTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
             CountDownLatch lock = new CountDownLatch(2);
 
-            thresholdKey.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(postboxKey.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -141,15 +141,16 @@ public class tkeyTSSModuleTest {
                 lock1.countDown();
             });
             lock1.await();
+
             String firstShare = thresholdKey.outputShare(share[0].getIndex());
-
+            String firstShareIndex = share[0].getIndex();
             String tssTag = "testing";
-
-            
             PrivateKey factorKey = PrivateKey.generate();
             String factorPub = factorKey.toPublic();
 
             CountDownLatch lock2 = new CountDownLatch(1);
+
+            TSSModule.backupShareWithFactorKey(thresholdKey, firstShareIndex, factorKey.hex);
 
             TSSModule.createTaggedTSSTagShare(thresholdKey, tssTag, null, factorPub, 2, nodeDetail, torusUtils, result -> {
                 if (result instanceof Result.Error) {
@@ -202,15 +203,15 @@ public class tkeyTSSModuleTest {
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
 
             CountDownLatch lock5 = new CountDownLatch(3);
-            thresholdKey2.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey2.initialize(postboxKey.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
                 lock5.countDown();
             });
-            thresholdKey2.inputShare(firstShare, null, result -> {
+            thresholdKey2.inputFactorKey(factorKey.hex, result -> {
                 if (result instanceof Result.Error) {
-                    fail("Could not input share for tkey");
+                    fail("Could not inputFactorKey for tkey");
                 }
                 lock5.countDown();
             });
@@ -314,7 +315,7 @@ public class tkeyTSSModuleTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
             CountDownLatch lock = new CountDownLatch(2);
 
-            thresholdKey.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(postboxKey.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -464,7 +465,7 @@ public class tkeyTSSModuleTest {
             // Initialize on Instance 2
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
             CountDownLatch lock7 = new CountDownLatch(3);
-            thresholdKey2.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey2.initialize(postboxKey.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }

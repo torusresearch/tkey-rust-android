@@ -43,7 +43,7 @@ public class tkeyKeypointTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(1);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }

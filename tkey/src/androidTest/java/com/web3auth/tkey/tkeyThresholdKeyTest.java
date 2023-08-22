@@ -47,7 +47,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -83,118 +83,6 @@ public class tkeyThresholdKeyTest {
     }
 
     @Test
-    public void basic_threshold_key_method_test() {
-        try {
-            PrivateKey postboxKey = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            PrivateKey key = PrivateKey.generate();
-            CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock.countDown();
-            });
-            lock.await();
-            thresholdKey.getKeyDetails();
-            thresholdKey.getLastFetchedCloudMetadata();
-            thresholdKey.getLocalMetadataTransitions();
-            GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
-            CountDownLatch lock1 = new CountDownLatch(1);
-            thresholdKey.generateNewShare(false, null,result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not generate new share for tkey");
-                }
-                share[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
-                lock1.countDown();
-            });
-            lock1.await();
-            String output = thresholdKey.outputShare(share[0].getIndex());
-            thresholdKey.outputShareStore(share[0].getIndex(), null);
-            thresholdKey.shareToShareStore(output);
-            CountDownLatch lock2 = new CountDownLatch(2);
-            thresholdKey.deleteShare(share[0].getIndex(), false, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not delete share for tkey");
-                }
-                lock2.countDown();
-            });
-
-            GenerateShareStoreResult[] share2 = new GenerateShareStoreResult[1];
-            thresholdKey.generateNewShare(false, null,result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not generate new share for tkey");
-                }
-                share2[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
-                lock2.countDown();
-            });
-            lock2.await();
-            String input = thresholdKey.outputShare(share2[0].getIndex());
-            ShareStore inputStore = thresholdKey.outputShareStore(share2[0].getIndex(), null);
-
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            CountDownLatch lock3 = new CountDownLatch(3);
-            thresholdKey2.initialize(null, null, true, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                lock3.countDown();
-            });
-            thresholdKey2.inputShare(input, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not input share for tkey");
-                }
-                lock3.countDown();
-            });
-            thresholdKey2.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock3.countDown();
-            });
-            lock3.await();
-            ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            CountDownLatch lock4 = new CountDownLatch(4);
-            thresholdKey3.initialize(null, null, true, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                lock4.countDown();
-            });
-            thresholdKey3.inputShareStore(inputStore, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not input share store for tkey");
-                }
-                lock4.countDown();
-            });
-            thresholdKey3.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock4.countDown();
-            });
-            thresholdKey3.CRITICALDeleteTKey(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not delete tkey");
-                }
-                lock4.countDown();
-            });
-            lock4.await();
-            System.gc();
-        } catch (RuntimeError | InterruptedException | JSONException e) {
-            fail(e.toString());
-        }
-    }
-
-    @Test
     public void threshold_key_manual_sync_test() {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
@@ -203,7 +91,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(5);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -255,7 +143,7 @@ public class tkeyThresholdKeyTest {
             PrivateKey key2 = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(4);
 
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -268,7 +156,7 @@ public class tkeyThresholdKeyTest {
                 assertNotNull(pub);
                 lock.countDown();
             });
-            thresholdKey2.initialize(key2.hex, null, false, false, false, null,0,null, result -> {
+            thresholdKey2.initialize(key2.hex, null, false, false, false, false, null,0,null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -333,7 +221,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(3);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -382,6 +270,117 @@ public class tkeyThresholdKeyTest {
             lock2.await();
             System.gc();
         } catch (RuntimeError | JSONException | InterruptedException e) {
+            fail(e.toString());
+        }
+    }
+    @Test
+    public void basic_threshold_key_method_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            PrivateKey key = PrivateKey.generate();
+            CountDownLatch lock = new CountDownLatch(2);
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            lock.await();
+            thresholdKey.getKeyDetails();
+            thresholdKey.getLastFetchedCloudMetadata();
+            thresholdKey.getLocalMetadataTransitions();
+            GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
+            CountDownLatch lock1 = new CountDownLatch(1);
+            thresholdKey.generateNewShare(false, null,result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate new share for tkey");
+                }
+                share[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
+                lock1.countDown();
+            });
+            lock1.await();
+            String output = thresholdKey.outputShare(share[0].getIndex());
+            thresholdKey.outputShareStore(share[0].getIndex(), null);
+            thresholdKey.shareToShareStore(output);
+            CountDownLatch lock2 = new CountDownLatch(2);
+            thresholdKey.deleteShare(share[0].getIndex(), false, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not delete share for tkey");
+                }
+                lock2.countDown();
+            });
+
+            GenerateShareStoreResult[] share2 = new GenerateShareStoreResult[1];
+            thresholdKey.generateNewShare(false, null,result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate new share for tkey");
+                }
+                share2[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
+                lock2.countDown();
+            });
+            lock2.await();
+            String input = thresholdKey.outputShare(share2[0].getIndex());
+            ShareStore inputStore = thresholdKey.outputShareStore(share2[0].getIndex(), null);
+
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            CountDownLatch lock3 = new CountDownLatch(3);
+            thresholdKey2.initialize(null, null, true, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock3.countDown();
+            });
+            thresholdKey2.inputShare(input, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not input share for tkey");
+                }
+                lock3.countDown();
+            });
+            thresholdKey2.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock3.countDown();
+            });
+            lock3.await();
+            ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            CountDownLatch lock4 = new CountDownLatch(4);
+            thresholdKey3.initialize(null, null, true, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock4.countDown();
+            });
+            thresholdKey3.inputShareStore(inputStore, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not input share store for tkey");
+                }
+                lock4.countDown();
+            });
+            thresholdKey3.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock4.countDown();
+            });
+            thresholdKey3.CRITICALDeleteTKey(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not delete tkey");
+                }
+                lock4.countDown();
+            });
+            lock4.await();
+            System.gc();
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }

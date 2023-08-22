@@ -44,7 +44,7 @@ public class tkeyLocalMetadataTransitionsTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(4);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
