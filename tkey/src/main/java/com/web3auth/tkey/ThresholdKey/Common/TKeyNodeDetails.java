@@ -4,7 +4,6 @@ import org.json.JSONException;
 
 import com.web3auth.tkey.RuntimeError;
 class JSONConverter {
-
     public byte[] convertToData(String[] endpoints) throws JSONException {
         JSONArray jsonArray = new JSONArray(endpoints);
         String jsonString = jsonArray.toString();
@@ -14,16 +13,15 @@ class JSONConverter {
     public static void main(String[] args) {
     }
 }
-public final class NodeDetails {
+public final class TKeyNodeDetails {
     private long pointer;
-    private native long jniNodeDetails(String serverEndpoints, String serverPublicKeys, int serverThreshold, RuntimeError error);
-    private native void jniNodeDetailsFree();
+    private native long jniTKeyNodeDetails(String serverEndpoints, String serverPublicKeys, int serverThreshold, RuntimeError error);
+    private native void jniTKeyNodeDetailsFree();
 
-    public NodeDetails(String serverEndpoints, String serverPublicKeys, int serverThreshold) throws RuntimeError {
-//        JSONConverter jsonConverter = new JSONConverter();
+    public TKeyNodeDetails(String serverEndpoints, String serverPublicKeys, int serverThreshold) throws RuntimeError {
 
         RuntimeError error = new RuntimeError();
-        long ptr = jniNodeDetails(serverEndpoints, serverPublicKeys, serverThreshold, error);
+        long ptr = jniTKeyNodeDetails(serverEndpoints, serverPublicKeys, serverThreshold, error);
         if (error.code != 0) {
             throw error;
         }
@@ -33,6 +31,6 @@ public final class NodeDetails {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        jniNodeDetailsFree();
+        jniTKeyNodeDetailsFree();
     }
 }

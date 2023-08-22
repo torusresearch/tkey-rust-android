@@ -4,7 +4,7 @@
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_ThresholdKey_Common_NodeDetails_jniNodeDetailsFree(JNIEnv *env,
+Java_com_web3auth_tkey_ThresholdKey_Common_TKeyNodeDetails_jniTKeyNodeDetailsFree(JNIEnv *env,
                                                                           jobject jthis) {
     jlong pObject = GetPointerField(env, jthis);
     auto *pointer = reinterpret_cast<NodeDetails *>(pObject);
@@ -13,7 +13,7 @@ Java_com_web3auth_tkey_ThresholdKey_Common_NodeDetails_jniNodeDetailsFree(JNIEnv
 
 extern "C"
 JNIEXPORT jlong JNICALL
-Java_com_web3auth_tkey_ThresholdKey_Common_NodeDetails_jniNodeDetails(JNIEnv *env, jobject jthis,
+Java_com_web3auth_tkey_ThresholdKey_Common_TKeyNodeDetails_jniTKeyNodeDetails(JNIEnv *env, jobject jthis,
                                                                       jstring server_endpoints,
                                                                       jstring server_public_keys,
                                                                       jint server_threshold,

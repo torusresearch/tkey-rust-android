@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import com.web3auth.tkey.RuntimeError;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
-import com.web3auth.tkey.ThresholdKey.Metadata;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONObject;
@@ -48,7 +47,6 @@ class GetTSSPubKeyResult {
 }
 
 public final class TSSModule {
-    public static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
     private TSSModule() {
         //Utility class
@@ -80,8 +78,12 @@ public final class TSSModule {
 
     public static native void jniThresholdKeyServiceProviderAssignPublicKey(ThresholdKey thresholdKey, String tss_tag, String tss_nonce, String tss_public_key, RuntimeError error);
 
-    public static String getTSSPubKey(ThresholdKey thresholdKey) throws RuntimeError {
+    public static String getTSSPubKey(ThresholdKey thresholdKey, String tssTag) throws RuntimeError {
         RuntimeError error = new RuntimeError();
+        jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
+        if (error.code != 0) {
+            throw error;
+        }
         String result = jniTSSModuleGetTSSPublicKey(thresholdKey, error);
         if (error.code != 0) {
             throw error;
@@ -104,8 +106,12 @@ public final class TSSModule {
         return tssTags;
     }
 
-    public static ArrayList<String> getAllFactorPub(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
+    public static ArrayList<String> getAllFactorPub(ThresholdKey thresholdKey, String tssTag) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
+        jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
+        if (error.code != 0) {
+            throw error;
+        }
         String result = jniTSSTagFactorPub(thresholdKey, error);
         if (error.code != 0) {
             throw error;
@@ -162,7 +168,7 @@ public final class TSSModule {
         return result;
     }
 
-    public static GetTSSPubKeyResult getTssPubAddress(ThresholdKey thresholdKey, String tssTag, String nonce, NodeDetails nodeDetails, TorusUtils torusUtils) throws Exception, RuntimeError {
+    public static GetTSSPubKeyResult getDkgPubKey(ThresholdKey thresholdKey, String tssTag, String nonce, NodeDetails nodeDetails, TorusUtils torusUtils) throws Exception, RuntimeError {
         String extendedVerifierId = getExtendedVerifier(thresholdKey);
         String[] split = extendedVerifierId.split("\u001c");
         String extendedVerifierIdFormatted = split[1] + "\u0015" + tssTag + "\u0016" + nonce;
@@ -185,11 +191,10 @@ public final class TSSModule {
         if(factorKey.length() > 64) {
             throw new RuntimeException("Invalid factor Key");
         }
-        setTSSTag(thresholdKey, TSSTag);
 
         RuntimeError error = new RuntimeError();
         String result = jniTSSModuleGetTSSShare(thresholdKey, factorKey, threshold, thresholdKey.curveN, error);
-        String[] splitString = result.split(",", 3);
+        String[] splitString = result.split(",", 2);
 
         if (error.code != 0) {
             throw error;
@@ -217,17 +222,17 @@ public final class TSSModule {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to copyFactorPub");
             }
+            thresholdKey.executor.execute(() -> {
+                try {
+                    Result<Boolean> copyResult = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
+                    callback.onComplete(copyResult);
+                } catch (Exception e) {
+                    Result<Boolean> error = new Result.Error<>(e);
+                    callback.onComplete(error);
+                }
+            });
         });
 
-        thresholdKey.executor.execute(() -> {
-            try {
-                Result<Boolean> result = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
-                callback.onComplete(error);
-            }
-        });
     }
 
     private static Result<Boolean> copyFactorPub(ThresholdKey thresholdKey, String factorKey, String newFactorPub, int tssIndex) {
@@ -250,28 +255,33 @@ public final class TSSModule {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to set TSS Tag");
             }
-        });
-        updateTssPubKey(thresholdKey, tssTag, nodeDetails, torusUtils, false, result -> {
-            if (result instanceof Result.Error) {
-                throw new RuntimeException("failed to updateTssPubKey");
+            try {
+                updateTssPubKey(thresholdKey, tssTag, nodeDetails, torusUtils, false, udpateResult -> {
+                    if (udpateResult instanceof Result.Error) {
+                        throw new RuntimeException("failed to updateTssPubKey");
+                    }
+                    thresholdKey.executor.execute(() -> {
+                        try {
+                            Result<Boolean> createTagResult = createTaggedTSSTagShare(thresholdKey, deviceTssShare, factorPub, deviceTssIndex);
+                            callback.onComplete(createTagResult);
+                        } catch (Exception e) {
+                            Result<Boolean> error = new Result.Error<>(e);
+                            callback.onComplete(error);
+                        }
+                    });
+                });
+            } catch (RuntimeError | Exception e) {
+                throw new RuntimeException(e);
             }
-            thresholdKey.executor.execute(() -> {
-                try {
-                    Result<Boolean> result2 = createTaggedTSSTagShare(thresholdKey, deviceTssShare, factorPub, deviceTssIndex);
-                    callback.onComplete(result2);
-                } catch (Exception e) {
-                    Result<Boolean> error = new Result.Error<>(e);
-                    callback.onComplete(error);
-                }
-            });
         });
+
 
     }
 
     private static Result<Boolean> createTaggedTSSTagShare(ThresholdKey thresholdKey, @Nullable String deviceTssShare, String factorPub, int deviceTssIndex) {
         try {
             RuntimeError error = new RuntimeError();
-            jniTSSModuleCreateTaggedTSSShare(thresholdKey, deviceTssShare, factorPub, deviceTssIndex, curveN, error);
+            jniTSSModuleCreateTaggedTSSShare(thresholdKey, deviceTssShare, factorPub, deviceTssIndex, thresholdKey.curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -286,21 +296,26 @@ public final class TSSModule {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to set TSS Tag");
             }
-        });
-        updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, result -> {
-            if (result instanceof Result.Error) {
-                throw new RuntimeException("failed to updateTssPubKey");
+            try {
+                updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, updateResult -> {
+                    if (updateResult instanceof Result.Error) {
+                        throw new RuntimeException("failed to updateTssPubKey");
+                    }
+                    thresholdKey.executor.execute(() -> {
+                        try {
+                            Result<Boolean> generateShareResult = generateTSSShare(thresholdKey, inputTssShare, inputTssIndex, newTssIndex, newFactorPub, selectedServers, authSignatures);
+                            callback.onComplete(generateShareResult);
+                        } catch (Exception e) {
+                            Result<Boolean> error = new Result.Error<>(e);
+                            callback.onComplete(error);
+                        }
+                    });
+                });
+            }catch (RuntimeError | Exception e) {
+                throw new RuntimeException(e);
             }
-            thresholdKey.executor.execute(() -> {
-                try {
-                    Result<Boolean> result2 = generateTSSShare(thresholdKey, inputTssShare, inputTssIndex, newTssIndex, newFactorPub, selectedServers, authSignatures);
-                    callback.onComplete(result2);
-                } catch (Exception e) {
-                    Result<Boolean> error = new Result.Error<>(e);
-                    callback.onComplete(error);
-                }
-            });
         });
+
     }
 
     private static Result<Boolean> generateTSSShare(ThresholdKey thresholdKey, String inputTssShare, int inputTssIndex, int newTssIndex, String newFactorPub, int[] selectedServers, ArrayList<String> authSignatures) {
@@ -323,7 +338,7 @@ public final class TSSModule {
             if(jsonServer.length() > 0) {
                 selectedServersString = jsonServer.toString();
             }
-            jniGenerateTSSShare(thresholdKey, inputTssShare, inputTssIndex, newTssIndex, newFactorPub, selectedServersString, authSignaturesString, curveN, error);
+            jniGenerateTSSShare(thresholdKey, inputTssShare, inputTssIndex, newTssIndex, newFactorPub, selectedServersString, authSignaturesString, thresholdKey.curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -366,43 +381,42 @@ public final class TSSModule {
 
     public static void deleteTSSShare(ThresholdKey thresholdKey, String TSSTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String deleteFactorPub,
                                       NodeDetails nodeDetails, TorusUtils torusUtils, int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
-        setTSSTag(thresholdKey, TSSTag, result -> {
-            if (result instanceof Result.Error) {
+        setTSSTag(thresholdKey, TSSTag, setTagResult -> {
+            if (setTagResult instanceof Result.Error) {
                 throw new RuntimeException("failed to set TSS Tag");
             }
-        });
+            try {
+                updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, result1 -> {
+                    if (result1 instanceof Result.Error) {
+                        throw new RuntimeException("failed to updateTssPubKey");
+                    }
 
-        updateTssPubKey(thresholdKey, TSSTag, nodeDetails, torusUtils, true, result1 -> {
-            if (result1 instanceof Result.Error) {
-                throw new RuntimeException("failed to updateTssPubKey");
+                    thresholdKey.executor.execute(() -> {
+                        try {
+                            Result<Boolean> result = deleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, authSignatures, deleteFactorPub, selectedServers);
+                            callback.onComplete(result);
+                        } catch (Exception e) {
+                            Result<Boolean> error = new Result.Error<>(e);
+                            callback.onComplete(error);
+                        }
+                    });
+                });
+            } catch (RuntimeError | Exception e) {
+                throw new RuntimeException(e);
             }
-
-            thresholdKey.executor.execute(() -> {
-                try {
-                    Result<Boolean> result = deleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, authSignatures, deleteFactorPub, selectedServers);
-                    callback.onComplete(result);
-                } catch (Exception e) {
-                    Result<Boolean> error = new Result.Error<>(e);
-                    callback.onComplete(error);
-                }
-            });
         });
+
+
 
     }
 
     public static void updateTssPubKey(ThresholdKey thresholdKey, String tssTag, NodeDetails nodeDetails,
                                        TorusUtils torusUtils, Boolean prefetch, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
-        
-        setTSSTag(thresholdKey, tssTag, result -> {
-            if (result instanceof Result.Error) {
-                throw new RuntimeException("failed to set TSS Tag");
-            }
-        });
-                                
+
         RuntimeError error = new RuntimeError();
         int nonce = getTSSNonce(thresholdKey, tssTag, prefetch);
 
-        GetTSSPubKeyResult publicAddress = getTssPubAddress(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
+        GetTSSPubKeyResult publicAddress = getDkgPubKey(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
         JSONObject pubObject = new JSONObject();
         pubObject.put("x", publicAddress.publicKey.x);
         pubObject.put("y", publicAddress.publicKey.y);
@@ -414,14 +428,20 @@ public final class TSSModule {
 
         jsonPubKey.put("nodeIndexes", nodeIndexArray);
         jsonPubKey.put("publicKey", pubObject);
-        thresholdKey.executor.execute(() -> {
-            try {
-                Result<Boolean> result = updateTssPubKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey.toString());
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Result<Boolean> error2 = new Result.Error<>((Exception) e);
-                callback.onComplete(error2);
+
+        setTSSTag(thresholdKey, tssTag, result -> {
+            if (result instanceof Result.Error) {
+                throw new RuntimeException("failed to set TSS Tag");
             }
+            thresholdKey.executor.execute(() -> {
+                try {
+                    Result<Boolean> updateResult = updateTssPubKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey.toString());
+                    callback.onComplete(updateResult);
+                } catch (Exception e) {
+                    Result<Boolean> error2 = new Result.Error<>((Exception) e);
+                    callback.onComplete(error2);
+                }
+            });
         });
     }
 

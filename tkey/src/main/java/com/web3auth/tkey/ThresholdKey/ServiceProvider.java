@@ -8,17 +8,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.torusresearch.fetchnodedetails.types.TorusNodePub;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
+import com.web3auth.tkey.ThresholdKey.Common.TKeyNodeDetails;
 
 public final class ServiceProvider {
     private native void jniServiceProviderFree();
-    private native long jniServiceProvider(boolean enableLogging, String postboxKey, String curveN, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable com.web3auth.tkey.ThresholdKey.Common.NodeDetails sss, @Nullable com.web3auth.tkey.ThresholdKey.Common.NodeDetails tss, @Nullable com.web3auth.tkey.ThresholdKey.Common.NodeDetails rss, RuntimeError error);
+    private native long jniServiceProvider(boolean enableLogging, String postboxKey, String curveN, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable TKeyNodeDetails sss, @Nullable TKeyNodeDetails tss, @Nullable TKeyNodeDetails rss, RuntimeError error);
 
     final static String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
 
-    static String verifier;
-    static String verifierId;
-    static NodeDetails nodeDetails;
-    static Boolean useTss;
     final long pointer;
 
     /**
@@ -33,9 +30,9 @@ public final class ServiceProvider {
      */
     public ServiceProvider(boolean enableLogging, String postboxKey, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable NodeDetails nodeDetails) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
-        com.web3auth.tkey.ThresholdKey.Common.NodeDetails sss = null;
-        com.web3auth.tkey.ThresholdKey.Common.NodeDetails rss = null;
-        com.web3auth.tkey.ThresholdKey.Common.NodeDetails tss = null;
+        TKeyNodeDetails sss = null;
+        TKeyNodeDetails rss = null;
+        TKeyNodeDetails tss = null;
 
         if(nodeDetails != null) {
             String[] sssEndpoints = nodeDetails.getTorusNodeSSSEndpoints();
@@ -51,18 +48,14 @@ public final class ServiceProvider {
                 jsonObject.put("y", data.getY());
                 jsonArray.put(jsonObject);
               }
-              sss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(sssEndpoints).toString(), jsonArray.toString(), 3);
-              rss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(rssEndpoints).toString(), jsonArray.toString(), 3);
-              tss = new com.web3auth.tkey.ThresholdKey.Common.NodeDetails(new JSONArray(tssEndpoints).toString(), jsonArray.toString(), 3);
+              sss = new TKeyNodeDetails(new JSONArray(sssEndpoints).toString(), jsonArray.toString(), 3);
+              rss = new TKeyNodeDetails(new JSONArray(rssEndpoints).toString(), jsonArray.toString(), 3);
+              tss = new TKeyNodeDetails(new JSONArray(tssEndpoints).toString(), jsonArray.toString(), 3);
         }
         long ptr = jniServiceProvider(enableLogging, postboxKey, curveN, useTss, verifierName, verifierId, sss, tss, rss, error);
         if (error.code != 0) {
             throw error;
         }
-        ServiceProvider.nodeDetails = nodeDetails;
-        ServiceProvider.verifier = verifierName;
-        ServiceProvider.verifierId = verifierId;
-        ServiceProvider.useTss = useTss;
         pointer = ptr;
     }
 

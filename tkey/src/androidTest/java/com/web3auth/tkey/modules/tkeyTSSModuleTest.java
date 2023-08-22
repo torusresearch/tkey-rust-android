@@ -9,15 +9,19 @@ import android.util.Pair;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.web3auth.tkey.RuntimeError;
+import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
+import com.web3auth.tkey.ThresholdKey.Common.ServerOptions;
 import com.web3auth.tkey.ThresholdKey.GenerateShareStoreResult;
 import com.web3auth.tkey.ThresholdKey.Modules.TSSModule;
 import com.web3auth.tkey.ThresholdKey.RssComm;
 import com.web3auth.tkey.ThresholdKey.ServiceProvider;
+import com.web3auth.tkey.ThresholdKey.ShareStoreArray;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,17 +30,37 @@ import org.junit.runner.RunWith;
 import org.torusresearch.fetchnodedetails.FetchNodeDetails;
 import org.torusresearch.fetchnodedetails.types.NodeDetails;
 import org.torusresearch.fetchnodedetails.types.TorusNetwork;
+import org.torusresearch.fetchnodedetails.types.TorusNodePub;
 import org.torusresearch.torusutils.TorusUtils;
 import org.torusresearch.torusutils.types.RetrieveSharesResponse;
 import org.torusresearch.torusutils.types.SessionToken;
 import org.torusresearch.torusutils.types.TorusCtorOptions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
+final class TSSMod {
+    private final ThresholdKey thresholdKey;
+    private final String tag;
+
+    public TSSMod(ThresholdKey thresholdKey, String tag) {
+        this.thresholdKey = thresholdKey;
+        this.tag = tag;
+    }
+
+    public ThresholdKey getThresholdKey() {
+        return thresholdKey;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+}
 
 @RunWith(AndroidJUnit4.class)
 public class tkeyTSSModuleTest {
@@ -51,6 +75,211 @@ public class tkeyTSSModuleTest {
     @AfterClass
     public static void cleanTest() {
         System.gc();
+    }
+    public static List<Integer> randomSelection(List<String> serverEndpoints) {
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < serverEndpoints.size(); i++) {
+            indices.add(i + 1);
+        }
+
+        int selectionCount = (int) Math.ceil(serverEndpoints.size() / 2.0);
+        List<Integer> selectedIndices = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 0; i < selectionCount; i++) {
+            int randomIndex = random.nextInt(indices.size());
+            selectedIndices.add(indices.get(randomIndex));
+            indices.remove(randomIndex);
+        }
+
+        return selectedIndices;
+    }
+    @Test
+    public void testImportKey() {
+        try {
+
+            String TORUS_TEST_EMAIL = "saasa2123@tr.us";
+            String TORUS_TEST_VERIFIER = "torus-test-health";
+
+            FetchNodeDetails nodeManager = new FetchNodeDetails(TorusNetwork.SAPPHIRE_DEVNET);
+
+            CompletableFuture<NodeDetails> nodeDetailResult = nodeManager.getNodeDetails(TORUS_TEST_VERIFIER, TORUS_TEST_EMAIL);
+            NodeDetails nodeDetail = nodeDetailResult.get();
+
+            TorusCtorOptions torusOptions = new TorusCtorOptions("Custom");
+            torusOptions.setNetwork(TorusNetwork.SAPPHIRE_DEVNET.toString());
+            torusOptions.setClientId("BG4pe3aBso5SjVbpotFQGnXVHgxhgOxnqnNBKyjfEJ3izFvIVWUaMIzoCrAfYag8O6t6a6AOvdLcS4JR2sQMjR4");
+            TorusUtils torusUtils = new TorusUtils(torusOptions);
+
+            String idToken = JwtUtils.generateIdToken(TORUS_TEST_EMAIL);
+
+            RetrieveSharesResponse retrievedShare = torusUtils.retrieveShares(nodeDetail.getTorusNodeEndpoints(), nodeDetail.getTorusIndexes(), TORUS_TEST_VERIFIER, new HashMap<String, Object>() {{
+                put("verifier_id", TORUS_TEST_EMAIL);
+            }} , idToken).get();
+
+            ArrayList<String> signatureString = new ArrayList<>();
+            List<SessionToken> signature = retrievedShare.getSessionData().getSessionTokenData();
+
+            for (SessionToken item : signature) {
+                if (item != null) {
+                    JSONObject temp = new JSONObject();
+                    temp.put("data", item.getToken());
+                    temp.put("sig", item.getSignature());
+                    signatureString.add(temp.toString());
+                }
+            }
+
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(true, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(true, postboxKey.hex,true, TORUS_TEST_VERIFIER, TORUS_TEST_EMAIL,nodeDetail);
+            RssComm rss_comm = new RssComm();
+
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
+            CountDownLatch lock = new CountDownLatch(2);
+
+            thresholdKey.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            lock.await();
+            thresholdKey.getKeyDetails();
+            thresholdKey.getLastFetchedCloudMetadata();
+            thresholdKey.getLocalMetadataTransitions();
+
+            PrivateKey factorKey = PrivateKey.generate();
+            String factorPub = factorKey.toPublic();
+            String tssTag = "testing";
+
+            CountDownLatch lock2 = new CountDownLatch(1);
+            TSSModule.createTaggedTSSTagShare(thresholdKey, tssTag, PrivateKey.generate().hex, factorPub, 2, nodeDetail, torusUtils, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not create tagged tss shares for tkey");
+                }
+                lock2.countDown();
+            });
+            lock2.await();
+
+            Pair<String, String> tssShareResponse = TSSModule.getTSSShare(thresholdKey, tssTag, factorKey.hex, 0);
+            String tssIndex = tssShareResponse.first;
+            String tssShare = tssShareResponse.second;
+            System.out.println("tssShare");
+            System.out.println(tssShare);
+            CountDownLatch lock3 = new CountDownLatch(1);
+            thresholdKey.syncLocalMetadataTransitions(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not sync local metadata transitions tkey");
+                }
+                lock3.countDown();
+            });
+            lock3.await();
+
+            CountDownLatch lock4 = new CountDownLatch(1);
+            TSSModule.updateTssPubKey(thresholdKey, "imported", nodeDetail, torusUtils, false, result -> {
+                if (result instanceof Result.Error) {
+                    throw new RuntimeException("failed to updateTssPubKey");
+                }
+                lock4.countDown();
+            });
+            lock4.await();
+            ShareStoreArray shareStoreArray = thresholdKey.getAllAllShareStoresForLatestPolynomial();
+
+            String latestShare = "";
+            for(int i=0; i< shareStoreArray.length(); i++) {
+                if(shareStoreArray.getAt(i).shareIndex() != "1")
+                    latestShare = shareStoreArray.getAt(i).share();
+            }
+            System.out.println("thresholdKey.getKeyDetails().getThreshold 2()");
+            System.out.println(thresholdKey.getKeyDetails().getThreshold());
+            System.out.println(thresholdKey.getKeyDetails().getRequiredShares());
+            System.out.println(thresholdKey.getKeyDetails().getTotalShares());
+
+
+            String[] rssEndpoints = nodeDetail.getTorusNodeRSSEndpoints();
+            TorusNodePub[] pub = nodeDetail.getTorusNodePub();
+            JSONArray jsonArray = new JSONArray();
+            for (TorusNodePub data : pub) {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("x", data.getX());
+                jsonObject.put("y", data.getY());
+                jsonArray.put(jsonObject);
+            }
+            List<Integer> integers = randomSelection(Arrays.asList(rssEndpoints));
+            ServerOptions serverOptions =new ServerOptions(rssEndpoints, jsonArray.toString(), 3, signatureString, integers);
+            KeyPoint factorPubPoint = new KeyPoint(factorKey.toPublic());
+
+            CountDownLatch lock5 = new CountDownLatch(2);
+            String importedKey = PrivateKey.generate().hex;
+            thresholdKey.importKey(true, "imported", importedKey, factorPubPoint, 2, serverOptions, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not importKey mpc tkey");
+                }
+                lock5.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock5.countDown();
+            });
+            lock5.await();
+            System.out.println("thresholdKey.getKeyDetails()");
+            System.out.println(thresholdKey.getKeyDetails().getTotalShares());
+
+
+            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
+            CountDownLatch lock6 = new CountDownLatch(3);
+            thresholdKey2.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock6.countDown();
+            });
+            thresholdKey2.inputShare(latestShare, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not input share for tkey");
+                }
+                lock6.countDown();
+            });
+            thresholdKey2.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock6.countDown();
+            });
+            lock6.await();
+            CountDownLatch lock7 = new CountDownLatch(1);
+            TSSModule.setTSSTag(thresholdKey, "imported", result -> {
+                if (result instanceof Result.Error) {
+                    throw new RuntimeException("failed to updateTssPubKey");
+                }
+                lock7.countDown();
+            });
+            lock7.await();
+            Pair<String, String> tssShareResponse_2 = TSSModule.getTSSShare(thresholdKey2, "imported", factorKey.hex, 0);
+            String tssIndex_2 = tssShareResponse_2.first;
+            String tssShare_2 = tssShareResponse.second;
+
+            System.out.println(factorKey.hex);
+            System.out.println("indexes");
+            System.out.println(importedKey);
+            System.out.println(tssIndex);
+            System.out.println(tssShare);
+            System.out.println(tssIndex_2);
+            System.out.println(tssShare_2);
+            System.out.println(postboxKey.hex);
+            assertEquals(tssShare, tssShare_2);
+            System.gc();
+        } catch (Exception | RuntimeError e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
@@ -95,7 +324,7 @@ public class tkeyTSSModuleTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
             CountDownLatch lock = new CountDownLatch(2);
 
-            thresholdKey.initialize(postboxKey.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(null, null, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }

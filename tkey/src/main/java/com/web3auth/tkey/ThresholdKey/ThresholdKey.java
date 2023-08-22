@@ -859,7 +859,6 @@ public final class ThresholdKey {
         return new Polynomial(ptr);
     }
 
-
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
