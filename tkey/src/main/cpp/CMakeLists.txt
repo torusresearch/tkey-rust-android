@@ -31,7 +31,6 @@ add_library(
         common/jniKeyPoint.cpp
         jniServiceProvider.cpp
         common/jniShareStore.cpp
-        common/jniServerOptions.cpp
         jniShareStoreMap.cpp
         jniShareTransferStore.cpp
         jniStorageLayer.cpp

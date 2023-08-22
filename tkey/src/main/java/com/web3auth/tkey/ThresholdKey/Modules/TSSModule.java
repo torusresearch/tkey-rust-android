@@ -47,7 +47,6 @@ class GetTSSPubKeyResult {
 }
 
 public final class TSSModule {
-
     private TSSModule() {
         //Utility class
     }
@@ -191,6 +190,7 @@ public final class TSSModule {
         if(factorKey.length() > 64) {
             throw new RuntimeException("Invalid factor Key");
         }
+        setTSSTag(thresholdKey, TSSTag);
 
         RuntimeError error = new RuntimeError();
         String result = jniTSSModuleGetTSSShare(thresholdKey, factorKey, threshold, thresholdKey.curveN, error);
@@ -222,17 +222,17 @@ public final class TSSModule {
             if (result instanceof Result.Error) {
                 throw new RuntimeException("failed to copyFactorPub");
             }
-            thresholdKey.executor.execute(() -> {
-                try {
-                    Result<Boolean> copyResult = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
-                    callback.onComplete(copyResult);
-                } catch (Exception e) {
-                    Result<Boolean> error = new Result.Error<>(e);
-                    callback.onComplete(error);
-                }
-            });
         });
 
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<Boolean> result = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
     }
 
     private static Result<Boolean> copyFactorPub(ThresholdKey thresholdKey, String factorKey, String newFactorPub, int tssIndex) {
