@@ -223,21 +223,21 @@ public final class TSSModule {
         if (factorKey.length() > 66) {
             throw new RuntimeException("Invalid factor Key");
         }
-        setTSSTag(thresholdKey, TSSTag, result -> {
-            if (result instanceof Result.Error) {
+        setTSSTag(thresholdKey, TSSTag, setTagResult -> {
+            if (setTagResult instanceof Result.Error) {
                 throw new RuntimeException("failed to copyFactorPub");
             }
+            thresholdKey.executor.execute(() -> {
+                try {
+                    Result<Boolean> result = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
+                    callback.onComplete(result);
+                } catch (Exception e) {
+                    Result<Boolean> error = new Result.Error<>(e);
+                    callback.onComplete(error);
+                }
+            });
         });
 
-        thresholdKey.executor.execute(() -> {
-            try {
-                Result<Boolean> result = copyFactorPub(thresholdKey, factorKey, newFactorPub, TSSIndex);
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
-                callback.onComplete(error);
-            }
-        });
     }
 
     private static Result<Boolean> copyFactorPub(ThresholdKey thresholdKey, String factorKey, String newFactorPub, int tssIndex) {
