@@ -1,5 +1,7 @@
 package com.web3auth.tkey.ThresholdKey.Common;
 
+import androidx.annotation.Nullable;
+
 import com.web3auth.tkey.RuntimeError;
 
 public final class PrivateKey {
@@ -33,13 +35,13 @@ public final class PrivateKey {
         return new PrivateKey(result);
     }
 
-    public String toPublic() throws RuntimeError {
-
+    public String toPublic(@Nullable KeyPoint.PublicKeyEncoding encoding) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniPrivateToPublic(this.hex, error);
         if (error.code != 0) {
             throw error;
         }
-        return result;
+        String publicKey = new KeyPoint(result).getPublicKey(encoding);
+        return publicKey;
     }
 }

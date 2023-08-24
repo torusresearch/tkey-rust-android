@@ -23,7 +23,6 @@ public final class ThresholdKey {
     public final Executor executor;
     final long pointer;
     public String curveN = "fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141";
-    public Boolean useTss;
     private native long jniThresholdKey(@Nullable Metadata metadata, @Nullable ShareStorePolyIdIndexMap shares, StorageLayer storageLayer, @Nullable ServiceProvider serviceProvider, @Nullable LocalMetadataTransitions localTransitions, @Nullable Metadata lastFetchedCloudMetadata, boolean enableLogging, boolean manualSync, @Nullable RssComm rss, RuntimeError error);
 
     private native long jniThresholdKeyGetMetadata(RuntimeError error);
@@ -44,7 +43,7 @@ public final class ThresholdKey {
     
     private native void jniThresholdKeyInputFactorKey(String factor_key, RuntimeError error);
     
-    private native void jniThresholdKeyAddLocalMetadataTransitions(String input_json, String private_key, String curve_n, RuntimeError error);
+    private native void jniThresholdKeyAddLocalMetadataTransition(String input_json, String private_key, String curve_n, RuntimeError error);
 
     private native long jniThresholdKeyShareToShareStore(String share, String curveN, RuntimeError error);
 
@@ -112,9 +111,6 @@ public final class ThresholdKey {
         RuntimeError error = new RuntimeError();
         this.executor = Executors.newSingleThreadExecutor();
 
-        if(rss!=null) {
-            useTss = true;
-        }
         long ptr = jniThresholdKey(metadata, shares, storage, provider, transitions, lastFetchedCloudMetadata, enableLogging, manualSync, rss, error);
         if (error.code != 0) {
             throw error;
@@ -569,10 +565,10 @@ public final class ThresholdKey {
         }
     }
 
-    public void addLocalMetadataTransitions(String inputJson, String privateKey, String curveN, ThresholdKeyCallback<Void> callback) {
+    public void addLocalMetadataTransition(String inputJson, String privateKey, String curveN, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = addLocalMetadataTransitions(inputJson, privateKey, curveN);
+                Result<Void> result = addLocalMetadataTransition(inputJson, privateKey, curveN);
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
@@ -581,10 +577,10 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> addLocalMetadataTransitions(String inputJson, String privateKey, String curveN) {
+    private Result<Void> addLocalMetadataTransition(String inputJson, String privateKey, String curveN) {
         try {
             RuntimeError error = new RuntimeError();
-            jniThresholdKeyAddLocalMetadataTransitions(inputJson, privateKey, curveN, error);
+            jniThresholdKeyAddLocalMetadataTransition(inputJson, privateKey, curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }

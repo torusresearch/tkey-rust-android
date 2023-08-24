@@ -84,9 +84,18 @@ public class tkeyKeypointTest {
     }
 
     @Test
-    public void get_as_public_key() {
+    public void get_as_compressed_public_key() {
         try {
-            assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(), 0);
+            assertNotEquals(details.getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress).length(), 0);
+        } catch (RuntimeError e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void get_as_uncompressed_public_key() {
+        try {
+            assertNotEquals(details.getPublicKey(KeyPoint.PublicKeyEncoding.FullAddress).length(), 0);
         } catch (RuntimeError e) {
             fail(e.toString());
         }

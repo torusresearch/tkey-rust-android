@@ -131,7 +131,6 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleCreateTaggedTS
     }
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pTssIndex = &device_tss_index; // int can go straight through due to it being a simple type, only error_ptr is a pointer to an int (int *) since it functions as an inout parameter
 
     threshold_key_create_tagged_tss_share(pointer,
                                                           const_cast<char *>(pDeviceTSSShare),
@@ -164,7 +163,6 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniTSSModuleGetTSSShare(
                                                                         threshold_key));
     const char *pFactorKey = env->GetStringUTFChars(factor_key, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pThreshold = &threshold;
 
     char *pResult = threshold_key_get_tss_share(pointer, const_cast<char *>(pFactorKey), threshold, const_cast<char *>(pCurveN), error_ptr);
     
@@ -216,7 +214,6 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniCopyFactorPub(
     const char *pNewFactorPub = env->GetStringUTFChars(new_factor_pub, JNI_FALSE);
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pNewTssIndex = &new_tss_index;
 
     threshold_key_copy_factor_pub(pointer, 
                                     const_cast<char *>(pNewFactorPub),
@@ -289,13 +286,11 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGenerateTSSShare(
     }
     const char *pAuthSignatures = env->GetStringUTFChars(auth_signatures, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pInputTssIndex = &input_tss_index;
-    int* pNewTssIndex = &new_tss_index;
 
     threshold_key_generate_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                     *pInputTssIndex,
-                                     *pNewTssIndex,
+                                     input_tss_index,
+                                     new_tss_index,
                                     const_cast<char *>(pNewFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),
@@ -333,14 +328,13 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniDeleteTSSShare(
     const char *pFactorPub = env->GetStringUTFChars(factor_pub, JNI_FALSE);
     const char *pAuthSignatures = env->GetStringUTFChars(auth_signatures, JNI_FALSE);
     const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
-    int* pInputTssIndex = &input_tss_index;
     const char *pSelectedServers = nullptr;
     if(selected_servers != nullptr) {
         pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
     }
     threshold_key_delete_tss_share(pointer, 
                                     const_cast<char *>(pInputTSSShare),
-                                    *pInputTssIndex,
+                                    input_tss_index,
                                     const_cast<char *>(pFactorPub),
                                     const_cast<char *>(pSelectedServers),
                                     const_cast<char *>(pAuthSignatures),

@@ -165,7 +165,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInputFactorKey(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyAddLocalMetadataTransitions(
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyAddLocalMetadataTransition(
         JNIEnv *env, jobject jthis, jstring input_json,
         jstring private_key, jstring curve_n,
         jthrowable error) {

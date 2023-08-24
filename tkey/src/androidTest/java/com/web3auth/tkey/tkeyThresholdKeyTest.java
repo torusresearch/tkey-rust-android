@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
@@ -18,6 +19,8 @@ import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,6 +41,13 @@ public class tkeyThresholdKeyTest {
         System.loadLibrary("tkey-native");
     }
 
+    @BeforeClass
+    public static void setupTest() {
+    }
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
+    }
     @Test
     public void basic_threshold_key_reconstruct() {
         try {
@@ -54,7 +64,7 @@ public class tkeyThresholdKeyTest {
                 KeyDetails details = ((Result.Success<KeyDetails>) result).data;
                 String compressed = null;
                 try {
-                    compressed = details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
+                    compressed = details.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
                 } catch (RuntimeError e) {
                     fail(e.toString());
                 }
@@ -76,9 +86,8 @@ public class tkeyThresholdKeyTest {
                 lock.countDown();
             });
             lock.await();
-            System.gc();
         } catch (RuntimeError | InterruptedException | JSONException e) {
-            fail(e.toString());
+            throw new RuntimeException(e);
         }
     }
 
@@ -122,95 +131,93 @@ public class tkeyThresholdKeyTest {
                 lock.countDown();
             });
             lock.await();
-            System.gc();
         } catch (RuntimeError | InterruptedException | JSONException e) {
-            fail();
+            throw new RuntimeException(e);
         }
     }
 
-    @Test
-    public void threshold_key_multi_instance() {
-        try {
-            PrivateKey postboxKey = PrivateKey.generate();
-            PrivateKey postboxKey2 = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
-            StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
-            PrivateKey key = PrivateKey.generate();
-            PrivateKey key2 = PrivateKey.generate();
-            CountDownLatch lock = new CountDownLatch(4);
+   @Test
+   public void threshold_key_multi_instance() {
+       try {
+           PrivateKey postboxKey = PrivateKey.generate();
+           PrivateKey postboxKey2 = PrivateKey.generate();
+           StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+           ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
+           StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
+           ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null);
+           ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+           ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
+           PrivateKey key = PrivateKey.generate();
+           PrivateKey key2 = PrivateKey.generate();
+           CountDownLatch lock = new CountDownLatch(4);
 
-            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                lock.countDown();
-            });
-            thresholdKey2.initialize(key2.hex, null, false, false, false, false, null,0,null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                lock.countDown();
-            });
-            AtomicReference<String> reconstruct_key_1 = new AtomicReference<>("");
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                reconstruct_key_1.set(pub);
-                lock.countDown();
-            });
-            AtomicReference<String> reconstruct_key_2 = new AtomicReference<>("");
-            thresholdKey2.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                reconstruct_key_2.set(pub);
-                lock.countDown();
-            });
-            lock.await();
-            assertNotEquals(reconstruct_key_1.get().length(), 0);
-            assertNotEquals(reconstruct_key_2.get().length(), 0);
-            assertNotEquals(reconstruct_key_1.get(), reconstruct_key_2.get());
+           thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not initialize tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               lock.countDown();
+           });
+           thresholdKey2.initialize(key2.hex, null, false, false, false, false, null,0,null, result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not initialize tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               lock.countDown();
+           });
+           AtomicReference<String> reconstruct_key_1 = new AtomicReference<>("");
+           thresholdKey.reconstruct(result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not reconstruct tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               reconstruct_key_1.set(pub);
+               lock.countDown();
+           });
+           AtomicReference<String> reconstruct_key_2 = new AtomicReference<>("");
+           thresholdKey2.reconstruct(result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not reconstruct tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               reconstruct_key_2.set(pub);
+               lock.countDown();
+           });
+           lock.await();
+           assertNotEquals(reconstruct_key_1.get().length(), 0);
+           assertNotEquals(reconstruct_key_2.get().length(), 0);
+           assertNotEquals(reconstruct_key_1.get(), reconstruct_key_2.get());
 
-            //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
-            // however they are not guaranteed by Java to be called on demand.
-            System.gc();
-        } catch (RuntimeError | InterruptedException | JSONException e) {
-            fail();
-        }
-    }
+           //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
+           // however they are not guaranteed by Java to be called on demand.
+       } catch (RuntimeError | InterruptedException | JSONException e) {
+           throw new RuntimeException(e);
+       }
+   }
 
     @Test
     public void share_descriptions_test() {
@@ -268,9 +275,8 @@ public class tkeyThresholdKeyTest {
                 lock2.countDown();
             });
             lock2.await();
-            System.gc();
         } catch (RuntimeError | JSONException | InterruptedException e) {
-            fail(e.toString());
+            throw new RuntimeException(e);
         }
     }
     @Test
@@ -379,9 +385,8 @@ public class tkeyThresholdKeyTest {
                 lock4.countDown();
             });
             lock4.await();
-            System.gc();
         } catch (RuntimeError | InterruptedException | JSONException e) {
-            fail(e.toString());
+            throw new RuntimeException(e);
         }
     }
 }
