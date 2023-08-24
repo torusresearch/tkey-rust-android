@@ -141,7 +141,6 @@ public final class ThresholdKey {
      * @param neverInitializedNewKey Do not initialize a new tKey is an existing one is found.
      * @param includeLocalMetadataTransitions Prioritize existing metadata transitions over cloud fetched transitions.
      * @param useTss If TSS is to be used or not.
-     * @param useTss If TSS is to be used or not.
      * @param device_tss_share Device share for TSS, optional.
      * @param device_tss_index Device index for TSS.
      * @param factor_pub Factor key for TSS, optional.

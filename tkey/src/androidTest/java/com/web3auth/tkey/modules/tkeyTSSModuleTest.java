@@ -143,7 +143,6 @@ public class tkeyTSSModuleTest {
             });
             lock1.await();
 
-            String firstShare = thresholdKey.outputShare(share[0].getIndex());
             String firstShareIndex = share[0].getIndex();
             String tssTag = "testing";
             PrivateKey factorKey = PrivateKey.generate();
@@ -151,7 +150,10 @@ public class tkeyTSSModuleTest {
 
             CountDownLatch lock2 = new CountDownLatch(2);
 
-            TSSModule.backupShareWithFactorKey(thresholdKey, firstShareIndex, factorKey.hex);
+            Result<Boolean> res = TSSModule.backupShareWithFactorKey(thresholdKey, firstShareIndex, factorKey.hex);
+            if (res instanceof Result.Error) {
+                fail("Could not create tagged tss shares for tkey");
+            }
 
             TSSModule.createTaggedTSSTagShare(thresholdKey, tssTag, null, factorPub, 2, nodeDetail, torusUtils, result -> {
                 if (result instanceof Result.Error) {

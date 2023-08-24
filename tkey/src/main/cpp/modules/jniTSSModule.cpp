@@ -194,7 +194,7 @@ Java_com_web3auth_tkey_ThresholdKey_Modules_TSSModule_jniGetTSSNonce(
     
     env->ReleaseStringUTFChars(tss_tag, pTSSTag);
     setErrorCode(env, error, errorCode);
-    return result;
+    return (int)result;
 }
 
 extern "C"
