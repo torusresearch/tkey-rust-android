@@ -13,6 +13,7 @@ import com.web3auth.tkey.ThresholdKey.ServiceProvider;
 import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
+import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -38,11 +39,11 @@ public class tkeyKeypointTest {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(1);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -54,7 +55,7 @@ public class tkeyKeypointTest {
                 lock.countDown();
             });
             lock.await();
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }
@@ -83,9 +84,18 @@ public class tkeyKeypointTest {
     }
 
     @Test
-    public void get_as_public_key() {
+    public void get_as_compressed_public_key() {
         try {
-            assertNotEquals(details.getAsCompressedPublicKey("elliptic-compressed").length(), 0);
+            assertNotEquals(details.getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress).length(), 0);
+        } catch (RuntimeError e) {
+            fail(e.toString());
+        }
+    }
+
+    @Test
+    public void get_as_uncompressed_public_key() {
+        try {
+            assertNotEquals(details.getPublicKey(KeyPoint.PublicKeyEncoding.FullAddress).length(), 0);
         } catch (RuntimeError e) {
             fail(e.toString());
         }

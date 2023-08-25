@@ -148,6 +148,42 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyOutputShareStore
 }
 
 extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInputFactorKey(
+        JNIEnv *env, jobject jthis, 
+        jstring factor_key,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pFactorKey = env->GetStringUTFChars(factor_key, JNI_FALSE);
+    threshold_key_input_factor_key(pThreshold, const_cast<char *>(pFactorKey), error_ptr);
+    env->ReleaseStringUTFChars(factor_key, pFactorKey);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyAddLocalMetadataTransition(
+        JNIEnv *env, jobject jthis, jstring input_json,
+        jstring private_key, jstring curve_n,
+        jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pInputJson = env->GetStringUTFChars(input_json, JNI_FALSE);
+    const char *pPrivateKey = env->GetStringUTFChars(private_key, JNI_FALSE);
+    const char *pCurveN = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    threshold_key_add_local_metadata_transitions(pThreshold, const_cast<char *>(pInputJson), const_cast<char *>(pPrivateKey), const_cast<char *>(pCurveN), error_ptr);
+    env->ReleaseStringUTFChars(private_key, pPrivateKey);
+    env->ReleaseStringUTFChars(curve_n, pCurveN);
+    env->ReleaseStringUTFChars(input_json, pInputJson);
+    setErrorCode(env, error, errorCode);
+}
+
+extern "C"
 JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyShareToShareStore(
         JNIEnv *env, jobject jthis, jstring share,
@@ -377,7 +413,8 @@ JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
         JNIEnv *env, jobject jthis, jstring share, jobject input,
         jboolean never_initialized_new_key,
-        jboolean include_local_metadata_transitions, jstring curve_n, jboolean use_tss, jstring device_tss_share, jint device_tss_index, jobject factor_pub, jthrowable error) {
+        jboolean include_local_metadata_transitions, jboolean delete_1_of_1,
+        jstring curve_n, jboolean use_tss, jstring device_tss_share, jint device_tss_index, jobject factor_pub, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
@@ -408,6 +445,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
     KeyDetails *pDetails = threshold_key_initialize(pThreshold, const_cast<char *>(pShare), pInput,
                                                     never_initialized_new_key,
                                                     include_local_metadata_transitions,
+                                                    delete_1_of_1,
                                                     const_cast<char *>(pCurve), use_tss, const_cast<char *>(pTssShare), pTssIndex, pFactor,error_ptr);
     env->ReleaseStringUTFChars(curve_n, pCurve);
     if (pShare != nullptr) {
@@ -657,23 +695,4 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyReconstructLates
     env->ReleaseStringUTFChars(curveN, pCurve);
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
-}
-extern "C"
-JNIEXPORT void JNICALL
-Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyServiceProviderAssignPublicKey(
-        JNIEnv *env, jobject jthis, jstring tss_tag, jstring tss_nonce, jstring tss_public_key,
-        jthrowable error) {
-    int errorCode = 0;
-    int *error_ptr = &errorCode;
-    jlong pObject = GetPointerField(env, jthis);
-    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
-    const char *pTag = env->GetStringUTFChars(tss_tag, JNI_FALSE);
-    const char *pNonce = env->GetStringUTFChars(tss_nonce, JNI_FALSE);
-    const char *pKey = env->GetStringUTFChars(tss_public_key, JNI_FALSE);
-    threshold_key_service_provider_assign_tss_public_key(pThreshold, const_cast<char *>(pTag), const_cast<char *>(pNonce), const_cast<char *>(pKey),
-                                                          error_ptr);
-    env->ReleaseStringUTFChars(tss_tag, pTag);
-    env->ReleaseStringUTFChars(tss_nonce, pNonce);
-    env->ReleaseStringUTFChars(tss_public_key, pKey);
-    setErrorCode(env, error, errorCode);
 }

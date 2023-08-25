@@ -72,3 +72,18 @@ Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointNew(JNIEnv *env, 
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pPoint);
 }
+extern "C"
+JNIEXPORT jlong JNICALL
+Java_com_web3auth_tkey_ThresholdKey_Common_KeyPoint_jniKeyPointNewAddr(JNIEnv *env, jobject thiz,
+                                                                   jstring address,
+                                                                   jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    const char *pAddress = env->GetStringUTFChars(address, JNI_FALSE);
+
+    auto *pPoint = key_point_new_addr(const_cast<char *>(pAddress), error_ptr);
+    
+    env->ReleaseStringUTFChars(address, pAddress);
+    setErrorCode(env, error, errorCode);
+    return reinterpret_cast<jlong>(pPoint);
+}

@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.web3auth.tkey.ThresholdKey.Common.KeyPoint;
 import com.web3auth.tkey.ThresholdKey.Common.PrivateKey;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
@@ -18,6 +19,8 @@ import com.web3auth.tkey.ThresholdKey.StorageLayer;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
 
 import org.json.JSONException;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,23 +41,30 @@ public class tkeyThresholdKeyTest {
         System.loadLibrary("tkey-native");
     }
 
+    @BeforeClass
+    public static void setupTest() {
+    }
+    @AfterClass
+    public static void cleanTest() {
+        System.gc();
+    }
     @Test
     public void basic_threshold_key_reconstruct() {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
                 KeyDetails details = ((Result.Success<KeyDetails>) result).data;
                 String compressed = null;
                 try {
-                    compressed = details.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
+                    compressed = details.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
                 } catch (RuntimeError e) {
                     fail(e.toString());
                 }
@@ -76,22 +86,209 @@ public class tkeyThresholdKeyTest {
                 lock.countDown();
             });
             lock.await();
-            System.gc();
-        } catch (RuntimeError | InterruptedException e) {
-            fail(e.toString());
+        } catch (RuntimeError | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
+    @Test
+    public void threshold_key_manual_sync_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
+            PrivateKey key = PrivateKey.generate();
+            CountDownLatch lock = new CountDownLatch(5);
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.generateNewShare(false, null,result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate new share for tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.syncLocalMetadataTransitions(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not sync local metadata transitions tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            lock.await();
+        } catch (RuntimeError | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+   @Test
+   public void threshold_key_multi_instance() {
+       try {
+           PrivateKey postboxKey = PrivateKey.generate();
+           PrivateKey postboxKey2 = PrivateKey.generate();
+           StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+           ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
+           StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
+           ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null);
+           ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+           ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
+           PrivateKey key = PrivateKey.generate();
+           PrivateKey key2 = PrivateKey.generate();
+           CountDownLatch lock = new CountDownLatch(4);
+
+           thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not initialize tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               lock.countDown();
+           });
+           thresholdKey2.initialize(key2.hex, null, false, false, false, false, null,0,null, result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not initialize tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getPublicKey(KeyPoint.PublicKeyEncoding.EllipticCompress);
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               lock.countDown();
+           });
+           AtomicReference<String> reconstruct_key_1 = new AtomicReference<>("");
+           thresholdKey.reconstruct(result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not reconstruct tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               reconstruct_key_1.set(pub);
+               lock.countDown();
+           });
+           AtomicReference<String> reconstruct_key_2 = new AtomicReference<>("");
+           thresholdKey2.reconstruct(result -> {
+               if (result instanceof Result.Error) {
+                   fail("Could not reconstruct tkey");
+               }
+               String pub = null;
+               try {
+                   pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
+               } catch (RuntimeError e) {
+                   fail(e.toString());
+               }
+               assertNotNull(pub);
+               reconstruct_key_2.set(pub);
+               lock.countDown();
+           });
+           lock.await();
+           assertNotEquals(reconstruct_key_1.get().length(), 0);
+           assertNotEquals(reconstruct_key_2.get().length(), 0);
+           assertNotEquals(reconstruct_key_1.get(), reconstruct_key_2.get());
+
+           //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
+           // however they are not guaranteed by Java to be called on demand.
+       } catch (RuntimeError | InterruptedException | JSONException e) {
+           throw new RuntimeException(e);
+       }
+   }
+
+    @Test
+    public void share_descriptions_test() {
+        try {
+            PrivateKey postboxKey = PrivateKey.generate();
+            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
+            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
+            PrivateKey key = PrivateKey.generate();
+            CountDownLatch lock = new CountDownLatch(3);
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not initialize tkey");
+                }
+                lock.countDown();
+            });
+            thresholdKey.reconstruct(result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not reconstruct tkey");
+                }
+                lock.countDown();
+            });
+            final GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
+            thresholdKey.generateNewShare(false, null,result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not generate new share for tkey");
+                }
+                share[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
+                lock.countDown();
+            });
+            lock.await();
+            CountDownLatch lock1 = new CountDownLatch(1);
+            thresholdKey.addShareDescription(share[0].getIndex(), "Device share 2", true, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not add share description for tkey");
+                }
+                lock1.countDown();
+            });
+            lock1.await();
+            HashMap<String, ArrayList<String>> descriptions = thresholdKey.getShareDescriptions();
+            ArrayList<String> description_specific = descriptions.get(share[0].getIndex());
+            assert description_specific != null;
+            assertTrue(description_specific.contains("Device share 2"));
+            CountDownLatch lock2 = new CountDownLatch(2);
+            thresholdKey.updateShareDescription(share[0].getIndex(), "Device share 2", "Emulator share", true, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not update share description for tkey");
+                }
+                lock2.countDown();
+            });
+            thresholdKey.deleteShareDescription(share[0].getIndex(), "Emulator share", true, result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not delete share description for tkey");
+                }
+                lock2.countDown();
+            });
+            lock2.await();
+        } catch (RuntimeError | JSONException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
     @Test
     public void basic_threshold_key_method_test() {
         try {
             PrivateKey postboxKey = PrivateKey.generate();
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
+            thresholdKey.initialize(key.hex, null, false, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -142,7 +339,7 @@ public class tkeyThresholdKeyTest {
 
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock3 = new CountDownLatch(3);
-            thresholdKey2.initialize(null, null, true, false, false, null, 0, null, result -> {
+            thresholdKey2.initialize(null, null, true, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -163,7 +360,7 @@ public class tkeyThresholdKeyTest {
             lock3.await();
             ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock4 = new CountDownLatch(4);
-            thresholdKey3.initialize(null, null, true, false, false, null, 0, null, result -> {
+            thresholdKey3.initialize(null, null, true, false, false, false, null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -188,201 +385,8 @@ public class tkeyThresholdKeyTest {
                 lock4.countDown();
             });
             lock4.await();
-            System.gc();
-        } catch (RuntimeError | InterruptedException e) {
-            fail(e.toString());
-        }
-    }
-
-    @Test
-    public void threshold_key_manual_sync_test() {
-        try {
-            PrivateKey postboxKey = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true, null);
-            PrivateKey key = PrivateKey.generate();
-            CountDownLatch lock = new CountDownLatch(5);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.generateNewShare(false, null,result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not generate new share for tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.syncLocalMetadataTransitions(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not sync local metadata transitions tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock.countDown();
-            });
-            lock.await();
-            System.gc();
-        } catch (RuntimeError | InterruptedException e) {
-            fail();
-        }
-    }
-
-    @Test
-    public void threshold_key_multi_instance() {
-        try {
-            PrivateKey postboxKey = PrivateKey.generate();
-            PrivateKey postboxKey2 = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
-            StorageLayer storageLayer2 = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider2 = new ServiceProvider(false, postboxKey2.hex,false, null,null,null,null,null);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer2, serviceProvider2, null, null, false, false, null);
-            PrivateKey key = PrivateKey.generate();
-            PrivateKey key2 = PrivateKey.generate();
-            CountDownLatch lock = new CountDownLatch(4);
-
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                lock.countDown();
-            });
-            thresholdKey2.initialize(key2.hex, null, false, false, false, null,0,null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyDetails>) result).data.getPublicKeyPoint().getAsCompressedPublicKey("elliptic-compressed");
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                lock.countDown();
-            });
-            AtomicReference<String> reconstruct_key_1 = new AtomicReference<>("");
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                reconstruct_key_1.set(pub);
-                lock.countDown();
-            });
-            AtomicReference<String> reconstruct_key_2 = new AtomicReference<>("");
-            thresholdKey2.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                String pub = null;
-                try {
-                    pub = ((Result.Success<KeyReconstructionDetails>) result).data.getKey();
-                } catch (RuntimeError e) {
-                    fail(e.toString());
-                }
-                assertNotNull(pub);
-                reconstruct_key_2.set(pub);
-                lock.countDown();
-            });
-            lock.await();
-            assertNotEquals(reconstruct_key_1.get().length(), 0);
-            assertNotEquals(reconstruct_key_2.get().length(), 0);
-            assertNotEquals(reconstruct_key_1.get(), reconstruct_key_2.get());
-
-            //Best effort attempt to have the garbage collector execute finalizers so that they are explicitly tested,
-            // however they are not guaranteed by Java to be called on demand.
-            System.gc();
-        } catch (RuntimeError | InterruptedException e) {
-            fail();
-        }
-    }
-
-    @Test
-    public void share_descriptions_test() {
-        try {
-            PrivateKey postboxKey = PrivateKey.generate();
-            StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
-            ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            PrivateKey key = PrivateKey.generate();
-            CountDownLatch lock = new CountDownLatch(3);
-            thresholdKey.initialize(key.hex, null, false, false, false, null, 0, null, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not initialize tkey");
-                }
-                lock.countDown();
-            });
-            thresholdKey.reconstruct(result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not reconstruct tkey");
-                }
-                lock.countDown();
-            });
-            final GenerateShareStoreResult[] share = new GenerateShareStoreResult[1];
-            thresholdKey.generateNewShare(false, null,result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not generate new share for tkey");
-                }
-                share[0] = ((Result.Success<GenerateShareStoreResult>) result).data;
-                lock.countDown();
-            });
-            lock.await();
-            CountDownLatch lock1 = new CountDownLatch(1);
-            thresholdKey.addShareDescription(share[0].getIndex(), "Device share 2", true, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not add share description for tkey");
-                }
-                lock1.countDown();
-            });
-            lock1.await();
-            HashMap<String, ArrayList<String>> descriptions = thresholdKey.getShareDescriptions();
-            ArrayList<String> description_specific = descriptions.get(share[0].getIndex());
-            assert description_specific != null;
-            assertTrue(description_specific.contains("Device share 2"));
-            CountDownLatch lock2 = new CountDownLatch(2);
-            thresholdKey.updateShareDescription(share[0].getIndex(), "Device share 2", "Emulator share", true, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not update share description for tkey");
-                }
-                lock2.countDown();
-            });
-            thresholdKey.deleteShareDescription(share[0].getIndex(), "Emulator share", true, result -> {
-                if (result instanceof Result.Error) {
-                    fail("Could not delete share description for tkey");
-                }
-                lock2.countDown();
-            });
-            lock2.await();
-            System.gc();
-        } catch (RuntimeError | JSONException | InterruptedException e) {
-            fail(e.toString());
+        } catch (RuntimeError | InterruptedException | JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 }

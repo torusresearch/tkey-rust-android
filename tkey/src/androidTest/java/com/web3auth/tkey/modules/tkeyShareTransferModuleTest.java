@@ -53,10 +53,10 @@ public class tkeyShareTransferModuleTest {
         try {
             StorageLayer storageLayer = new StorageLayer(false, "https://metadata.tor.us", 2);
             PrivateKey postboxKey = PrivateKey.generate();
-            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null,null,null);
+            ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex,false, null,null,null);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(null, null, false, false, false, null, 0, null, result ->
+            thresholdKey.initialize(null, null, false, false, false, false, null, 0, null, result ->
             {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 1");
@@ -74,7 +74,7 @@ public class tkeyShareTransferModuleTest {
             tkeyShareTransferModuleTest.thresholdKey = thresholdKey;
             CountDownLatch lock1 = new CountDownLatch(1);
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false, null);
-            thresholdKey2.initialize(null, null, false, null, 0, null, result -> {
+            thresholdKey2.initialize(null, null, false, false,  null, 0, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 2");
                 }
@@ -82,7 +82,7 @@ public class tkeyShareTransferModuleTest {
             });
             lock1.await();
             tkeyShareTransferModuleTest.thresholdKey2 = thresholdKey2;
-        } catch (RuntimeError | InterruptedException e) {
+        } catch (RuntimeError | InterruptedException | JSONException e) {
             fail(e.toString());
         }
     }

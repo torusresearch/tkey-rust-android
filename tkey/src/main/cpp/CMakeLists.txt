@@ -47,12 +47,13 @@ add_library(
         modules/jniShareTransferModule.cpp
         modules/jniSeedPhraseModule.cpp
         modules/jniShareSerializationModule.cpp
+        modules/jniTSSModule.cpp
         jniPolynomial.cpp
         jniPublicPolynomial.cpp
         jniShareMap.cpp
         jniKeyPointArray.cpp
         jniShareStoreArray.cpp
-        common/jniNodeDetails.cpp
+        common/jniTKeyNodeDetails.cpp
         common/jniTssOptions.cpp
         jniRssComm.cpp
 )

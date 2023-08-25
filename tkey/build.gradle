@@ -12,7 +12,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        minSdk 21
+        minSdk 24
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -58,7 +58,6 @@ android {
         }
     }
 }
-
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
@@ -67,6 +66,9 @@ dependencies {
     testImplementation 'org.jacoco:org.jacoco.report:0.8.7'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    implementation 'com.github.grvgoel81:fetch-node-details-java:3.0.8'
+    implementation 'com.github.grvgoel81:torus-utils-java:5.0.0'
+    implementation 'com.auth0:java-jwt:3.19.2'
 }
 
 task javadoc(type: Javadoc) {

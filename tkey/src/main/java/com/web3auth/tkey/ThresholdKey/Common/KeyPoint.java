@@ -7,6 +7,8 @@ public final class KeyPoint {
 
     private native long jniKeyPointNew(String x, String y, RuntimeError error);
 
+    private native long jniKeyPointNewAddr(String address, RuntimeError error);
+
     private native String jniKeyPointEncode(String format, RuntimeError error);
 
     private native String jniKeyPointGetX(RuntimeError error);
@@ -15,6 +17,21 @@ public final class KeyPoint {
 
     private native void jniKeyPointFree();
 
+    public enum PublicKeyEncoding {
+        EllipticCompress,
+        FullAddress;
+
+        public String getValue() {
+            switch (this) {
+                case EllipticCompress:
+                    return "elliptic-compressed";
+                case FullAddress:
+                    return "";
+                default:
+                    return "";
+            }
+        }
+    }
     /**
      * Instantiate a KeyPoint object using the underlying pointer.
      * @param ptr The pointer to the underlying foreign function interface object.
@@ -63,6 +80,15 @@ public final class KeyPoint {
         }
         pointer = result;
     }
+    
+    public KeyPoint(String address) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        long result = jniKeyPointNewAddr(address, error);
+        if (error.code != 0) {
+            throw error;
+        }
+        pointer = result;
+    }
 
     /**
      * Retrieves the X value of the co-ordinate pair.
@@ -94,11 +120,13 @@ public final class KeyPoint {
 
     /**
      * Gets the serialized form, should it be a valid PublicKey.
-     * @param format `"elliptic-compressed"` for the compressed form, otherwise the uncompressed form will be returned.
+     * @param format `KeyPoint.PublicKeyEncoding.EllipticCompress` for the compressed form, otherwise the uncompressed form will be returned.
      * @throws RuntimeError Indicates either the underlying pointer is invalid or the co-ordinate pair is not a valid PublicKey.
      * @return String
      */
-    public String getAsCompressedPublicKey(String format) throws RuntimeError {
+    public String getPublicKey(PublicKeyEncoding encoding) throws RuntimeError {
+        String format = encoding.getValue();
+
         RuntimeError error = new RuntimeError();
         String result = jniKeyPointEncode(format, error);
         if (error.code != 0) {
