@@ -25,6 +25,7 @@ public final class ServiceProvider {
      * @param useTss Whether to use TSS or not.
      * @param verifierName Verifier Name, required for TSS.
      * @param verifierId Verifier ID, required for TSS.
+     * @param nodeDetails Node Details for fetching sss, rss, tss infos.
      * @throws RuntimeError Indicates invalid parameters were used.
      * @see NodeDetails
      */

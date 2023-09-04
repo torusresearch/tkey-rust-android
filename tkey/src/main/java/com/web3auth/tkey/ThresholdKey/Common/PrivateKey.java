@@ -35,6 +35,12 @@ public final class PrivateKey {
         return new PrivateKey(result);
     }
 
+    /**
+     * returns a PublicKey for specified PrivateKey.
+     * @param encoding `KeyPoint.PublicKeyEncoding.EllipticCompress` for the compressed form, otherwise the uncompressed form will be returned.
+     * @throws RuntimeError Only possible if curveN is passed externally.
+     * @return publicKey
+     */
     public String toPublic(@Nullable KeyPoint.PublicKeyEncoding encoding) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         String result = jniPrivateToPublic(this.hex, error);

@@ -7,7 +7,7 @@ public class GetTSSPubKeyResult {
         public String x;
         public String y;
 
-        public String toFullAddr() {
+        public String toFullAddress() {
             return "04" + x + y;
         }
 
@@ -20,6 +20,11 @@ public class GetTSSPubKeyResult {
     public Point publicKey;
     public List<Integer> nodeIndexes;
 
+    /**
+     * Instantiate a GetTSSPubKeyResult object using the public key and nodeIndexes.
+     * @param publicKey The publicKey from torus utils getPublicAddress
+     * @param nodeIndexes The node indexes from torus utils nodes data
+     */
     public GetTSSPubKeyResult(Point publicKey, List<Integer> nodeIndexes) {
         this.publicKey = publicKey;
         this.nodeIndexes = nodeIndexes;
