@@ -27,7 +27,6 @@ public final class ServiceProvider {
      * @param verifierId Verifier ID, required for TSS.
      * @param nodeDetails Node Details for fetching sss, rss, tss infos.
      * @throws RuntimeError Indicates invalid parameters were used.
-     * @see NodeDetails
      */
     public ServiceProvider(boolean enableLogging, String postboxKey, boolean useTss, @Nullable String verifierName, @Nullable String verifierId, @Nullable NodeDetails nodeDetails) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
