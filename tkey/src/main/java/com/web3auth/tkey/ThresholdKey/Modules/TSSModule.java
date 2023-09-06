@@ -23,6 +23,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public final class TSSModule {
@@ -58,41 +59,52 @@ public final class TSSModule {
 
     public static native void jniThresholdKeyServiceProviderAssignPublicKey(ThresholdKey thresholdKey, String tss_tag, String tss_nonce, String tss_public_key, RuntimeError error);
 
-    private static Result<String> getTSSPubKey(ThresholdKey thresholdKey, String tssTag) {
+
+    private static Result<Boolean> setTSSTag(ThresholdKey thresholdKey, String tssTag) {
         try {
             RuntimeError error = new RuntimeError();
             jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            String result = jniTSSModuleGetTSSPublicKey(thresholdKey, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-
-            return new Result.Success<>(result);
+            return new Result.Success<>(true);
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
     }
 
     /**
-     * returns the tss public key.
+     * sets the tag for give threshold key.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The tssTag to use.
+     * @param tssTag The tss tag to be set.
      * @param callback The method which the result will be sent to
      * @see ThresholdKeyCallback
      */
-    public static void getTSSPubKey(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<String> callback) {
+    public static void setTSSTag(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
-                Result<String> result = getTSSPubKey(thresholdKey, tssTag);
+                Result<Boolean> result = setTSSTag(thresholdKey, tssTag);
                 callback.onComplete(result);
             } catch (Exception e) {
-                Result<String> error = new Result.Error<>(e);
+                Result<Boolean> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
+    }
+
+    /**
+     * returns the the tss tag.
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     * @return String
+     */
+    public static String getTSSTag(ThresholdKey thresholdKey) throws RuntimeError {
+        RuntimeError error = new RuntimeError();
+        String result = jniTSSModuleGetTSSTag(thresholdKey, error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return result;
     }
 
     /**
@@ -116,7 +128,6 @@ public final class TSSModule {
         }
         return tssTags;
     }
-
 
     private static Result<ArrayList<String>> getAllFactorPub(ThresholdKey thresholdKey, String tssTag) {
         try {
@@ -161,106 +172,62 @@ public final class TSSModule {
         });
     }
 
-    /**
-     * returns the extended verifier id (includes verifier and verifier-id with delimiters).
-     * @param thresholdKey The threshold key to act on.
-     * @throws RuntimeError Indicates invalid parameters were used.
-     * @throws JSONException Indicates invalid json parameters were used.
-     * @return String
-     * @see ThresholdKeyCallback
-     */
-    public static String getExtendedVerifier(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
-        RuntimeError error = new RuntimeError();
-        String result = jniGetExtendedVerifier(thresholdKey, error);
-        if (error.code != 0) {
-            throw error;
-        }
-        return result;
-    }
-
-    /**
-     * sets the tag for give threshold key.
-     * @param thresholdKey The threshold key to act on.
-     * @param tssTag The tss tag to be set.
-     * @param callback The method which the result will be sent to
-     * @see ThresholdKeyCallback
-     */
-    public static void setTSSTag(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<Boolean> callback) {
-        thresholdKey.executor.execute(() -> {
-            try {
-                Result<Boolean> result = setTSSTag(thresholdKey, tssTag);
-                callback.onComplete(result);
-            } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
-                callback.onComplete(error);
-            }
-        });
-    }
-
-    private static Result<Boolean> setTSSTag(ThresholdKey thresholdKey, String tssTag) {
+    private static Result<String> getTSSPubKey(ThresholdKey thresholdKey, String tssTag) {
         try {
             RuntimeError error = new RuntimeError();
             jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            String result = jniTSSModuleGetTSSPublicKey(thresholdKey, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+
+            return new Result.Success<>(result);
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
     }
 
     /**
-     * returns the the tss tag.
+     * returns the tss public key.
      * @param thresholdKey The threshold key to act on.
-     * @throws RuntimeError Indicates invalid parameters were used.
-     * @return String
+     * @param tssTag The tssTag to use.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
      */
-    public static String getTSSTag(ThresholdKey thresholdKey) throws RuntimeError {
-        RuntimeError error = new RuntimeError();
-        String result = jniTSSModuleGetTSSTag(thresholdKey, error);
-        if (error.code != 0) {
-            throw error;
-        }
-        return result;
+    public static void getTSSPubKey(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<String> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                Result<String> result = getTSSPubKey(thresholdKey, tssTag);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<String> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
     }
 
     /**
-     * returns the the Dkg PublicKey.
+     * returns the current tss share.
      * @param thresholdKey The threshold key to act on.
      * @param tssTag The threshold key to act on.
-     * @param nonce The threshold key to act on.
-     * @param nodeDetails The threshold key to act on.
-     * @param torusUtils The threshold key to act on.
-     * @return GetTSSPubKeyResult
-     * @see TorusUtils
-     * @see GetTSSPubKeyResult
-     * @see GetTSSPubKeyResult
+     * @param preFetch A boolean representing whether to prefetch or not.
+     * @return int
      */
-    public static GetTSSPubKeyResult getDkgPubKey(ThresholdKey thresholdKey, String tssTag, String nonce, NodeDetails nodeDetails, TorusUtils torusUtils) {
-        String extendedVerifierId;
+    public static int getTSSNonce(ThresholdKey thresholdKey, String tssTag, Boolean preFetch) {
         try {
-            extendedVerifierId = getExtendedVerifier(thresholdKey);
-            String[] split = extendedVerifierId.split("\u001c");
-            String extendedVerifierIdFormatted = split[1] + "\u0015" + tssTag + "\u0016" + nonce;
-
-            VerifierArgs verifierArgs = new VerifierArgs(
-                split[0],
-                split[1],
-                extendedVerifierIdFormatted
-            );
-            TorusPublicKey result = torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), verifierArgs).get();
-
-            String x = result.getFinalKeyData().getX();
-            String y = result.getFinalKeyData().getY();
-            List<BigInteger> nodeIndexes = result.getNodesData().getNodeIndexes();
-            List<Integer> nodeIndexList = nodeIndexes.stream()
-                    .map(BigInteger::intValue)
-                    .collect(Collectors.toList());
-
-            GetTSSPubKeyResult.Point pubKey = new GetTSSPubKeyResult.Point(x, y);
-            return new GetTSSPubKeyResult(pubKey, nodeIndexList);
-        } catch (JSONException | ExecutionException | InterruptedException| RuntimeError e) {
+            RuntimeError error = new RuntimeError();
+            int nonce = jniGetTSSNonce(thresholdKey, tssTag, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            if (preFetch) {
+                nonce = nonce + 1;
+            }
+            return nonce;
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -308,131 +275,6 @@ public final class TSSModule {
         });
     }
 
-    /**
-     * returns the current tss share.
-     * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
-     * @param preFetch A boolean representing whether to prefetch or not.
-     * @return int
-     */
-    public static int getTSSNonce(ThresholdKey thresholdKey, String tssTag, Boolean preFetch) {
-        try {
-            RuntimeError error = new RuntimeError();
-            int nonce = jniGetTSSNonce(thresholdKey, tssTag, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            if (preFetch) {
-                nonce = nonce + 1;
-            }
-            return nonce;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * This function copies a factor public key.
-     * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
-     * @param factorKey A string representing the factor key.
-     * @param newFactorPub A string representing the new factor public key.
-     * @param tssIndex An integer representing the tss index.
-     * @param callback The method which the result will be sent to
-     */
-    public static void copyFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey, String newFactorPub, int tssIndex, ThresholdKeyCallback<Boolean> callback) {
-            thresholdKey.executor.execute(() -> {
-                try {
-                    if (factorKey.length() > 66) {
-                        throw new RuntimeException("Invalid factor Key");
-                    }
-                    Result<Boolean> result = copyFactorPub(thresholdKey, tssTag, factorKey, newFactorPub, tssIndex);
-                    callback.onComplete(result);
-                } catch (Exception e) {
-                    Result<Boolean> error = new Result.Error<>(e);
-                    callback.onComplete(error);
-                }
-            });
-    }
-
-    private static Result<Boolean> copyFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey, String newFactorPub, int tssIndex) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            jniCopyFactorPub(thresholdKey, newFactorPub, tssIndex, factorKey, thresholdKey.curveN, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>(true);
-        } catch (Exception e) {
-            return new Result.Error<>(e);
-        }
-    }
-
-    // todo: should we add a public function to expose this
-    /**
-     * This function backup device share with factor key.
-     * @param thresholdKey The threshold key to act on.
-     * @param shareIndex The threshold key to act on.
-     * @param factorKey A string representing the factor key.
-     * @return Result<Boolean>
-     */
-    public static Result<Boolean> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniBackupShareWithFactorKey(thresholdKey, shareIndex, factorKey, thresholdKey.curveN, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>(true);
-        } catch (Exception e) {
-            return new Result.Error<>(e);
-        }
-    }
-
-    private static Pair<Integer, String> getUpdateParams(ThresholdKey thresholdKey, String tssTag, Boolean prefetch, NodeDetails nodeDetails, TorusUtils torusUtils) {
-        int nonce = getTSSNonce(thresholdKey, tssTag, prefetch);
-        GetTSSPubKeyResult publicAddress = getDkgPubKey(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
-        JSONObject pubObject = new JSONObject();
-        try {
-            pubObject.put("x", publicAddress.publicKey.x);
-            pubObject.put("y", publicAddress.publicKey.y);
-            JSONArray nodeIndexArray = new JSONArray();
-            for (Integer nodeIndex: publicAddress.nodeIndexes) {
-                nodeIndexArray.put(nodeIndex);
-            }
-            JSONObject jsonPubKey = new JSONObject();
-            jsonPubKey.put("nodeIndexes", nodeIndexArray);
-            jsonPubKey.put("publicKey", pubObject);
-            return new Pair<>(nonce, jsonPubKey.toString());
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static Pair<String, String> getServerParams(ArrayList<String> authSignatures, @Nullable int[] selectedServers) {
-            JSONArray jsonArray = new JSONArray();
-            for (String signature: authSignatures) {
-                jsonArray.put(signature);
-            }
-            String authSignaturesString = jsonArray.toString();
-
-            JSONArray jsonServer = new JSONArray();
-            if(selectedServers != null) {
-                for (int value : selectedServers) {
-                    jsonServer.put(value);
-                }
-            }
-
-            String selectedServersString = null;
-            if(jsonServer.length() > 0) {
-                selectedServersString = jsonServer.toString();
-            }
-            return new Pair<>(authSignaturesString, selectedServersString);
-    }
 
     private static Result<Boolean> createTaggedTSSTagShare(ThresholdKey thresholdKey, @Nullable String deviceTssShare, String factorPub,
                                                            int deviceTssIndex, String tssTag, Boolean prefetch, NodeDetails nodeDetails, TorusUtils torusUtils) {
@@ -490,6 +332,106 @@ public final class TSSModule {
             }
         });
     }
+
+    private static Result<Boolean> updateTssPubKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyServiceProviderAssignPublicKey(thresholdKey, tssTag, nonce, pubKey, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    /**
+     * This function update a tss pub key.
+     * @param thresholdKey The threshold key to act on.
+     * @param tssTag The threshold key to act on.
+     * @param nodeDetails An NodeDetails object representing the node details.
+     * @param torusUtils A TorusUtils object to be used.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     * @see TorusUtils
+     * @see NodeDetails
+     */
+    public static void updateTssPubKey(ThresholdKey thresholdKey, String tssTag, NodeDetails nodeDetails,
+                                       TorusUtils torusUtils, Boolean prefetch, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                int nonce = getTSSNonce(thresholdKey, tssTag, prefetch);
+
+                GetTSSPubKeyResult publicAddress = getDkgPubKey(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
+                JSONObject pubObject = new JSONObject();
+                pubObject.put("x", publicAddress.publicKey.x);
+                pubObject.put("y", publicAddress.publicKey.y);
+                JSONArray nodeIndexArray = new JSONArray();
+                for (Integer nodeIndex: publicAddress.nodeIndexes) {
+                    nodeIndexArray.put(nodeIndex);
+                }
+                JSONObject jsonPubKey = new JSONObject();
+
+                jsonPubKey.put("nodeIndexes", nodeIndexArray);
+                jsonPubKey.put("publicKey", pubObject);
+
+                RuntimeError error = new RuntimeError();
+                jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
+                if (error.code != 0) {
+                    throw new Exception(error);
+                }
+
+                Result<Boolean> updateResult = updateTssPubKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey.toString());
+                callback.onComplete(updateResult);
+            } catch (Exception e) {
+                Result<Boolean> error2 = new Result.Error<>((Exception) e);
+                callback.onComplete(error2);
+            }
+        });
+    }
+
+    private static Result<Boolean> copyFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey, String newFactorPub, int tssIndex) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            jniCopyFactorPub(thresholdKey, newFactorPub, tssIndex, factorKey, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(true);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    /**
+     * This function copies a factor public key.
+     * @param thresholdKey The threshold key to act on.
+     * @param tssTag The threshold key to act on.
+     * @param factorKey A string representing the factor key.
+     * @param newFactorPub A string representing the new factor public key.
+     * @param tssIndex An integer representing the tss index.
+     * @param callback The method which the result will be sent to
+     */
+    public static void copyFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey, String newFactorPub, int tssIndex, ThresholdKeyCallback<Boolean> callback) {
+        thresholdKey.executor.execute(() -> {
+            try {
+                if (factorKey.length() > 66) {
+                    throw new RuntimeException("Invalid factor Key");
+                }
+                Result<Boolean> result = copyFactorPub(thresholdKey, tssTag, factorKey, newFactorPub, tssIndex);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Boolean> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
 
     private static Result<Boolean> generateTSSShare(ThresholdKey thresholdKey, String inputTssShare, int inputTssIndex, int newTssIndex, String newFactorPub
     , int[] selectedServers, ArrayList<String> authSignatures, String tssTag, Boolean prefetch, NodeDetails nodeDetails, TorusUtils torusUtils) {
@@ -611,92 +553,6 @@ public final class TSSModule {
         });
     }
 
-    /**
-     * This function update a tss pub key.
-     * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
-     * @param nodeDetails An NodeDetails object representing the node details.
-     * @param torusUtils A TorusUtils object to be used.
-     * @param callback The method which the result will be sent to
-     * @see ThresholdKeyCallback
-     * @see TorusUtils
-     * @see NodeDetails
-     */
-    public static void updateTssPubKey(ThresholdKey thresholdKey, String tssTag, NodeDetails nodeDetails,
-                                       TorusUtils torusUtils, Boolean prefetch, ThresholdKeyCallback<Boolean> callback) {
-            thresholdKey.executor.execute(() -> {
-                try {
-                    int nonce = getTSSNonce(thresholdKey, tssTag, prefetch);
-
-                    GetTSSPubKeyResult publicAddress = getDkgPubKey(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
-                    JSONObject pubObject = new JSONObject();
-                    pubObject.put("x", publicAddress.publicKey.x);
-                    pubObject.put("y", publicAddress.publicKey.y);
-                    JSONArray nodeIndexArray = new JSONArray();
-                    for (Integer nodeIndex: publicAddress.nodeIndexes) {
-                        nodeIndexArray.put(nodeIndex);
-                    }
-                    JSONObject jsonPubKey = new JSONObject();
-
-                    jsonPubKey.put("nodeIndexes", nodeIndexArray);
-                    jsonPubKey.put("publicKey", pubObject);
-
-                    RuntimeError error = new RuntimeError();
-                    jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
-                    if (error.code != 0) {
-                        throw new Exception(error);
-                    }
-
-                    Result<Boolean> updateResult = updateTssPubKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey.toString());
-                    callback.onComplete(updateResult);
-                } catch (Exception e) {
-                    Result<Boolean> error2 = new Result.Error<>((Exception) e);
-                    callback.onComplete(error2);
-                }
-            });
-        }
-
-    private static Result<Boolean> updateTssPubKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyServiceProviderAssignPublicKey(thresholdKey, tssTag, nonce, pubKey, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
-        }
-    }
-
-    private static Result<Boolean> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyServiceProviderAssignPublicKey(thresholdKey, tssTag, nonce, pubKey, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
-        }
-    }
-
-    /**
-     * This function assign a tss pub key to service provider.
-     * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
-     * @param jsonPubKey A JSON representation of public key.
-     * @return Result<Boolean>
-     */
-    // todo: should we have different private and public methods
-    public static Result<Boolean> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) {
-            try {
-                return serviceProviderAssignPublicKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey);
-            } catch (Exception e) {
-                return new Result.Error<>(e);
-            }
-    }
 
     private static Result<Boolean> AddFactorPub(ThresholdKey thresholdKey, int newTssIndex, String newFactorPub
             , int[] selectedServers, ArrayList<String> authSignatures, String tssTag, Boolean prefetch, NodeDetails nodeDetails,
@@ -743,7 +599,6 @@ public final class TSSModule {
         }
     }
 
-    // todo: remove exception from throws
     /**
      * This function adds a factor public key.
      * @param thresholdKey The threshold key to act on.
@@ -763,7 +618,7 @@ public final class TSSModule {
      */
     public static void AddFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
                                     ArrayList<String> authSignatures, String newFactorPub, int newTssIndex,
-                                    @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils,
+                                     NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers,
                                     ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         thresholdKey.executor.execute(() -> {
             try {
@@ -775,7 +630,6 @@ public final class TSSModule {
             }
         });
     }
-
 
     private static Result<Boolean> DeleteFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
                                                    ArrayList<String> authSignatures, String deleteFactorPub,
@@ -853,4 +707,170 @@ public final class TSSModule {
         });
     }
 
+    /**
+     * returns the extended verifier id (includes verifier and verifier-id with delimiters).
+     * @param thresholdKey The threshold key to act on.
+     * @throws RuntimeError Indicates invalid parameters were used.
+     * @throws JSONException Indicates invalid json parameters were used.
+     * @return String
+     * @see ThresholdKeyCallback
+     */
+    public static String getExtendedVerifier(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
+        RuntimeError error = new RuntimeError();
+        String result = jniGetExtendedVerifier(thresholdKey, error);
+        if (error.code != 0) {
+            throw error;
+        }
+        return result;
+    }
+
+    /**
+     * This function backup device share with factor key.
+     * @param thresholdKey The threshold key to act on.
+     * @param shareIndex The threshold key to act on.
+     * @param factorKey A string representing the factor key.
+     * @return Result<Boolean>
+     */
+    public static Result<Boolean> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniBackupShareWithFactorKey(thresholdKey, shareIndex, factorKey, thresholdKey.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>(true);
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    /**
+     * returns the the Dkg PublicKey.
+     * @param thresholdKey The threshold key to act on.
+     * @param tssTag The threshold key to act on.
+     * @param nonce The threshold key to act on.
+     * @param nodeDetails The threshold key to act on.
+     * @param torusUtils The threshold key to act on.
+     * @return GetTSSPubKeyResult
+     * @see TorusUtils
+     * @see GetTSSPubKeyResult
+     * @see GetTSSPubKeyResult
+     */
+    public static GetTSSPubKeyResult getDkgPubKey(ThresholdKey thresholdKey, String tssTag, String nonce, NodeDetails nodeDetails, TorusUtils torusUtils) {
+        String extendedVerifierId;
+        try {
+            extendedVerifierId = getExtendedVerifier(thresholdKey);
+            String[] split = extendedVerifierId.split("\u001c");
+            String extendedVerifierIdFormatted = split[1] + "\u0015" + tssTag + "\u0016" + nonce;
+
+            VerifierArgs verifierArgs = new VerifierArgs(
+                split[0],
+                split[1],
+                extendedVerifierIdFormatted
+            );
+            TorusPublicKey result = torusUtils.getPublicAddress(nodeDetails.getTorusNodeEndpoints(), nodeDetails.getTorusNodePub(), verifierArgs).get();
+
+            String x = result.getFinalKeyData().getX();
+            String y = result.getFinalKeyData().getY();
+            List<BigInteger> nodeIndexes = result.getNodesData().getNodeIndexes();
+            List<Integer> nodeIndexList = nodeIndexes.stream()
+                    .map(BigInteger::intValue)
+                    .collect(Collectors.toList());
+
+            GetTSSPubKeyResult.Point pubKey = new GetTSSPubKeyResult.Point(x, y);
+            return new GetTSSPubKeyResult(pubKey, nodeIndexList);
+        } catch (JSONException | ExecutionException | InterruptedException| RuntimeError e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Result<Boolean> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) {
+        try {
+            RuntimeError error = new RuntimeError();
+            jniThresholdKeyServiceProviderAssignPublicKey(thresholdKey, tssTag, nonce, pubKey, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    /**
+     * This function assign a tss pub key to service provider.
+     * @param thresholdKey The threshold key to act on.
+     * @param tssTag The threshold key to act on.
+     * @param jsonPubKey A JSON representation of public key.
+     * @return Result<Boolean>
+     */
+    public static Result<Boolean> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) {
+            try {
+                return serviceProviderAssignPublicKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey);
+            } catch (Exception e) {
+                return new Result.Error<>(e);
+            }
+    }
+
+
+    private static Pair<Integer, String> getUpdateParams(ThresholdKey thresholdKey, String tssTag, Boolean prefetch, NodeDetails nodeDetails, TorusUtils torusUtils) {
+        int nonce = getTSSNonce(thresholdKey, tssTag, prefetch);
+        GetTSSPubKeyResult publicAddress = getDkgPubKey(thresholdKey, tssTag, String.valueOf(nonce), nodeDetails, torusUtils);
+        JSONObject pubObject = new JSONObject();
+        try {
+            pubObject.put("x", publicAddress.publicKey.x);
+            pubObject.put("y", publicAddress.publicKey.y);
+            JSONArray nodeIndexArray = new JSONArray();
+            for (Integer nodeIndex: publicAddress.nodeIndexes) {
+                nodeIndexArray.put(nodeIndex);
+            }
+            JSONObject jsonPubKey = new JSONObject();
+            jsonPubKey.put("nodeIndexes", nodeIndexArray);
+            jsonPubKey.put("publicKey", pubObject);
+            return new Pair<>(nonce, jsonPubKey.toString());
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String findDeviceShareIndex(ThresholdKey thresholdKey, String factorKey) throws Exception {
+        AtomicReference<String> resultData = new AtomicReference<>("");
+        AtomicReference<String> shareIndex = new AtomicReference<>("");
+
+                thresholdKey.storage_layer_get_metadata(factorKey, result -> {
+                    resultData.set(((Result.Success<String>) result).data);
+            JSONObject resultJson = null;
+            try {
+                resultJson = new JSONObject(resultData.get());
+
+                JSONObject deviceShareJson = resultJson.getJSONObject("deviceShare");
+                JSONObject shareJson = deviceShareJson.getJSONObject("share");
+                shareIndex.set(shareJson.get("shareIndex").toString());
+            } catch (JSONException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        return shareIndex.get();
+    }
+
+    private static Pair<String, String> getServerParams(ArrayList<String> authSignatures, @Nullable int[] selectedServers) {
+            JSONArray jsonArray = new JSONArray();
+            for (String signature: authSignatures) {
+                jsonArray.put(signature);
+            }
+            String authSignaturesString = jsonArray.toString();
+
+            JSONArray jsonServer = new JSONArray();
+            if(selectedServers != null) {
+                for (int value : selectedServers) {
+                    jsonServer.put(value);
+                }
+            }
+
+            String selectedServersString = null;
+            if(jsonServer.length() > 0) {
+                selectedServersString = jsonServer.toString();
+            }
+            return new Pair<>(authSignaturesString, selectedServersString);
+    }
 }

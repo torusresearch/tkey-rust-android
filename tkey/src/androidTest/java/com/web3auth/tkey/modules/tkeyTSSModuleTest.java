@@ -228,6 +228,9 @@ public class tkeyTSSModuleTest {
             assertNotEquals(tssIndex3, tssIndex);
             assertNotEquals(tssShare, tssShareUpdated);
 
+            String deviceShareIndex = TSSModule.findDeviceShareIndex(thresholdKey, factorKey.hex);
+            assertNotEquals(deviceShareIndex, "1");
+
             // Initialize on Instance 2
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
 
@@ -309,7 +312,7 @@ public class tkeyTSSModuleTest {
 
             // 2/2 -> 2/3 tss using addFactorPub
             CountDownLatch lock7 = new CountDownLatch(3);
-            TSSModule.AddFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, 3, null, nodeDetail, torusUtils, result -> {
+            TSSModule.AddFactorPub(thresholdKey, tssTag, factorKey.hex, signatureString, newFactorPub, 3, nodeDetail, torusUtils, null, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not Add Factor Pub");
                 }
@@ -506,7 +509,7 @@ public class tkeyTSSModuleTest {
                 TSSMod tssMod = tssMods.get(i);
 
                 CountDownLatch lock12 = new CountDownLatch(1);
-                TSSModule.AddFactorPub(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, signatureString, newFactorPub, 3, null, nodeDetail , torusUtils, result -> {
+                TSSModule.AddFactorPub(thresholdKey, tssMod.getTag(), factorKeys.get(i).hex, signatureString, newFactorPub, 3, nodeDetail , torusUtils, null, result -> {
                     if (result instanceof Result.Error) {
                         fail("Could not AddFactorPub");
                     }
