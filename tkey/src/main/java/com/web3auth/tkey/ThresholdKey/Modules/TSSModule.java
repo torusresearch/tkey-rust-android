@@ -750,7 +750,7 @@ public final class TSSModule {
     public static void AddFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
                                     ArrayList<String> authSignatures, String newFactorPub, int newTssIndex,
                                     @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils,
-                                    ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
+                                    ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
                 Result<Boolean> result = AddFactorPub(thresholdKey, newTssIndex, newFactorPub, selectedServers, authSignatures, tssTag, true, nodeDetails, torusUtils, factorKey, 0);
