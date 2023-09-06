@@ -366,20 +366,22 @@ public class tkeyThresholdKeyTest {
             ArrayList<String> description_specific = descriptions.get(share[0].getIndex());
             assert description_specific != null;
             assertTrue(description_specific.contains("Device share 2"));
-            CountDownLatch lock2 = new CountDownLatch(2);
+            CountDownLatch lock2 = new CountDownLatch(1);
             thresholdKey.updateShareDescription(share[0].getIndex(), "Device share 2", "Emulator share", true, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not update share description for tkey");
                 }
                 lock2.countDown();
             });
+            lock2.await();
+            CountDownLatch lock3 = new CountDownLatch(1);
             thresholdKey.deleteShareDescription(share[0].getIndex(), "Emulator share", true, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not delete share description for tkey");
                 }
-                lock2.countDown();
+                lock3.countDown();
             });
-            lock2.await();
+            lock3.await();
             System.gc();
         } catch (RuntimeError | JSONException | InterruptedException e) {
             fail(e.toString());
