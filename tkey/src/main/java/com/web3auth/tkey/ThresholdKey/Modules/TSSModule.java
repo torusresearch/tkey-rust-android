@@ -60,14 +60,14 @@ public final class TSSModule {
     public static native void jniThresholdKeyServiceProviderAssignPublicKey(ThresholdKey thresholdKey, String tss_tag, String tss_nonce, String tss_public_key, RuntimeError error);
 
 
-    private static Result<Boolean> setTSSTag(ThresholdKey thresholdKey, String tssTag) {
+    private static Result<void> setTSSTag(ThresholdKey thresholdKey, String tssTag) {
         try {
             RuntimeError error = new RuntimeError();
             jniTSSModuleSetTSSTag(thresholdKey, tssTag, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
