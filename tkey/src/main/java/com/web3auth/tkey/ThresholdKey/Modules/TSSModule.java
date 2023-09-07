@@ -5,7 +5,7 @@ import android.util.Pair;
 import androidx.annotation.Nullable;
 
 import com.web3auth.tkey.RuntimeError;
-import com.web3auth.tkey.ThresholdKey.Common.GetTSSPubKeyResult;
+import com.web3auth.tkey.ThresholdKey.Common.TSSPubKeyResult;
 import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
 import com.web3auth.tkey.ThresholdKey.ThresholdKey;
@@ -110,8 +110,8 @@ public final class TSSModule {
     /**
      * returns list of all the tss tags for given threshold key.
      * @param thresholdKey The threshold key to act on.
-     * @throws RuntimeError Indicates invalid parameters were used.
-     * @throws JSONException Indicates invalid json parameters were used.
+     * @throws RuntimeError Indicates an invalid ThresholdKey.
+     * @throws JSONException Indicates library returning invalid json(shouldn't happen ever though)
      * @return ArrayList<String>
      */
     public static ArrayList<String> getAllTSSTags(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
@@ -209,6 +209,7 @@ public final class TSSModule {
         });
     }
 
+    // todo: replace see with torus utils and node details model once docs are added for those libraries
     /**
      * returns the current tss share.
      * @param thresholdKey The threshold key to act on.
@@ -258,7 +259,7 @@ public final class TSSModule {
     /**
      * returns the tss share and tss index.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param factorKey A string representing the factor key.
      * @param threshold An integer representing the threshold
      * @param callback The method which the result will be sent to
@@ -308,15 +309,13 @@ public final class TSSModule {
     /**
      * This function creates a tagged tss share.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param deviceTssShare A string representing the device tss share.
      * @param factorPub A string representing the factor public key.
      * @param deviceTssIndex An integer representing the device index.
      * @param nodeDetails A NodeDetailsModel object representing the node details..
      * @param torusUtils A TorusUtils object to be used.
      * @param callback The method which the result will be sent to
-     * @see NodeDetails
-     * @see TorusUtils
      * @throws RuntimeError Indicates underlying pointer or index is invalid.
      */
     public static void createTaggedTSSTagShare(ThresholdKey thresholdKey, String tssTag, String deviceTssShare, String factorPub,
@@ -466,7 +465,7 @@ public final class TSSModule {
     /**
      * This function generates a tss share.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param inputTssShare A string representing the Input TSS Share.
      * @param inputTssIndex A integer representing the Input tss index.
      * @param authSignatures An array of strings representing the auth signatures.
@@ -478,8 +477,6 @@ public final class TSSModule {
      * @param callback The method which the result will be sent to
      * @throws RuntimeError Indicates invalid pointer.
      * @see ThresholdKeyCallback
-     * @see TorusUtils
-     * @see NodeDetails
      */
     public static void generateTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
         thresholdKey.executor.execute(() -> {
@@ -526,7 +523,7 @@ public final class TSSModule {
     /**
      * This function deletes a tss share.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param inputTssShare A string representing the Input TSS Share.
      * @param inputTssIndex A integer representing the Input tss index.
      * @param authSignatures An array of strings representing the auth signatures.
@@ -537,8 +534,6 @@ public final class TSSModule {
      * @param callback The method which the result will be sent to
      * @throws RuntimeError Indicates invalid pointer.
      * @see ThresholdKeyCallback
-     * @see TorusUtils
-     * @see NodeDetails
      */
     public static void deleteTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String deleteFactorPub,
                                       NodeDetails nodeDetails, TorusUtils torusUtils, int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
@@ -602,7 +597,7 @@ public final class TSSModule {
     /**
      * This function adds a factor public key.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param factorKey A string representing the factor key.
      * @param authSignatures An array of strings representing the auth signatures.
      * @param newFactorPub A string representing the new factor public key.
@@ -613,13 +608,11 @@ public final class TSSModule {
      * @param callback The method which the result will be sent to
      * @throws RuntimeError Indicates invalid pointer.
      * @see ThresholdKeyCallback
-     * @see TorusUtils
-     * @see NodeDetails
      */
     public static void AddFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
                                     ArrayList<String> authSignatures, String newFactorPub, int newTssIndex,
-                                     NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers,
-                                    ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
+                                    @Nullable int[] selectedServers, NodeDetails nodeDetails, TorusUtils torusUtils,
+                                    ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
                 Result<Boolean> result = AddFactorPub(thresholdKey, newTssIndex, newFactorPub, selectedServers, authSignatures, tssTag, true, nodeDetails, torusUtils, factorKey, 0);
@@ -680,7 +673,7 @@ public final class TSSModule {
     /**
      * This function deletes a factor public key.
      * @param thresholdKey The threshold key to act on.
-     * @param tssTag The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
      * @param factorKey A string representing the factor key.
      * @param authSignatures An array of strings representing the auth signatures.
      * @param deleteFactorPub A string representing the delete factor public key.
@@ -689,8 +682,6 @@ public final class TSSModule {
      * @param selectedServers An integer representing the new tss index.
      * @param callback The method which the result will be sent to
      * @see ThresholdKeyCallback
-     * @see TorusUtils
-     * @see NodeDetails
      */
     public static void DeleteFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey, ArrayList<String> authSignatures, String deleteFactorPub, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
