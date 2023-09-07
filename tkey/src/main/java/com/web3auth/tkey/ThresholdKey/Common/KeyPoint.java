@@ -70,7 +70,7 @@ public final class KeyPoint {
      * Instantiate a KeyPoint object using X and Y co-ordinates in hexadecimal format.
      * @param x X value of co-ordinate pair.
      * @param y Y value of co-ordinate pair.
-     * @throws RuntimeError Indicates invalid public key (not on secp256k1 curve or invalidly formatted).
+     * @throws RuntimeError Indicates invalid parameters was used.
      */
     public KeyPoint(String x, String y) throws RuntimeError {
         RuntimeError error = new RuntimeError();
@@ -84,7 +84,7 @@ public final class KeyPoint {
     /**
      * Instantiate a KeyPoint object using public address.
      * @param address public address of co-ordinate pair.
-     * @throws RuntimeError Indicates invalid parameters was used.
+     * @throws RuntimeError Indicates invalid public key (not on secp256k1 curve or invalidly formatted).
      */
     public KeyPoint(String address) throws RuntimeError {
         RuntimeError error = new RuntimeError();
