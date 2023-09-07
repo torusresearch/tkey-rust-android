@@ -150,7 +150,7 @@ public class tkeyTSSModuleTest {
 
             CountDownLatch lock2 = new CountDownLatch(2);
 
-            Result<Boolean> res = TSSModule.backupShareWithFactorKey(thresholdKey, firstShareIndex, factorKey.hex);
+            Result<Void> res = TSSModule.backupShareWithFactorKey(thresholdKey, firstShareIndex, factorKey.hex);
             if (res instanceof Result.Error) {
                 fail("Could not create tagged tss shares for tkey");
             }
