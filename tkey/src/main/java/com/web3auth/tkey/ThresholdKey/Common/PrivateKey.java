@@ -38,8 +38,8 @@ public final class PrivateKey {
     /**
      * returns a PublicKey for specified PrivateKey.
      * @param encoding `KeyPoint.PublicKeyEncoding.EllipticCompress` for the compressed form, otherwise the uncompressed form will be returned.
-     * @throws RuntimeError Only possible if curveN is passed externally.
-     * @return publicKey
+     * @throws RuntimeError Only possible if private key is incorrect.
+     * @return String
      */
     public String toPublic(@Nullable KeyPoint.PublicKeyEncoding encoding) throws RuntimeError {
         RuntimeError error = new RuntimeError();

@@ -288,7 +288,7 @@ public final class TSSModule {
     }
 
     /**
-     * returns the tss share and tss index.
+     * returns the tss index as the first pair and tss share as the second pair.
      * @param thresholdKey The threshold key to act on.
      * @param tssTag A string representing the TSS tag.
      * @param factorKey A string representing the factor key.
@@ -471,7 +471,7 @@ public final class TSSModule {
      * @param nodeDetails A NodeDetailsModel object representing the node details..
      * @param torusUtils A TorusUtils object to be used.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates underlying pointer or index is invalid.
+     * @throws RuntimeError Indicates invalid pointer or params passed.
      */
     public static void createTaggedTSSTagShare(ThresholdKey thresholdKey, String tssTag, String deviceTssShare, String factorPub,
                                             int deviceTssIndex, NodeDetails nodeDetails, TorusUtils torusUtils,
@@ -530,7 +530,7 @@ public final class TSSModule {
      * @param torusUtils A TorusUtils object to be used.
      * @param selectedServers An integer representing the new tss index.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer or params.
+     * @throws RuntimeError Indicates invalid pointer or params passed.
      * @see ThresholdKeyCallback
      */
     public static void generateTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
@@ -809,7 +809,6 @@ public final class TSSModule {
         }
     }
 
-    // input, throws, return, see for complex object type
     /**
      * This function deletes a factor public key.
      * @param thresholdKey The threshold key to act on.
