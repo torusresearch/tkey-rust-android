@@ -213,7 +213,7 @@ public final class TSSModule {
     /**
      * returns the the tss tag.
      * @param thresholdKey The threshold key to act on.
-     * @throws RuntimeError Indicates invalid parameters were used.
+     * @throws RuntimeError Indicates invalid threshold key.
      * @return String
      */
     public static String getTSSTag(ThresholdKey thresholdKey) throws RuntimeError {
@@ -376,16 +376,16 @@ public final class TSSModule {
      * @param thresholdKey The threshold key to act on.
      * @param shareIndex The threshold key to act on.
      * @param factorKey A string representing the factor key.
-     * @return Result<Boolean>
+     * @return Result<void>
      */
-    public static Result<Boolean> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
+    public static Result<void> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
         try {
             RuntimeError error = new RuntimeError();
             jniBackupShareWithFactorKey(thresholdKey, shareIndex, factorKey, thresholdKey.curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
-            return new Result.Success<>(true);
+            return new Result.Success<>();
         } catch (Exception e) {
             return new Result.Error<>(e);
         }
@@ -530,7 +530,7 @@ public final class TSSModule {
      * @param torusUtils A TorusUtils object to be used.
      * @param selectedServers An integer representing the new tss index.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer.
+     * @throws RuntimeError Indicates invalid pointer or params.
      * @see ThresholdKeyCallback
      */
     public static void generateTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String newFactorPub, int newTssIndex, NodeDetails nodeDetails, TorusUtils torusUtils, @Nullable int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
@@ -587,7 +587,7 @@ public final class TSSModule {
      * @param torusUtils A TorusUtils object to be used.
      * @param selectedServers An integer representing the new tss index.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer.
+     * @throws RuntimeError Indicates invalid pointer or params passed.
      * @see ThresholdKeyCallback
      */
     public static void deleteTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String deleteFactorPub,
@@ -744,7 +744,7 @@ public final class TSSModule {
      * @param nodeDetails An NodeDetails object representing the node details.
      * @param torusUtils A TorusUtils object to be used.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer.
+     * @throws RuntimeError Indicates invalid pointer or params passed.
      * @see ThresholdKeyCallback
      */
     public static void AddFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
