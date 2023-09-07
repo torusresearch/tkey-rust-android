@@ -376,9 +376,9 @@ public final class TSSModule {
      * @param thresholdKey The threshold key to act on.
      * @param shareIndex The threshold key to act on.
      * @param factorKey A string representing the factor key.
-     * @return Result<void>
+     * @return Result<Void>
      */
-    public static Result<void> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
+    public static Result<Void> backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) {
         try {
             RuntimeError error = new RuntimeError();
             jniBackupShareWithFactorKey(thresholdKey, shareIndex, factorKey, thresholdKey.curveN, error);
@@ -679,9 +679,10 @@ public final class TSSModule {
      * @param jsonPubKey A JSON representation of public key.
      * @return Result<Boolean>
      */
-    public static Result<Boolean> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) {
+    public static Result<Void> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) {
             try {
-                return serviceProviderAssignPublicKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey);
+                serviceProviderAssignPublicKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey);
+                return new Result.Success<>();
             } catch (Exception e) {
                 return new Result.Error<>(e);
             }
