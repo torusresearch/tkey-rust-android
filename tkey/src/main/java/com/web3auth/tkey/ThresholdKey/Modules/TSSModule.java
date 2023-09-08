@@ -179,7 +179,7 @@ public final class TSSModule {
     }
 
     /**
-     * sets the tag for give threshold key.
+     * sets the tag for given threshold key.
      * @param thresholdKey The threshold key to act on.
      * @param tssTag The tss tag to be set.
      * @param callback The method which the result will be sent to
