@@ -311,7 +311,7 @@ public final class TSSModule {
      * returns the current tss share.
      * @param thresholdKey The threshold key to act on.
      * @param tssTag A string representing the TSS tag.
-     * @param preFetch A boolean representing whether to prefetch or not.
+     * @param preFetch Prefetch the nonce of the next public key.
      * @return int
      */
     public static int getTSSNonce(ThresholdKey thresholdKey, String tssTag, Boolean preFetch) {
