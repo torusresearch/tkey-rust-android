@@ -167,7 +167,6 @@ public final class TSSModule {
      * @throws RuntimeError Indicates an invalid ThresholdKey.
      * @throws JSONException Indicates library returning invalid json(shouldn't happen ever though)
      * @return String
-     * @see ThresholdKeyCallback
      */
     public static String getExtendedVerifier(ThresholdKey thresholdKey) throws RuntimeError, JSONException {
         RuntimeError error = new RuntimeError();
