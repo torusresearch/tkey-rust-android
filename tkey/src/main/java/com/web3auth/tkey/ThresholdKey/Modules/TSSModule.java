@@ -471,11 +471,10 @@ public final class TSSModule {
      * @param nodeDetails A NodeDetailsModel object representing the node details..
      * @param torusUtils A TorusUtils object to be used.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer or params passed.
      */
     public static void createTaggedTSSTagShare(ThresholdKey thresholdKey, String tssTag, String deviceTssShare, String factorPub,
                                             int deviceTssIndex, NodeDetails nodeDetails, TorusUtils torusUtils,
-                                            ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
+                                            ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
                 Result<Boolean> createTagResult = createTaggedTSSTagShare(thresholdKey, deviceTssShare, factorPub, deviceTssIndex, tssTag, false, nodeDetails, torusUtils);
