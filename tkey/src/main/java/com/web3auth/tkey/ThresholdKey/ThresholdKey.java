@@ -539,11 +539,17 @@ public final class ThresholdKey {
         }
     }
 
+    /**
+     * Inserts a `ShareStore` into `ThresholdKey` using `FactorKey`, useful for insertion before reconstruction to ensure the number of shares meet the minimum threshold.
+     * @param factorKey The factorKey to be inserted.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
     public void inputFactorKey(String factorKey, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = inputFactorKey(factorKey);
-                callback.onComplete(result);
+                inputFactorKey(factorKey);
+                callback.onComplete(new Result.Success<>());
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
@@ -551,24 +557,26 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> inputFactorKey(String factorKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyInputFactorKey(factorKey, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
+    private void inputFactorKey(String factorKey) throws Exception {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyInputFactorKey(factorKey, error);
+        if (error.code != 0) {
+            throw new Exception(error);
         }
     }
 
-    public void addLocalMetadataTransition(String inputJson, String privateKey, String curveN, ThresholdKeyCallback<Void> callback) {
+    /**
+     * Returns add metadata transitions , need sync local metadata transition to update server data
+     * @param inputJson The input in json string
+     * @param privateKey The private key used to encrypt and store.
+     * @param callback The method which the result will be sent to
+     * @see ThresholdKeyCallback
+     */
+    public void addLocalMetadataTransition(String inputJson, String privateKey, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = addLocalMetadataTransition(inputJson, privateKey, curveN);
-                callback.onComplete(result);
+                addLocalMetadataTransition(inputJson, privateKey);
+                callback.onComplete(new Result.Success<>());
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
@@ -576,16 +584,11 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> addLocalMetadataTransition(String inputJson, String privateKey, String curveN) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyAddLocalMetadataTransition(inputJson, privateKey, curveN, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
+    private void addLocalMetadataTransition(String inputJson, String privateKey) throws Exception {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyAddLocalMetadataTransition(inputJson, privateKey, curveN, error);
+        if (error.code != 0) {
+            throw new Exception(error);
         }
     }
 

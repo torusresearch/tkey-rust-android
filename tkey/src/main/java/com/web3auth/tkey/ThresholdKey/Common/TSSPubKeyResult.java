@@ -2,7 +2,7 @@ package com.web3auth.tkey.ThresholdKey.Common;
 
 import java.util.List;
 
-public class GetTSSPubKeyResult {
+public class TSSPubKeyResult {
     public static class Point {
         public String x;
         public String y;
@@ -20,7 +20,7 @@ public class GetTSSPubKeyResult {
     public Point publicKey;
     public List<Integer> nodeIndexes;
 
-    public GetTSSPubKeyResult(Point publicKey, List<Integer> nodeIndexes) {
+    public TSSPubKeyResult(Point publicKey, List<Integer> nodeIndexes) {
         this.publicKey = publicKey;
         this.nodeIndexes = nodeIndexes;
     }

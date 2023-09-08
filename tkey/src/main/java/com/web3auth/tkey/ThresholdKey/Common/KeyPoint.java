@@ -80,7 +80,12 @@ public final class KeyPoint {
         }
         pointer = result;
     }
-    
+
+    /**
+     * Instantiate a KeyPoint object using public address.
+     * @param address public address of co-ordinate pair.
+     * @throws RuntimeError Indicates invalid public key (not on secp256k1 curve or invalidly formatted).
+     */
     public KeyPoint(String address) throws RuntimeError {
         RuntimeError error = new RuntimeError();
         long result = jniKeyPointNewAddr(address, error);
@@ -120,7 +125,7 @@ public final class KeyPoint {
 
     /**
      * Gets the serialized form, should it be a valid PublicKey.
-     * @param format `KeyPoint.PublicKeyEncoding.EllipticCompress` for the compressed form, otherwise the uncompressed form will be returned.
+     * @param encoding `KeyPoint.PublicKeyEncoding.EllipticCompress` for the compressed form, otherwise the uncompressed form will be returned.
      * @throws RuntimeError Indicates either the underlying pointer is invalid or the co-ordinate pair is not a valid PublicKey.
      * @return String
      */
