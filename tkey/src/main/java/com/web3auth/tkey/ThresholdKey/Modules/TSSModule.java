@@ -346,6 +346,7 @@ public final class TSSModule {
      * @param thresholdKey The threshold key to act on.
      * @param shareIndex   The threshold key to act on.
      * @param factorKey    A string representing the factor key.
+     * @throws Exception   Indicates an invalid ThresholdKey or invalid parameters.
      */
     public static void backupShareWithFactorKey(ThresholdKey thresholdKey, String shareIndex, String factorKey) throws Exception {
         RuntimeError error = new RuntimeError();
@@ -600,7 +601,14 @@ public final class TSSModule {
         return true;
     }
 
-    private static void serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) throws Exception {
+    /**
+     * This function assign a tss pub key to service provider.
+     * @param thresholdKey The threshold key to act on.
+     * @param tssTag A string representing the TSS tag.
+     * @param pubKey A JSON representation of public key.
+     * @throws Exception Indicates an invalid thresholdKey or invalid parameters
+     */
+    public static void serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, String nonce, String pubKey) throws Exception {
         RuntimeError error = new RuntimeError();
         jniThresholdKeyServiceProviderAssignPublicKey(thresholdKey, tssTag, nonce, pubKey, error);
         if (error.code != 0) {
@@ -613,15 +621,10 @@ public final class TSSModule {
      * @param thresholdKey The threshold key to act on.
      * @param tssTag A string representing the TSS tag.
      * @param jsonPubKey A JSON representation of public key.
-     * @return Result<Boolean>
+     * @throws Exception Indicates an invalid thresholdKey or invalid parameters
      */
-    public static Result<Void> serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) {
-        try {
+    public static void serviceProviderAssignPublicKey(ThresholdKey thresholdKey, String tssTag, Integer nonce, String jsonPubKey) throws Exception {
             serviceProviderAssignPublicKey(thresholdKey, tssTag, String.valueOf(nonce), jsonPubKey);
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
-        }
     }
 
     private static Boolean AddFactorPub(ThresholdKey thresholdKey, int newTssIndex, String newFactorPub
