@@ -744,7 +744,6 @@ public final class TSSModule {
      * @param nodeDetails An NodeDetails object representing the node details.
      * @param torusUtils A TorusUtils object to be used.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer or params passed.
      * @see ThresholdKeyCallback
      */
     public static void AddFactorPub(ThresholdKey thresholdKey, String tssTag, String factorKey,
