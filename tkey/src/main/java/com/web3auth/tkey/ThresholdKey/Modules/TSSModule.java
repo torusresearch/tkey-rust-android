@@ -587,11 +587,10 @@ public final class TSSModule {
      * @param torusUtils A TorusUtils object to be used.
      * @param selectedServers An integer representing the new tss index.
      * @param callback The method which the result will be sent to
-     * @throws RuntimeError Indicates invalid pointer or params passed.
      * @see ThresholdKeyCallback
      */
     public static void deleteTSSShare(ThresholdKey thresholdKey, String tssTag, String inputTssShare, int inputTssIndex, ArrayList<String> authSignatures, String deleteFactorPub,
-                                      NodeDetails nodeDetails, TorusUtils torusUtils, int[] selectedServers, ThresholdKeyCallback<Boolean> callback) throws RuntimeError, Exception {
+                                      NodeDetails nodeDetails, TorusUtils torusUtils, int[] selectedServers, ThresholdKeyCallback<Boolean> callback) {
         thresholdKey.executor.execute(() -> {
             try {
                 Result<Boolean> result = deleteTSSShare(thresholdKey, inputTssShare, inputTssIndex, authSignatures, deleteFactorPub, selectedServers, tssTag, true, nodeDetails, torusUtils);
