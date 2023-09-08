@@ -548,8 +548,8 @@ public final class ThresholdKey {
     public void inputFactorKey(String factorKey, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = inputFactorKey(factorKey);
-                callback.onComplete(result);
+                inputFactorKey(factorKey);
+                callback.onComplete(new Result.Success<>());
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
@@ -557,16 +557,11 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> inputFactorKey(String factorKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyInputFactorKey(factorKey, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
+    private void inputFactorKey(String factorKey) throws Exception {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyInputFactorKey(factorKey, error);
+        if (error.code != 0) {
+            throw new Exception(error);
         }
     }
 
@@ -580,8 +575,8 @@ public final class ThresholdKey {
     public void addLocalMetadataTransition(String inputJson, String privateKey, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = addLocalMetadataTransition(inputJson, privateKey);
-                callback.onComplete(result);
+                addLocalMetadataTransition(inputJson, privateKey);
+                callback.onComplete(new Result.Success<>());
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
@@ -589,16 +584,11 @@ public final class ThresholdKey {
         });
     }
 
-    private Result<Void> addLocalMetadataTransition(String inputJson, String privateKey) {
-        try {
-            RuntimeError error = new RuntimeError();
-            jniThresholdKeyAddLocalMetadataTransition(inputJson, privateKey, curveN, error);
-            if (error.code != 0) {
-                throw new Exception(error);
-            }
-            return new Result.Success<>();
-        } catch (Exception e) {
-            return new Result.Error<>(e);
+    private void addLocalMetadataTransition(String inputJson, String privateKey) throws Exception {
+        RuntimeError error = new RuntimeError();
+        jniThresholdKeyAddLocalMetadataTransition(inputJson, privateKey, curveN, error);
+        if (error.code != 0) {
+            throw new Exception(error);
         }
     }
 

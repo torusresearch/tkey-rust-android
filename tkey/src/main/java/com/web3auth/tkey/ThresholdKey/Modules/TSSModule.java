@@ -286,7 +286,7 @@ public final class TSSModule {
     }
 
     /**
-     * returns the current tss share.
+     * returns the current tss nonce.
      * @param thresholdKey The threshold key to act on.
      * @param tssTag A string representing the TSS tag.
      * @param preFetch Prefetch the nonce of the next public key.
@@ -343,7 +343,6 @@ public final class TSSModule {
 
     /**
      * This function backup device share with factor key.
-     *
      * @param thresholdKey The threshold key to act on.
      * @param shareIndex   The threshold key to act on.
      * @param factorKey    A string representing the factor key.
