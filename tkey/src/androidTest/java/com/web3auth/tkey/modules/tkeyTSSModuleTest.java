@@ -219,12 +219,14 @@ public class tkeyTSSModuleTest {
             String tssShare3 = tssShareResponse3[0].second;
             String tssShareUpdated = tssShareResponseUpdated[0].second;
 
-
             // after refresh (generate new share), existing tss_share is not valid anymore, new tss share1 is return
             assertNotEquals(tssShare3, tssShareUpdated);
             assertNotEquals(tssIndex3, tssIndex);
             assertNotEquals(tssShare, tssShareUpdated);
 
+            String deviceShareIndex = TSSModule.findDeviceShareIndex(thresholdKey, factorKey.hex);
+            assertNotEquals(deviceShareIndex, "1");
+            
             // Initialize on Instance 2
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
 
