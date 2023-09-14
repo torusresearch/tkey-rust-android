@@ -73,7 +73,7 @@ public final class TSSModule {
      * @param callback The method which the result will be sent to
      * @see ThresholdKeyCallback
      */
-    public static void setTSSTag(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<Boolean> callback) {
+    public static void setTSSTag(ThresholdKey thresholdKey, String tssTag, ThresholdKeyCallback<Void> callback) {
         thresholdKey.executor.execute(() -> {
             try {
                 setTSSTag(thresholdKey, tssTag);
