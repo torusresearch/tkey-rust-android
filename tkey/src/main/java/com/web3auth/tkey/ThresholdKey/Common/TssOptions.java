@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import com.web3auth.tkey.RuntimeError;
 
 public final class TssOptions {
-    private native long jniTssOptions(String inputTssShare, int inputTssIndex, String authSigntatures, @Nullable KeyPoint factorPub, @Nullable String selectedServers, @Nullable int newTssIndex, @Nullable KeyPoint newFactorPub, RuntimeError error);
+    private native long jniTssOptions(String inputTssShare, int inputTssIndex, String authSignatures, @Nullable KeyPoint factorPub, @Nullable String selectedServers, @Nullable int newTssIndex, @Nullable KeyPoint newFactorPub, RuntimeError error);
     private native void jniTssOptionsFree();
 
     private long pointer;
