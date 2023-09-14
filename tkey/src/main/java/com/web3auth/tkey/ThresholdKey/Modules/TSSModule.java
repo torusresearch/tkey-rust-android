@@ -79,7 +79,7 @@ public final class TSSModule {
                 setTSSTag(thresholdKey, tssTag);
                 callback.onComplete(new Result.Success<>());
             } catch (Exception e) {
-                Result<Boolean> error = new Result.Error<>(e);
+                Result<Void> error = new Result.Error<>(e);
                 callback.onComplete(error);
             }
         });
