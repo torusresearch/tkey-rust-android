@@ -8,6 +8,7 @@ import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
 import com.web3auth.tkey.ThresholdKey.Common.TssOptions;
+import com.web3auth.tkey.ThresholdKey.Common.ServerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -82,6 +83,8 @@ public final class ThresholdKey {
     private native void jniThresholdKeyStorageLayerSetMetadataStream(String privateKeys, String json, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyGetAllShareStoresForLatestPolynomial(String curveN, RuntimeError error);
+
+    private native long jniThresholdKeyImportTssKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
 
@@ -895,6 +898,32 @@ public final class ThresholdKey {
             throw error;
         }
         return new ShareStoreArray(ptr);
+    }
+
+
+    private Result<Void> importKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions) {
+        try {
+            RuntimeError error = new RuntimeError();
+            long ptr = jniThresholdKeyImportTssKey(updateMetadata, tssTag, importKey, factorPub, newTssIndex, serverOptions, this.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void importKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions, ThresholdKeyCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                Result<Void> result = importKey(updateMetadata, tssTag, importKey, factorPub, newTssIndex, serverOptions);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Void> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
     }
 
     /**
