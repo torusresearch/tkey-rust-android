@@ -29,7 +29,6 @@ add_library(
         jniGenerateShareStoreResult.cpp
         jniKeyDetails.cpp
         common/jniKeyPoint.cpp
-        common/jniServerOptions.cpp
         jniServiceProvider.cpp
         common/jniShareStore.cpp
         jniShareStoreMap.cpp

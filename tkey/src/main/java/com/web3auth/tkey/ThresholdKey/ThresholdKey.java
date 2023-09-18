@@ -1,5 +1,7 @@
 package com.web3auth.tkey.ThresholdKey;
 
+import android.util.Pair;
+
 import androidx.annotation.Nullable;
 
 import com.web3auth.tkey.RuntimeError;
@@ -8,7 +10,6 @@ import com.web3auth.tkey.ThresholdKey.Common.Result;
 import com.web3auth.tkey.ThresholdKey.Common.ShareStore;
 import com.web3auth.tkey.ThresholdKey.Common.ThresholdKeyCallback;
 import com.web3auth.tkey.ThresholdKey.Common.TssOptions;
-import com.web3auth.tkey.ThresholdKey.Common.ServerOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +85,7 @@ public final class ThresholdKey {
 
     private native long jniThresholdKeyGetAllShareStoresForLatestPolynomial(String curveN, RuntimeError error);
 
-    private native long jniThresholdKeyImportTssKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions, String curveN, RuntimeError error);
+    private native long jniThresholdKeyImportTssKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, String selectedServers, String authSignatures, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
 
@@ -901,10 +902,12 @@ public final class ThresholdKey {
     }
 
 
-    private Result<Void> importKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions) {
+    private Result<Void> importKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, int[] selectedServers, ArrayList<String> authSignatures) {
         try {
             RuntimeError error = new RuntimeError();
-            long ptr = jniThresholdKeyImportTssKey(updateMetadata, tssTag, importKey, factorPub, newTssIndex, serverOptions, this.curveN, error);
+            Pair<String, String> sigParams = getServerParams(authSignatures, selectedServers);
+
+            long ptr = jniThresholdKeyImportTssKey(updateMetadata, tssTag, importKey, newTssIndex, factorPub, sigParams.second, sigParams.first, this.curveN, error);
             if (error.code != 0) {
                 throw new Exception(error);
             }
@@ -914,10 +917,10 @@ public final class ThresholdKey {
         }
     }
 
-    public void importKey(boolean updateMetadata, String tssTag, String importKey, KeyPoint factorPub, int newTssIndex, ServerOptions serverOptions, ThresholdKeyCallback<Void> callback) {
+    public void importKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, int[] selectedServers, ArrayList<String> authSignatures, ThresholdKeyCallback<Void> callback) {
         executor.execute(() -> {
             try {
-                Result<Void> result = importKey(updateMetadata, tssTag, importKey, factorPub, newTssIndex, serverOptions);
+                Result<Void> result = importKey(updateMetadata, tssTag, importKey, newTssIndex, factorPub, selectedServers, authSignatures);
                 callback.onComplete(result);
             } catch (Exception e) {
                 Result<Void> error = new Result.Error<>(e);
@@ -939,6 +942,27 @@ public final class ThresholdKey {
             throw error;
         }
         return new Polynomial(ptr);
+    }
+
+    private static Pair<String, String> getServerParams(ArrayList<String> authSignatures, @Nullable int[] selectedServers) {
+        JSONArray jsonArray = new JSONArray();
+        for (String signature: authSignatures) {
+            jsonArray.put(signature);
+        }
+        String authSignaturesString = jsonArray.toString();
+
+        JSONArray jsonServer = new JSONArray();
+        if(selectedServers != null) {
+            for (int value : selectedServers) {
+                jsonServer.put(value);
+            }
+        }
+
+        String selectedServersString = null;
+        if(jsonServer.length() > 0) {
+            selectedServersString = jsonServer.toString();
+        }
+        return new Pair<>(authSignaturesString, selectedServersString);
     }
 
     @Override
