@@ -30,7 +30,6 @@
         struct TssOptions;
         struct NodeDetails;
         struct FFIRssComm;
-
         //Methods
         char* get_version(int* error_code);
         void string_free(char *ptr);
@@ -80,6 +79,7 @@
         void generate_share_store_result_free(struct GenerateShareStoreResult* ptr);
         void share_store_poly_id_index_map_free(struct ShareStorePolyIDShareIndexMap* ptr);
         struct GenerateShareStoreResult* threshold_key_generate_share(struct FFIThresholdKey* threshold_key, char* curve_n, bool use_tss, struct TssOptions* tss_options, int* error_code);
+        void threshold_key_import_tss_key(struct FFIThresholdKey* threshold_key, bool update_metadata, char* tss_tag, char* import_key, int new_tss_index, struct KeyPoint* factor_pub, char* selected_servers, char* auth_signatures, char* curve_n, int* error_code);
         void threshold_key_delete_share(struct FFIThresholdKey* threshold_key, char* share_index, char* curve_n, bool use_tss, struct TssOptions* tss_options, int* error_code);
         void threshold_key_delete_tkey(struct FFIThresholdKey* threshold_key, char* curve_n, int* error_code);
         char* threshold_key_output_share(struct FFIThresholdKey* threshold_key, char* share_index, char* share_type, char* curve_n, int* error_code);
@@ -199,10 +199,10 @@
         // TssOptions
         struct TssOptions* tss_options(char* input_tss_share, int input_tss_index, struct KeyPoint* factor_pub, char* auth_signatures, char* selected_servers, int* new_tss_index, struct KeyPoint* new_factor_pub, int* error_code);
         void tss_options_free(struct TssOptions* ptr);
-        //NodeDetails
+        // NodeDetails
         struct NodeDetails* node_details(char* server_endpoints, char* server_public_keys, int server_threshold, int* error_code);
         void node_details_free(struct NodeDetails* ptr);
-        //RssComm
+        // RssComm
         struct FFIRSSComm* rss_comm(char* (*network_callback)(char*, char*, void*, int*), void* parent_instance_ref, int* error_code);
         void* rss_comm_free(struct FFIRssComm* ptr);
     #ifdef __cplusplus

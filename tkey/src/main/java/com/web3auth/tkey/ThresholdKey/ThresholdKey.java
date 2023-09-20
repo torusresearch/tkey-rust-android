@@ -1,5 +1,7 @@
 package com.web3auth.tkey.ThresholdKey;
 
+import android.util.Pair;
+
 import androidx.annotation.Nullable;
 
 import com.web3auth.tkey.RuntimeError;
@@ -82,6 +84,8 @@ public final class ThresholdKey {
     private native void jniThresholdKeyStorageLayerSetMetadataStream(String privateKeys, String json, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyGetAllShareStoresForLatestPolynomial(String curveN, RuntimeError error);
+
+    private native long jniThresholdKeyImportTssKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, String selectedServers, String authSignatures, String curveN, RuntimeError error);
 
     private native long jniThresholdKeyReconstructLatestPolynomial(String curveN, RuntimeError error);
 
@@ -897,6 +901,34 @@ public final class ThresholdKey {
         return new ShareStoreArray(ptr);
     }
 
+
+    private Result<Void> importKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, int[] selectedServers, ArrayList<String> authSignatures) {
+        try {
+            RuntimeError error = new RuntimeError();
+            Pair<String, String> sigParams = getServerParams(authSignatures, selectedServers);
+
+            long ptr = jniThresholdKeyImportTssKey(updateMetadata, tssTag, importKey, newTssIndex, factorPub, sigParams.second, sigParams.first, this.curveN, error);
+            if (error.code != 0) {
+                throw new Exception(error);
+            }
+            return new Result.Success<>();
+        } catch (Exception e) {
+            return new Result.Error<>(e);
+        }
+    }
+
+    public void importKey(boolean updateMetadata, String tssTag, String importKey, int newTssIndex, KeyPoint factorPub, int[] selectedServers, ArrayList<String> authSignatures, ThresholdKeyCallback<Void> callback) {
+        executor.execute(() -> {
+            try {
+                Result<Void> result = importKey(updateMetadata, tssTag, importKey, newTssIndex, factorPub, selectedServers, authSignatures);
+                callback.onComplete(result);
+            } catch (Exception e) {
+                Result<Void> error = new Result.Error<>(e);
+                callback.onComplete(error);
+            }
+        });
+    }
+
     /**
      * Returns the latest polynomial.
      * @throws RuntimeError Indicates invalid pointer.
@@ -910,6 +942,27 @@ public final class ThresholdKey {
             throw error;
         }
         return new Polynomial(ptr);
+    }
+
+    private static Pair<String, String> getServerParams(ArrayList<String> authSignatures, @Nullable int[] selectedServers) {
+        JSONArray jsonArray = new JSONArray();
+        for (String signature: authSignatures) {
+            jsonArray.put(signature);
+        }
+        String authSignaturesString = jsonArray.toString();
+
+        JSONArray jsonServer = new JSONArray();
+        if(selectedServers != null) {
+            for (int value : selectedServers) {
+                jsonServer.put(value);
+            }
+        }
+
+        String selectedServersString = null;
+        if(jsonServer.length() > 0) {
+            selectedServersString = jsonServer.toString();
+        }
+        return new Pair<>(authSignaturesString, selectedServersString);
     }
 
     @Override

@@ -696,3 +696,40 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyReconstructLates
     setErrorCode(env, error, errorCode);
     return reinterpret_cast<jlong>(pResult);
 }
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyImportTssKey(
+        JNIEnv *env, jobject jthis, jboolean update_metadata, jstring tss_tag,
+        jstring import_key, jint new_tss_index, jobject factor_pub, 
+        jstring selected_servers, jstring auth_signatures, jstring curve_n, jthrowable error) {
+    int errorCode = 0;
+    int *error_ptr = &errorCode;
+    jlong pObject = GetPointerField(env, jthis);
+    
+    auto *pThreshold = reinterpret_cast<FFIThresholdKey *>(pObject);
+    const char *pTSStag = env->GetStringUTFChars(tss_tag, JNI_FALSE);
+    const char *pImportKey = env->GetStringUTFChars(import_key, JNI_FALSE);
+    
+    auto *pFactorPub = reinterpret_cast<KeyPoint *>(GetPointerField(env, factor_pub));
+    const char *pSelectedServers = nullptr;
+    if(selected_servers != nullptr) {
+        pSelectedServers = env->GetStringUTFChars(selected_servers, JNI_FALSE);
+    }
+    const char *pAuthSignatures = env->GetStringUTFChars(auth_signatures, JNI_FALSE);
+    const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
+    
+    threshold_key_import_tss_key(pThreshold, update_metadata, const_cast<char *>(pTSStag), const_cast<char *>(pImportKey),
+                               new_tss_index, pFactorPub, const_cast<char *>(pSelectedServers), const_cast<char *>(pAuthSignatures),
+                                const_cast<char *>(pCurve), error_ptr);
+
+    env->ReleaseStringUTFChars(tss_tag, pTSStag);
+    env->ReleaseStringUTFChars(import_key, pImportKey);
+    env->ReleaseStringUTFChars(auth_signatures, pAuthSignatures);
+    if(selected_servers != nullptr) {
+        env->ReleaseStringUTFChars(selected_servers, pSelectedServers);
+    }
+    env->ReleaseStringUTFChars(curve_n, pCurve);
+
+    setErrorCode(env, error, errorCode);
+}
