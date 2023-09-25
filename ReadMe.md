@@ -41,13 +41,13 @@ The design of the SDK is relatively straight forward.
 
 This SDK can be split into methods which are synchronous and methods which are asynchronous:
 * Methods which are synchronous are expected to return immediately with no underlying network operations.
-* Methods which are asyncronous are dispatched to a single-threaded Executor, return the result via callbacks and perform network operations with the Metadata Server. The relevant network implementation is already supplied as part of the SDK.
+* Methods which are asynchronous are dispatched to a single-threaded Executor, return the result via callbacks and perform network operations with the Metadata Server. The relevant network implementation is already supplied as part of the SDK.
 
 All classes that are part of the modules namespace are static in nature and can only operate on a ThresholdKey object which has been properly setup.
 
 Currently only the Secp256k1 curve is supported.
 
-Please note that all code examples are minimilistic in nature, this is intentionally done for clarity, since most functions can throw.
+Please note that all code examples are minimalistic in nature, this is intentionally done for clarity, since most functions can throw.
 
 ## SDK Overview
 
@@ -76,7 +76,7 @@ A KeyDetails object is returned from the initialization call.
      PrivateKey key = PrivateKey.generate();
      thresholdKey.initialize(key.hex, null, false, false, result -> {
      	if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
-        	//Error handling here
+        	// Error handling here
         } else if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Success) {
         	KeyDetails details = ((Result.Success<KeyDetails>) result).data;
         }
@@ -122,29 +122,29 @@ Shares are generated on the same threshold (e.g, 2/3 -> 2/4). A GenerateShareSto
 
 ```java
    thresholdKey.generateNewShare(result -> {
-                if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
-                    // Error handling here
-               } else if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Success) {
-               	               GenerateShareStoreResult shareStoreResult = ((com.web3auth.tkey.ThresholdKey.Common.Result.Success<GenerateShareStoreResult>) result).data;
-              }
+       if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
+           // Error handling here
+       } else if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Success) {
+           GenerateShareStoreResult shareStoreResult = ((com.web3auth.tkey.ThresholdKey.Common.Result.Success<GenerateShareStoreResult>) result).data;
+       }
     });
 ```
 
 #### Deleting a Share
 
-Shares can be deleted by their share index. Note that deleting a share will invaidate any persisted share.
+Shares can be deleted by their share index. Note that deleting a share will invalidate any persisted share.
 
 ```java
-		thresholdKey.deleteShare(index, result -> {
-                    if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
-                        // Error handling here
-                    } else if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Success) {
-                    	// Sucess here, void return type
-                    }
-          });
+    thresholdKey.deleteShare(index, result -> {
+        if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Error) {
+            // Error handling here
+        } else if (result instanceof com.web3auth.tkey.ThresholdKey.Common.Result.Success) {
+            // Success here, void return type
+        }
+    });
 ```
 
-### Modules for additonal functionality
+### Modules for additional functionality
 
 For more advanced operations on a ThresholdKey object, you can make use of the provided modules.
 
@@ -166,4 +166,4 @@ The ShareSerializationModule allows the serialization and deserialization of sha
 
 #### ShareTransferModule
 
-The ShareTransferModule is used to transfering an existing share to another device.
+The ShareTransferModule is used to transferring an existing share to another device.
