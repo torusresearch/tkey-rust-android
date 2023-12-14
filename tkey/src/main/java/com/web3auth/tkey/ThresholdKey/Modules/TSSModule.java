@@ -694,24 +694,21 @@ public final class TSSModule {
      * @throws Exception Indicates invalid threshold key or factor key being passed.
      * @return String
      */
-    public static String findDeviceShareIndex(ThresholdKey thresholdKey, String factorKey) throws Exception {
-        AtomicReference<String> resultData = new AtomicReference<>("");
-        AtomicReference<String> shareIndex = new AtomicReference<>("");
-
+    public static void findDeviceShareIndex(ThresholdKey thresholdKey, String factorKey, ThresholdKeyCallback<String> callback)  {
         thresholdKey.storage_layer_get_metadata(factorKey, result -> {
-            resultData.set(((Result.Success<String>) result).data);
-            JSONObject resultJson = null;
+            if (result instanceof Result.Error) {
+                callback.onComplete(new Result.Error<>(((Result.Error<String>) result).exception));
+            }
+            String metadata = ((Result.Success<String>) result).data;
             try {
-                resultJson = new JSONObject(resultData.get());
-
+                JSONObject resultJson = new JSONObject(metadata);
                 JSONObject deviceShareJson = resultJson.getJSONObject("deviceShare");
                 JSONObject shareJson = deviceShareJson.getJSONObject("share");
-                shareIndex.set(shareJson.get("shareIndex").toString());
+                callback.onComplete(new Result.Success<>(shareJson.get("shareIndex").toString()));
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                callback.onComplete(new Result.Error<>(e));
             }
         });
-        return shareIndex.get();
     }
 
     /**

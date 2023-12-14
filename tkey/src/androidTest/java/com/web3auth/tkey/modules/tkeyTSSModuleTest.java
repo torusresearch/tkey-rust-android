@@ -224,9 +224,20 @@ public class tkeyTSSModuleTest {
             assertNotEquals(tssIndex3, tssIndex);
             assertNotEquals(tssShare, tssShareUpdated);
 
-            String deviceShareIndex = TSSModule.findDeviceShareIndex(thresholdKey, factorKey.hex);
-            assertNotEquals(deviceShareIndex, "1");
-            
+            CountDownLatch lockExtra = new CountDownLatch(1);
+
+            TSSModule.findDeviceShareIndex(thresholdKey, factorKey.hex , result -> {
+                if (result instanceof Result.Error) {
+                    fail("Could not inputFactorKey for tkey");
+                }
+                String deviceShareIndex = ((Result.Success<String>) result).data;
+
+                assertNotEquals(deviceShareIndex, "0");
+                assertNotEquals(deviceShareIndex, "1");
+                lockExtra.countDown();
+            } );
+            lockExtra.await();
+
             // Initialize on Instance 2
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, true, false, rss_comm);
 
