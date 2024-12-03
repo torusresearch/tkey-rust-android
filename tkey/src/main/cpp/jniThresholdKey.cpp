@@ -362,7 +362,7 @@ JNIEXPORT jlong JNICALL
 Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
         JNIEnv *env, jobject jthis, jstring share, jobject input,
         jboolean never_initialized_new_key,
-        jboolean include_local_metadata_transitions, jstring curve_n, jthrowable error) {
+        jboolean include_local_metadata_transitions, jboolean delete_one_of_one, jstring curve_n, jthrowable error) {
     int errorCode = 0;
     int *error_ptr = &errorCode;
     jlong pObject = GetPointerField(env, jthis);
@@ -379,7 +379,7 @@ Java_com_web3auth_tkey_ThresholdKey_ThresholdKey_jniThresholdKeyInitialize(
     const char *pCurve = env->GetStringUTFChars(curve_n, JNI_FALSE);
     KeyDetails *pDetails = threshold_key_initialize(pThreshold, const_cast<char *>(pShare), pInput,
                                                     never_initialized_new_key,
-                                                    include_local_metadata_transitions,
+                                                    include_local_metadata_transitions, delete_one_of_one,
                                                     const_cast<char *>(pCurve), error_ptr);
     env->ReleaseStringUTFChars(curve_n, pCurve);
     if (pShare != nullptr) {

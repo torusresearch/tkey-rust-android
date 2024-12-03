@@ -44,6 +44,7 @@ public final class ThresholdKey {
             @Nullable ShareStore input,
             boolean neverInitializedNewKey,
             boolean includeLocalMetadataTransitions,
+            boolean deleteOneOfOne,
             String curveN,
             RuntimeError error
     );
@@ -222,6 +223,7 @@ public final class ThresholdKey {
             @Nullable ShareStore input,
             boolean neverInitializedNewKey,
             boolean includeLocalMetadataTransitions,
+            boolean deleteOneOfOne,
             final ThresholdKeyCallback<KeyDetails> callback
     ) {
         executor.execute(
@@ -231,7 +233,8 @@ public final class ThresholdKey {
                                 importShare,
                                 input,
                                 neverInitializedNewKey,
-                                includeLocalMetadataTransitions
+                                includeLocalMetadataTransitions,
+                                deleteOneOfOne
                         );
                         callback.onComplete(result);
                     } catch (Exception e) {
@@ -264,6 +267,7 @@ public final class ThresholdKey {
                                 importShare,
                                 input,
                                 false,
+                                false,
                                 false
                         );
                         callback.onComplete(result);
@@ -279,7 +283,8 @@ public final class ThresholdKey {
             @Nullable String importShare,
             @Nullable ShareStore input,
             boolean neverInitializedNewKey,
-            boolean includeLocalMetadataTransitions
+            boolean includeLocalMetadataTransitions,
+            boolean deleteOneOfOne
     ) {
         try {
             RuntimeError error = new RuntimeError();
@@ -288,6 +293,7 @@ public final class ThresholdKey {
                     input,
                     neverInitializedNewKey,
                     includeLocalMetadataTransitions,
+                    deleteOneOfOne,
                     curveN,
                     error
             );

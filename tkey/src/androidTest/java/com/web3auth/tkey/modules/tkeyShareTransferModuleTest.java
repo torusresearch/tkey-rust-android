@@ -56,7 +56,7 @@ public class tkeyShareTransferModuleTest {
             ServiceProvider serviceProvider = new ServiceProvider(false, postboxKey.hex);
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(null, null, false, false, result ->
+            thresholdKey.initialize(null, null, false, false,false, result ->
             {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 1");
@@ -74,7 +74,7 @@ public class tkeyShareTransferModuleTest {
             tkeyShareTransferModuleTest.thresholdKey = thresholdKey;
             CountDownLatch lock1 = new CountDownLatch(1);
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
-            thresholdKey2.initialize(null, null, true, false, result -> {
+            thresholdKey2.initialize(null, null, true, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey instance 2");
                 }
