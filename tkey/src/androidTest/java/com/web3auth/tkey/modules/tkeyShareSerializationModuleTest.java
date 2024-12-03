@@ -47,7 +47,7 @@ public class tkeyShareSerializationModuleTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }

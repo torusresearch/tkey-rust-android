@@ -47,7 +47,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -91,7 +91,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(2);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -142,7 +142,7 @@ public class tkeyThresholdKeyTest {
 
             ThresholdKey thresholdKey2 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             CountDownLatch lock3 = new CountDownLatch(3);
-            thresholdKey2.initialize(null, null, true, false, result -> {
+            thresholdKey2.initialize(null, null, true, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -163,7 +163,7 @@ public class tkeyThresholdKeyTest {
             lock3.await();
             ThresholdKey thresholdKey3 = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             CountDownLatch lock4 = new CountDownLatch(4);
-            thresholdKey3.initialize(null, null, true, false, result -> {
+            thresholdKey3.initialize(null, null, true, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -203,7 +203,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, true);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(5);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -255,7 +255,7 @@ public class tkeyThresholdKeyTest {
             PrivateKey key2 = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(4);
 
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -268,7 +268,7 @@ public class tkeyThresholdKeyTest {
                 assertNotNull(pub);
                 lock.countDown();
             });
-            thresholdKey2.initialize(key2.hex, null, false, false, result -> {
+            thresholdKey2.initialize(key2.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
@@ -333,7 +333,7 @@ public class tkeyThresholdKeyTest {
             ThresholdKey thresholdKey = new ThresholdKey(null, null, storageLayer, serviceProvider, null, null, false, false);
             PrivateKey key = PrivateKey.generate();
             CountDownLatch lock = new CountDownLatch(3);
-            thresholdKey.initialize(key.hex, null, false, false, result -> {
+            thresholdKey.initialize(key.hex, null, false, false,false, result -> {
                 if (result instanceof Result.Error) {
                     fail("Could not initialize tkey");
                 }
